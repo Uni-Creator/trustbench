@@ -1,0 +1,37 @@
+[project]
+name = "trustbench"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Uni-Creator", email = "abhayr24564@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.161.1",
+    "numpy>=2.4.6",
+    "pillow>=13.0.0",
+    "plotly>=7.1.0",
+    "pydantic-settings>=2.16.1",
+    "scikit-learn>=1.9.1",
+    "sqlalchemy>=2.1.6",
+    "streamlit>=1.66.1",
+    "torch>=2.14.1",
+    "torchvision>=0.29.1",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+trustbench = "trustbench:main"
+
+[build-system]
+requires = ["uv_build>=0.12.15,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "mypy>=2.4.0",
+    "pytest>=9.1.1",
+    "ruff>=0.17.2",
+]
