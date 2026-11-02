@@ -1,0 +1,14 @@
+{
+  "experiment_id": "baseline_001",
+  "created_at": "2026-11-02T22:07:55.791200+00:00",
+  "checkpoint_epoch": 187,
+  "checkpoint_train_acc": 95.39,
+  "environment": {
+    "python_version": "3.11.16",
+    "torch_version": "2.14.1+cu130",
+    "cuda_available": "True",
+    "cuda_device_name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "os": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+    "git_commit": "a8f25d8b442fbfcaf362e32a30d0f26ce0bca2ec"
+  }
+}
