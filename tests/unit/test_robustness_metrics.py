@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from trustbench.metrics.error_detection import (
     compute_binary_detection_curve,
     compute_error_detection_metrics,

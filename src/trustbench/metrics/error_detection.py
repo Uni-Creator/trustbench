@@ -3,7 +3,10 @@
 from typing import Any
 
 import numpy as np
+from scipy.special import softmax
 from sklearn.metrics import auc, precision_recall_curve, roc_auc_score
+
+from trustbench.metrics.uncertainty import compute_energy_scores
 
 
 def compute_binary_detection_curve(
@@ -17,7 +20,7 @@ def compute_binary_detection_curve(
         uncertainty_scores: Higher values indicate higher probability of error.
 
     Returns:
-        Dict with 'auroc' and 'auprc' (and auprc_baseline, i.e. prevalence).
+        Dict with 'auroc', 'auprc', and 'prevalence'.
     """
     y_true_binary = np.asarray(y_true_binary, dtype=int)
     uncertainty_scores = np.asarray(uncertainty_scores, dtype=float)
@@ -26,7 +29,6 @@ def compute_binary_detection_curve(
     n_errors = int(np.sum(y_true_binary))
 
     if n_samples == 0 or n_errors == 0 or n_errors == n_samples:
-        # Edge cases where AUROC is mathematically undefined or trivial
         prevalence = float(n_errors / n_samples) if n_samples > 0 else 0.0
         return {
             "auroc": 0.5,
@@ -61,7 +63,7 @@ def compute_slice_error_rates(
 
     Args:
         errors: 1D binary array where 1 = incorrect prediction, 0 = correct.
-        confidences: 1D array of confidence scores (e.g. max softmax prob, or -entropy).
+        confidences: 1D array of confidence scores (where higher means more confident).
         top_k_pct: Fraction for top/bottom slices (default: 0.1 for 10%).
 
     Returns:
@@ -94,24 +96,30 @@ def compute_error_detection_metrics(
     labels: np.ndarray,
     predictions: np.ndarray,
     probabilities: np.ndarray,
+    logits: np.ndarray | None = None,
+    temperature: float | None = None,
     entropies: np.ndarray | None = None,
     slice_fraction: float = 0.1,
 ) -> dict[str, Any]:
     """Comprehensive error detection evaluation across uncertainty scoring methods.
 
     Evaluates:
-      1. Maximum softmax probability (MSP) where uncertainty = -MSP
-      2. Predictive entropy where uncertainty = +Entropy
+      1. Maximum Softmax Probability (MSP): uncertainty = -MSP
+      2. Predictive Entropy: uncertainty = +Entropy
+      3. Temperature-Scaled Probability (if temperature provided): uncertainty = -TempMSP
+      4. Energy-Based Score (if logits provided): uncertainty = -E(x) = logsumexp(logits)
 
     Args:
         labels: 1D array of ground truth labels (N,).
         predictions: 1D array of predicted class indices (N,).
         probabilities: 2D array of class probabilities (N, C).
-        entropies: Optional 1D array of predictive entropy (N,). Computed if not provided.
+        logits: Optional 2D array of unscaled output logits (N, C).
+        temperature: Optional fitted temperature parameter (e.g. from validation set).
+        entropies: Optional 1D array of predictive entropy (N,).
         slice_fraction: Fraction for top and bottom confidence slices (default 0.1 = 10%).
 
     Returns:
-        Dict with detection performance for both MSP and Predictive Entropy.
+        Dict with detection performance for MSP, Entropy, Temperature-Scaled, and Energy.
     """
     labels = np.asarray(labels)
     predictions = np.asarray(predictions)
@@ -127,20 +135,15 @@ def compute_error_detection_metrics(
     else:
         entropies = np.asarray(entropies)
 
-    # Uncertainty scores (higher = more likely to be an error)
-    uncertainty_from_msp = -max_confidences
-    uncertainty_from_entropy = entropies
-
     # 1. Error detection via MSP
-    msp_detection = compute_binary_detection_curve(errors, uncertainty_from_msp)
+    msp_detection = compute_binary_detection_curve(errors, -max_confidences)
     msp_slices = compute_slice_error_rates(errors, max_confidences, top_k_pct=slice_fraction)
 
     # 2. Error detection via Predictive Entropy
-    # Note: for confidence slices using entropy, confidence is -entropy
-    entropy_detection = compute_binary_detection_curve(errors, uncertainty_from_entropy)
+    entropy_detection = compute_binary_detection_curve(errors, entropies)
     entropy_slices = compute_slice_error_rates(errors, -entropies, top_k_pct=slice_fraction)
 
-    return {
+    result: dict[str, Any] = {
         "error_count": int(np.sum(errors)),
         "total_samples": len(errors),
         "error_rate": float(np.mean(errors)) if len(errors) > 0 else 0.0,
@@ -157,3 +160,41 @@ def compute_error_detection_metrics(
             "lowest_confidence_error_rate": entropy_slices["bottom_confidence_error_rate"],
         },
     }
+
+    # 3. Temperature-Scaled Maximum Probability
+    if temperature is not None and logits is not None:
+        temp_scaled_logits = logits / temperature
+        temp_probs = softmax(temp_scaled_logits, axis=1)
+        temp_max_conf = np.max(temp_probs, axis=1)
+
+        temp_detection = compute_binary_detection_curve(errors, -temp_max_conf)
+        temp_slices = compute_slice_error_rates(errors, temp_max_conf, top_k_pct=slice_fraction)
+
+        result["temperature_scaled_probability"] = {
+            "temperature": float(temperature),
+            "auroc": temp_detection["auroc"],
+            "auprc": temp_detection["auprc"],
+            "highest_confidence_error_rate": temp_slices["top_confidence_error_rate"],
+            "lowest_confidence_error_rate": temp_slices["bottom_confidence_error_rate"],
+        }
+
+    # 4. Energy-Based Score: E(x) = -T * logsumexp(logits / T).
+    # Higher energy (less negative) means lower model confidence / higher uncertainty.
+    if logits is not None:
+        # Uncertainty = energy score directly: -E(x) = logsumexp(logits)
+        # Note: logsumexp is high for familiar/confident data, low for unfamiliar.
+        # So uncertainty score is -logsumexp(logits) = E(x).
+        energy_scores = compute_energy_scores(logits, temperature=1.0)
+        # energy is -logsumexp, so higher energy = higher uncertainty
+        energy_detection = compute_binary_detection_curve(errors, energy_scores)
+        # For confidence slice, confidence = -energy = +logsumexp
+        energy_slices = compute_slice_error_rates(errors, -energy_scores, top_k_pct=slice_fraction)
+
+        result["energy_score"] = {
+            "auroc": energy_detection["auroc"],
+            "auprc": energy_detection["auprc"],
+            "highest_confidence_error_rate": energy_slices["top_confidence_error_rate"],
+            "lowest_confidence_error_rate": energy_slices["bottom_confidence_error_rate"],
+        }
+
+    return result

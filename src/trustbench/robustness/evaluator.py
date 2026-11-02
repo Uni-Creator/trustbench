@@ -78,6 +78,31 @@ class RobustnessEvaluator:
             transform=None,
         )
 
+        self.fitted_temperature: float | None = None
+
+    def fit_calibration_temperature(self, val_size: int = 5000) -> float:
+        """Fit calibration temperature T on a separate validation/calibration split."""
+        from torch.utils.data import DataLoader
+
+        from trustbench.data.cifar10 import get_cifar10_validation_split
+        from trustbench.metrics.uncertainty import fit_temperature
+
+        _, val_set = get_cifar10_validation_split(
+            data_dir=self.data_dir,
+            val_size=val_size,
+            seed=self.seed,
+            download=True,
+        )
+        val_loader = DataLoader(
+            val_set,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )
+        val_res = run_inference(self.model, val_loader, device=self.device)
+        self.fitted_temperature = fit_temperature(val_res["logits"], val_res["labels"])
+        return self.fitted_temperature
+
     def evaluate_condition(
         self,
         corruption_type: str,
@@ -124,11 +149,13 @@ class RobustnessEvaluator:
             probabilities=probabilities,
         )
 
-        # 4. Error Detection
+        # 4. Error Detection (evaluating MSP, Entropy, Temperature-Scaled, and Energy scores)
         err_metrics = compute_error_detection_metrics(
             labels=labels,
             predictions=predictions,
             probabilities=probabilities,
+            logits=logits,
+            temperature=getattr(self, "fitted_temperature", None),
         )
 
         # 5. Selective Prediction
@@ -187,6 +214,9 @@ class RobustnessEvaluator:
         predictions_dir.mkdir(parents=True, exist_ok=True)
 
         checkpoint_sha256 = compute_file_sha256(self.checkpoint_path)
+
+        if self.fitted_temperature is None:
+            self.fit_calibration_temperature()
 
         # Load clean baseline metrics if available
         baseline_summary = None

@@ -1,8 +1,8 @@
-"""CIFAR-10 dataset loading and data loaders."""
+"""Dataset utilities for CIFAR-10 including validation split generation."""
 
-
+import torch
 import torchvision
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset, Subset, random_split
 from torchvision import transforms
 
 CIFAR10_CLASSES = (
@@ -50,6 +50,40 @@ def get_cifar10_datasets(
         root=data_dir, train=False, download=download, transform=transform_test
     )
     return trainset, testset
+
+
+def get_cifar10_validation_split(
+    data_dir: str = "./data",
+    val_size: int = 5000,
+    seed: int = 42,
+    download: bool = True,
+) -> tuple[Dataset, Dataset]:
+    """Split CIFAR-10 train set (50k) into train (50k - val_size) and validation (val_size).
+
+    The validation split uses the standard test evaluation transform (no data augmentation).
+    """
+    transform_train, transform_eval = get_cifar10_transforms()
+
+    # Base dataset for evaluation transform
+    val_base = torchvision.datasets.CIFAR10(
+        root=data_dir, train=True, download=download, transform=transform_eval
+    )
+    # Base dataset for training transform
+    train_base = torchvision.datasets.CIFAR10(
+        root=data_dir, train=True, download=download, transform=transform_train
+    )
+
+    total_len = len(val_base)
+    train_len = total_len - val_size
+
+    # Deterministic split indices
+    generator = torch.Generator().manual_seed(seed)
+    train_indices, val_indices = random_split(range(total_len), [train_len, val_size], generator=generator)
+
+    train_subset = Subset(train_base, train_indices.indices)
+    val_subset = Subset(val_base, val_indices.indices)
+
+    return train_subset, val_subset
 
 
 def get_cifar10_loaders(

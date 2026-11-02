@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from trustbench.metrics.calibration import compute_calibration_metrics
 from trustbench.metrics.classification import compute_classification_metrics
 from trustbench.metrics.uncertainty import (

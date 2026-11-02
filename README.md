@@ -5,7 +5,7 @@ TrustBench is an ML evaluation framework designed to measure how reliable machin
 
 Traditional model evaluation focuses primarily on accuracy. TrustBench goes further by investigating whether models remain reliable when their inputs differ from training conditions, whether confidence reflects actual correctness, and whether uncertainty estimates can identify potentially incorrect predictions.
 
-The project currently includes a CIFAR-10 evaluation pipeline with classification metrics, calibration analysis, controlled image corruptions, uncertainty estimation, error detection, and selective prediction.
+The project currently includes a CIFAR-10 evaluation pipeline with classification metrics, calibration analysis, controlled image corruptions, uncertainty estimation, error detection, selective prediction, experiment management, and a FastAPI service layer.
 
 ---
 
@@ -13,40 +13,53 @@ The project currently includes a CIFAR-10 evaluation pipeline with classificatio
 
 - **Model Evaluation:** Accuracy, Macro-F1, per-class precision, recall, and confusion matrices.
 - **Calibration Analysis:** Expected Calibration Error (ECE), Brier Score, and reliability measurements.
-- **Uncertainty Estimation:** Predictive entropy and Maximum Softmax Probability (MSP).
-- **Robustness Benchmarking:** Gaussian noise, Gaussian blur, brightness changes, and occlusion.
-- **Error Detection:** AUROC, AUPRC, and confidence-based error analysis.
+- **Uncertainty Estimation:** Maximum Softmax Probability (MSP), Predictive Entropy, Validation-Fitted Temperature Scaling, and Free Energy scores.
+- **Robustness Benchmarking:** Gaussian noise, Gaussian blur, brightness changes, and occlusion across progressive severity levels.
+- **Error Detection:** AUROC, AUPRC, and confidence-slice error analysis comparing 4 uncertainty methods across all conditions.
 - **Selective Prediction:** Risk-coverage curves and Area Under the Risk-Coverage Curve (AURC).
-- **Reproducibility:** Deterministic evaluation, checkpoint SHA-256 tracking, environment metadata, and experiment artifacts.
+- **Experiment Management:** SQLite & SQLAlchemy registry tracking runs, scalar metrics, checkpoint SHA-256 lineage, and indexed artifacts.
+- **REST API:** FastAPI service with endpoints for experiment history, cross-experiment metric comparison, and artifact directory indexing.
+- **Reproducibility:** Deterministic evaluation, checkpoint SHA-256 tracking, environment metadata, and persistent structured artifacts.
 
 ## Architecture
 
 ```text
-                 TrustBench
-                      |
-          +-----------+-----------+
-          |                       |
-    Model Evaluation        Robustness Testing
-          |                       |
-    Model Inference         Image Corruptions
-          |                       |
-    Classification          Severity Levels
-       Metrics                    |
-          |                 Corrupted Inference
-          |                       |
-          +-----------+-----------+
-                      |
-              Reliability Analysis
-                      |
-          +-----------+-----------+
-          |           |           |
-      Calibration  Uncertainty  Error Detection
-          |           |           |
-          +-----------+-----------+
-                      |
-              Selective Prediction
-                      |
-              Experiment Artifacts
+                                 TrustBench
+                                     |
+                 +-------------------+-------------------+
+                 |                                       |
+           Model Evaluation                        Robustness Testing
+                 |                                       |
+           Model Inference                         Image Corruptions
+                 |                                       |
+           Classification                          Severity Levels
+              Metrics                                    |
+                 |                                 Corrupted Inference
+                 |                                       |
+                 +-------------------+-------------------+
+                                     |
+                             Reliability Analysis
+                                     |
+                 +-------------------+-------------------+
+                 |                   |                   |
+             Calibration        Uncertainty        Error Detection
+           (Brier, ECE, T)   (MSP, Entropy, Energy)   (AUROC, AUPRC)
+                 |                   |                   |
+                 +-------------------+-------------------+
+                                     |
+                             Selective Prediction
+                              (Risk-Coverage)
+                                     |
+                         Experiment Management & API
+                 +-------------------+-------------------+
+                 |                   |                   |
+           Storage & SQLite      Registry &        FastAPI REST
+             (SQLAlchemy)        Comparison          Endpoints
+                 |                   |                   |
+                 +-------------------+-------------------+
+                                     |
+                            Experiment Artifacts
+                              (JSON / NPZ)
 ```
 
 ## Technology Stack
@@ -55,10 +68,11 @@ The project currently includes a CIFAR-10 evaluation pipeline with classificatio
 |---|---|
 | Language | Python |
 | Deep Learning | PyTorch, Torchvision |
-| Numerical Computing | NumPy |
+| Numerical & Scientific | NumPy, SciPy |
 | Evaluation Metrics | Scikit-learn |
 | Image Processing | Pillow |
-| API (planned) | FastAPI |
+| Database & ORM | SQLite, SQLAlchemy |
+| REST API | FastAPI, Pydantic, Uvicorn |
 | Dashboard (planned) | Streamlit, Plotly |
 | Testing | Pytest |
 | Code Quality | Ruff |
@@ -77,7 +91,9 @@ trustbench/
 ├── src/
 │   └── trustbench/
 │       ├── api/
+│       │   ├── app.py
 │       │   └── routes/
+│       │       └── experiments.py
 │       ├── data/
 │       │   └── cifar10.py
 │       ├── evaluation/
@@ -85,6 +101,11 @@ trustbench/
 │       │   ├── runner.py
 │       │   ├── artifacts.py
 │       │   └── reproducibility.py
+│       ├── experiments/
+│       │   ├── schemas.py
+│       │   ├── registry.py
+│       │   ├── comparison.py
+│       │   └── manager.py
 │       ├── metrics/
 │       │   ├── classification.py
 │       │   ├── calibration.py
@@ -98,10 +119,14 @@ trustbench/
 │       │   ├── evaluator.py
 │       │   └── report.py
 │       └── storage/
+│           ├── database.py
+│           ├── models.py
+│           └── repositories.py
 ├── tests/
 │   ├── api/
 │   └── unit/
 ├── artifacts/
+│   ├── trustbench.db
 │   └── experiments/
 ├── pyproject.toml
 ├── uv.lock
@@ -114,7 +139,7 @@ TrustBench currently uses **CIFAR-10**, a standard image classification dataset 
 
 - 60,000 RGB images.
 - 10 object categories.
-- 50,000 training images.
+- 50,000 training images (with a 5,000-image held-out validation split for calibration/temperature fitting).
 - 10,000 test images.
 - Original image resolution of 32 × 32 pixels.
 
@@ -139,19 +164,19 @@ TrustBench evaluates model performance under four controlled image corruptions, 
 
 ### Supported Corruptions
 
-| Corruption | Description | Parameter |
-|---|---|---|
-| Gaussian Noise | Adds zero-mean Gaussian noise to pixel intensities | σ |
-| Gaussian Blur | Removes high-frequency image details | σ |
-| Brightness | Simulates changes in image illumination | Multiplier |
-| Occlusion | Masks a portion of the input image | Area fraction |
+| Corruption | Description | Parameter | Unit |
+|---|---|---|---|
+| Gaussian Noise | Adds zero-mean Gaussian noise to pixel intensities | σ | Fractional intensity standard deviation in [0, 1] |
+| Gaussian Blur | Removes high-frequency details via Gaussian filter | σ | Kernel standard deviation in pixels |
+| Brightness | Simulates changes in image illumination | Factor | Luminance multiplier |
+| Occlusion | Masks a centered rectangular patch with zero | Area fraction | Percentage of total image area |
 
 ### Corruption Configuration
 
 | Corruption | Severity 1 | Severity 2 | Severity 3 |
 |---|---:|---:|---:|
-| Gaussian Noise | 0.03 | 0.08 | 0.15 |
-| Gaussian Blur | 0.5 | 1.0 | 1.5 |
+| Gaussian Noise | $\sigma = 0.03$ | $\sigma = 0.08$ | $\sigma = 0.15$ |
+| Gaussian Blur | $\sigma = 0.5$ px | $\sigma = 1.0$ px | $\sigma = 1.5$ px |
 | Brightness | 0.8× | 0.6× | 0.4× |
 | Occlusion | 10% | 20% | 30% |
 
@@ -173,7 +198,7 @@ xychart-beta
 
 ### 2. Accuracy vs. Mean Confidence
 
-This comparison demonstrates the difference between actual correctness and predicted confidence.
+This comparison demonstrates the divergence between actual correctness and predicted confidence under shift.
 
 ```mermaid
 xychart-beta
@@ -207,7 +232,7 @@ Series order:
 
 ### Robustness Benchmark Results
 
-| Condition | Accuracy | Macro-F1 | Brier | ECE |
+| Condition | Accuracy | Macro-F1 | Brier Score | ECE |
 |---|---:|---:|---:|---:|
 | Clean | 95.39% | 0.9539 | 0.0754 | 0.0262 |
 | Noise S1 | 87.65% | 0.8763 | 0.1947 | 0.0707 |
@@ -223,86 +248,52 @@ Series order:
 | Occlusion S2 | 62.89% | 0.6210 | 0.5922 | 0.2362 |
 | Occlusion S3 | 43.25% | 0.3893 | 0.8743 | 0.3568 |
 
-### Initial Findings
+### Research Observations
 
-**1. Sensitivity to Gaussian noise and blur**
+1. **Resolution Sensitivity & Gaussian Blur:** At CIFAR-10's small native resolution ($32 \times 32$), a blur radius of $\sigma=0.5$ px preserves sharp edges (mean pixel shift $3.79$, accuracy $93.94\%$). However, at $\sigma=1.0$ px, the Gaussian filter kernel standard deviation spans over $3\%$ of the entire image width, destroying diagnostic spatial frequencies (mean shift $10.59$, accuracy $38.74\%$).
+2. **Resilience to Luminance Shifts:** Brightness reduction exhibits minimal degradation ($90.63\%$ accuracy even under severe $0.4\times$ darkening).
+3. **Severe Overconfidence Under Corruption:** Under Gaussian noise severity 3, accuracy drops to $16.99\%$, yet the model retains an average confidence of $78.46\%$, driving ECE from $0.0262$ up to $0.6147$.
 
-The model experiences substantial performance degradation under severe noise and blur.
-
-- Gaussian noise reduces accuracy from 95.39% to 16.99%.
-- Gaussian blur reduces accuracy from 95.39% to 18.68%.
-
-**2. Relative resilience to brightness changes**
-
-Brightness corruption produces comparatively smaller degradation, with 90.63% accuracy at severity 3.
-
-**3. Overconfidence under distribution shift**
-
-Under Gaussian noise severity 3:
-
-- Accuracy: 16.99%
-- Mean confidence: 78.46%
-- ECE: 0.6147
-
-This demonstrates that high prediction confidence does not necessarily indicate reliable predictions under corrupted inputs.
+---
 
 ## Uncertainty and Error Detection
 
-TrustBench implements two uncertainty estimation approaches.
+TrustBench evaluates four uncertainty quantification approaches:
 
-### Maximum Softmax Probability (MSP)
+1. **Maximum Softmax Probability (MSP):** $MSP(x) = \max_c P(y=c \mid x)$.
+2. **Predictive Shannon Entropy:** $H(p) = -\sum_c p_c \log p_c$.
+3. **Temperature-Scaled Probability:** $P(y=c \mid x; T) = \text{softmax}(z / T)$, with $T=0.4304$ calibrated on a held-out 5,000-sample validation split via NLL minimization.
+4. **Free Energy Score:** $E(x; T) = -T \log \sum_c \exp(z_c / T)$, measuring unnormalized logit volume.
 
-Measures the highest predicted class probability:
+### Error Detection AUROC Across All 13 Conditions
 
-\[
-MSP(x)=\max_c P(y=c\mid x)
-\]
+AUROC measures the capability of uncertainty scores to rank incorrect predictions above correct ones:
 
-Lower maximum probability indicates greater predictive uncertainty.
+| Condition | Errors / 10k | MSP AUROC | Entropy AUROC | Temperature AUROC ($T=0.4304$) | Energy Score AUROC |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Clean** | 461 | **0.9330** | 0.9318 | 0.9298 | 0.9151 |
+| **Gaussian Noise S1** | 1,235 | 0.8981 | **0.8986** | 0.8923 | 0.8903 |
+| **Gaussian Noise S2** | 5,770 | 0.6884 | 0.6909 | 0.6824 | **0.6946** |
+| **Gaussian Noise S3** | 8,301 | 0.5931 | 0.5911 | **0.5936** | **0.5936** |
+| **Gaussian Blur S1** | 606 | **0.9205** | 0.9195 | 0.9186 | 0.9029 |
+| **Gaussian Blur S2** | 6,126 | 0.6767 | **0.6792** | 0.6722 | 0.6762 |
+| **Gaussian Blur S3** | 8,132 | 0.6032 | **0.6057** | 0.6008 | 0.6032 |
+| **Brightness S1** | 482 | **0.9290** | 0.9278 | 0.9246 | 0.9100 |
+| **Brightness S2** | 581 | 0.9178 | 0.9169 | **0.9195** | 0.8992 |
+| **Brightness S3** | 937 | **0.8870** | 0.8862 | 0.8860 | 0.8693 |
+| **Occlusion S1** | 1,875 | 0.8516 | **0.8524** | 0.8473 | 0.8449 |
+| **Occlusion S2** | 3,711 | 0.7738 | **0.7772** | 0.7664 | 0.7748 |
+| **Occlusion S3** | 5,675 | 0.7402 | 0.7452 | 0.7317 | **0.7480** |
 
-### Predictive Entropy
+*Takeaway: Under mild shift and clean data, MSP and Predictive Entropy offer superior error identification ($\sim 0.90 - 0.93$ AUROC). Under severe distribution shift where error counts exceed $50\%$, Predictive Entropy and Energy scores preserve slightly higher discrimination.*
 
-Measures uncertainty across the predicted class distribution:
-
-\[
-H(p)=-\sum_{c=1}^{C}p_c\log(p_c)
-\]
-
-Higher entropy indicates a more distributed probability prediction.
-
-### 4. Error Detection Performance
-
-The following chart compares the ability of MSP and predictive entropy to distinguish correct predictions from incorrect predictions.
-
-```mermaid
-xychart-beta
-    title "Error Detection AUROC"
-    x-axis ["Noise", "Blur", "Brightness", "Occlusion"]
-    y-axis "AUROC" 0 --> 1
-    bar [0.8981, 0.9205, 0.9290, 0.8516]
-    line [0.8986, 0.9195, 0.9278, 0.8524]
-```
-
-*Bars represent MSP AUROC; the line represents entropy AUROC.*
-
-| Condition | MSP AUROC | Entropy AUROC |
-|---|---:|---:|
-| Gaussian Noise S1 | 0.8981 | 0.8986 |
-| Gaussian Blur S1 | 0.9205 | 0.9195 |
-| Brightness S1 | 0.9290 | 0.9278 |
-| Occlusion S1 | 0.8516 | 0.8524 |
-
-These results indicate that both confidence and entropy can distinguish correct from incorrect predictions to varying degrees under the tested corruptions.
+---
 
 ## Selective Prediction
 
-TrustBench implements confidence-based abstention.
+TrustBench implements confidence-based abstention. The model refuses to predict below a confidence threshold, providing a risk-coverage curve:
 
-Instead of forcing a prediction for every input, the system can reject uncertain predictions and retain only those exceeding a confidence threshold.
-
-### 5. Risk-Coverage Analysis
-
-Results for Gaussian Noise Severity 1:
+### Risk-Coverage Analysis (Gaussian Noise S1)
 
 ```mermaid
 xychart-beta
@@ -312,41 +303,53 @@ xychart-beta
     line [0.84, 2.13, 4.09, 7.48, 12.35]
 ```
 
-| Coverage | Retained Samples | Accuracy | Error Rate |
-|---|---:|---:|---:|
-| 100% | 10,000 | 87.65% | 12.35% |
-| 90% | 9,000 | 92.52% | 7.48% |
-| 80% | 8,000 | 95.91% | 4.09% |
-| 70% | 7,000 | 97.87% | 2.13% |
-| 50% | 5,000 | 99.16% | 0.84% |
+| Coverage | Retained Samples | MSP Threshold | Error Rate | Accuracy |
+|---|---:|---:|---:|---:|
+| 100% | 10,000 | 0.1601 | 12.35% | 87.65% |
+| 90% | 9,000 | 0.8142 | 7.48% | 92.52% |
+| 80% | 8,000 | 0.9859 | 4.09% | 95.91% |
+| 70% | 7,000 | 0.9989 | 2.13% | 97.87% |
+| 50% | 5,000 | 0.9999 | 0.84% | **99.16%** |
 
-At 50% coverage, the model achieves 99.16% accuracy on retained predictions.
+At 50% coverage, abstaining on uncertain predictions drives accuracy from $87.65\%$ to $99.16\%$ and reduces error rate to $0.84\%$.
 
-This illustrates the potential of selective prediction for reducing errors when abstention is an acceptable system behavior.
+---
 
-## Evaluation Metrics
+## Experiment Management & REST API
 
-| Metric | Purpose |
-|---|---|
-| Accuracy | Overall classification correctness |
-| Macro-F1 | Class-balanced performance |
-| Precision / Recall | Class-specific prediction quality |
-| Confusion Matrix | Classification error distribution |
-| Brier Score | Probabilistic prediction quality |
-| ECE | Confidence calibration |
-| Predictive Entropy | Predictive uncertainty |
-| MSP | Maximum predicted probability |
-| AUROC | Error-detection ranking quality |
-| AUPRC | Precision-recall performance for error detection |
-| Risk-Coverage | Selective prediction reliability |
-| AURC | Aggregate selective risk |
+TrustBench provides a persistent storage and experiment management layer using SQLite and SQLAlchemy (`artifacts/trustbench.db`).
+
+### Schema Overview
+
+- **`experiments`**: Tracks UUID, name, experiment type (`baseline`, `robustness`), execution status (`pending`, `running`, `completed`, `failed`), checkpoint SHA-256 hash, and configuration.
+- **`metrics`**: Normalizes scalar condition metrics (`accuracy`, `macro_f1`, `brier_score`, `ece`, `mean_entropy`).
+- **`artifacts`**: Indexes on-disk files (`metadata.json`, `config.json`, `metrics.json`, `predictions.npz`) and their SHA-256 checksums without storing large prediction arrays in SQLite.
+
+### REST API Endpoints
+
+Launch the API server:
+
+```bash
+uv run uvicorn trustbench.api.app:app --host 0.0.0.0 --port 8000 --reload
+```
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Health check |
+| `GET` | `/experiments` | List experiments (filter by type, status, or checkpoint SHA-256) |
+| `GET` | `/experiments/{id}` | Retrieve experiment details, metrics list, and indexed artifact paths |
+| `POST` | `/experiments/compare` | Compare metrics across multiple experiment runs and conditions |
+| `POST` | `/experiments/index-directory` | Ingest and index an existing on-disk experiment artifact folder |
+
+---
 
 ## Experiment Reproducibility
 
-Every evaluation generates a structured artifact directory.
+Every evaluation generates a structured artifact directory:
 
 ```text
 artifacts/
+├── trustbench.db
 └── experiments/
     ├── baseline_001/
     │   ├── metadata.json
@@ -370,25 +373,15 @@ artifacts/
             └── occlusion.npz
 ```
 
-Experiment metadata includes:
-
-- Experiment identifiers and timestamps.
-- Model architecture and checkpoint SHA-256.
-- Dataset and evaluation configuration.
-- Random seed.
-- Python and PyTorch versions.
-- Available CUDA device information.
-- Git commit information.
-
-The robustness experiment references checkpoint SHA-256:
+Checkpoint lineage is strictly tracked across experiments:
 
 ```text
-4ce0aa85f8f3c467a731efc188448fdb0c309852c08be6faae471df46ee1968
+SHA-256: 4ce0aa85f8f3c467a731efc188448fdb0c309852c08be6faae471df46ee1968e
 ```
 
-This establishes model checkpoint lineage across the recorded experiments.
+---
 
-## Installation
+## Installation & Usage
 
 ### Prerequisites
 
@@ -396,78 +389,60 @@ This establishes model checkpoint lineage across the recorded experiments.
 - uv
 - Git
 
-### Clone the repository
+### Setup
 
 ```bash
 git clone https://github.com/Uni-Creator/TrustBench.git
 cd TrustBench
-```
-
-### Install dependencies
-
-```bash
 uv sync
 ```
 
-### Run tests
+### Run Tests
 
 ```bash
 uv run pytest
 ```
 
-### Run lint checks
+### Run Lint Checks
 
 ```bash
 uv run ruff check src/
 ```
 
-Evaluation commands and configuration are under active development. Refer to the project configuration and CLI implementation for supported invocation.
+### Start the REST API
+
+```bash
+uv run uvicorn trustbench.api.app:app --reload
+```
+
+---
 
 ## Development Roadmap
 
-- [x] CIFAR-10 dataset integration.
-- [x] ResNet-18 baseline training.
-- [x] Independent checkpoint loading.
-- [x] Inference pipeline.
-- [x] Classification metrics.
-- [x] Calibration metrics.
-- [x] Predictive uncertainty estimation.
-- [x] Experiment artifact generation.
-- [x] Gaussian noise, blur, brightness and occlusion benchmarks.
-- [x] Multiple corruption severity levels.
-- [x] Error detection using MSP and entropy.
+- [x] CIFAR-10 dataset integration with held-out validation split.
+- [x] ResNet-18 baseline evaluation and checkpoint verification.
+- [x] Classification, calibration, and predictive entropy metrics.
+- [x] Controlled corruption benchmarks (noise, blur, brightness, occlusion) at 3 severities.
+- [x] Error detection across MSP, predictive entropy, temperature scaling, and energy scores.
 - [x] Selective prediction and risk-coverage analysis.
-- [ ] Experiment registry and persistent experiment management.
-- [ ] FastAPI backend.
-- [ ] Interactive Streamlit dashboard.
+- [x] SQLite & SQLAlchemy experiment registry and comparison engine.
+- [x] FastAPI REST API with directory indexing and run comparison.
+- [ ] Interactive Streamlit dashboard with Plotly charts.
 - [ ] Docker and Docker Compose deployment.
-- [ ] GitHub Actions CI/CD.
-- [ ] Expanded datasets and model architectures.
-- [ ] Additional distribution-shift and out-of-distribution evaluation.
+- [ ] CI/CD pipeline via GitHub Actions.
+- [ ] Expanded benchmarks (e.g. TinyImageNet, CIFAR-100) and model architectures.
 
-## Testing
+---
 
-Current verification:
+## Testing & Quality Assurance
 
-- 18 unit tests passing.
-- Ruff lint checks passing.
-- Baseline evaluation completed on 10,000 CIFAR-10 test samples.
-- Robustness evaluation completed across 12 corruption conditions.
-- Checkpoint lineage verified using SHA-256.
-
-## Research Motivation
-
-TrustBench is motivated by a fundamental limitation of conventional machine learning evaluation:
-
-**A model that performs well on a test set is not necessarily a model that can be trusted in unfamiliar conditions.**
-
-The project investigates the relationship between predictive accuracy, confidence calibration, uncertainty estimation, and robustness under controlled distribution shifts.
-
-The longer-term goal is to develop a reproducible framework that helps researchers and engineers understand not only how well a model performs, but also when and why its predictions become unreliable.
+- **24 unit and API integration tests passing.**
+- **Ruff code style and lint checks passing with zero warnings.**
+- **Lineage tracking verified using SHA-256 on checkpoint and artifact files.**
 
 ---
 
 **Status:** Active Development  
 **Current Benchmark:** CIFAR-10  
 **Baseline Architecture:** ResNet-18  
-**License:** To be specified
+**License:** MIT (or to be specified)

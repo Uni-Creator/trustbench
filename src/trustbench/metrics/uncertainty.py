@@ -1,8 +1,10 @@
-"""Uncertainty quantification metrics including predictive entropy."""
+"""Uncertainty quantification methods: MSP, Entropy, Temperature Scaling, and Energy scores."""
 
 from typing import Any
 
 import numpy as np
+from scipy.optimize import minimize
+from scipy.special import logsumexp, softmax
 
 
 def compute_predictive_entropy(
@@ -27,25 +29,90 @@ def compute_predictive_entropy(
     return entropy
 
 
+def compute_energy_scores(
+    logits: np.ndarray,
+    temperature: float = 1.0,
+) -> np.ndarray:
+    """Compute negative free energy score: E(x; T) = -T * logsumexp(logits / T).
+
+    In energy-based OOD/uncertainty detection, lower energy represents higher model certainty,
+    meaning uncertainty is directly measured by positive free energy: -E(x) = T * logsumexp(logits / T).
+
+    Args:
+        logits: 2D array of raw output logits of shape (N, C).
+        temperature: Temperature scaling factor.
+
+    Returns:
+        1D array of energy scores of shape (N,).
+    """
+    logits = np.asarray(logits, dtype=float)
+    if logits.ndim != 2:
+        raise ValueError("logits must be a 2D array of shape (N, C).")
+    # Free energy: -T * logsumexp(logits / T)
+    energy = -temperature * logsumexp(logits / temperature, axis=1)
+    return energy
+
+
+def fit_temperature(
+    val_logits: np.ndarray,
+    val_labels: np.ndarray,
+) -> float:
+    """Fit optimal temperature scalar T on a held-out validation/calibration split using NLL.
+
+    Args:
+        val_logits: 2D array of validation logits of shape (N_val, C).
+        val_labels: 1D array of validation labels of shape (N_val,).
+
+    Returns:
+        Optimal temperature T > 0.
+    """
+    val_logits = np.asarray(val_logits, dtype=float)
+    val_labels = np.asarray(val_labels, dtype=int)
+    n_samples, _n_classes = val_logits.shape
+
+    def nll_objective(t: np.ndarray) -> float:
+        temp = float(t[0])
+        scaled_logits = val_logits / temp
+        # Log-softmax
+        log_probs = scaled_logits - logsumexp(scaled_logits, axis=1, keepdims=True)
+        # NLL
+        loss = -np.mean(log_probs[np.arange(n_samples), val_labels])
+        return float(loss)
+
+    res = minimize(
+        nll_objective,
+        x0=np.array([1.5]),
+        bounds=[(0.01, 10.0)],
+        method="L-BFGS-B",
+    )
+    return float(res.x[0])
+
+
+def apply_temperature_scaling(
+    logits: np.ndarray,
+    temperature: float,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Apply temperature scaling to logits and compute calibrated probabilities and max confidence.
+
+    Args:
+        logits: 2D array of shape (N, C).
+        temperature: Scaling temperature T.
+
+    Returns:
+        Tuple of (calibrated_probabilities of shape (N, C), calibrated_max_probabilities of shape (N,)).
+    """
+    logits = np.asarray(logits, dtype=float)
+    scaled_logits = logits / temperature
+    cal_probs = softmax(scaled_logits, axis=1)
+    cal_msp = np.max(cal_probs, axis=1)
+    return cal_probs, cal_msp
+
+
 def compute_uncertainty_metrics(
     probabilities: np.ndarray,
     epsilon: float = 1e-12,
 ) -> dict[str, Any]:
-    """Compute summary metrics for prediction uncertainty.
-
-    Args:
-        probabilities: 2D array of class probabilities of shape (N, C).
-        epsilon: Small epsilon to avoid log(0).
-
-    Returns:
-        Dictionary containing:
-            - mean_entropy: Mean predictive entropy across all samples
-            - std_entropy: Standard deviation of predictive entropy
-            - min_entropy: Minimum predictive entropy
-            - max_entropy: Maximum predictive entropy
-            - median_entropy: Median predictive entropy
-            - mean_max_probability: Mean confidence (max probability)
-    """
+    """Compute summary metrics for prediction uncertainty."""
     probabilities = np.asarray(probabilities)
     if len(probabilities) == 0:
         return {
