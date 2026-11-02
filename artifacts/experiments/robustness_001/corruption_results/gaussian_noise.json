@@ -1,0 +1,1127 @@
+{
+  "severity_1": {
+    "corruption": "gaussian_noise",
+    "severity": 1,
+    "condition": "Gaussian Noise S1",
+    "classification": {
+      "accuracy": 0.8765,
+      "macro_f1": 0.8763130671750927,
+      "per_class": {
+        "plane": {
+          "precision": 0.9607329842931938,
+          "recall": 0.734,
+          "f1": 0.8321995464852607,
+          "support": 1000
+        },
+        "car": {
+          "precision": 0.9671794871794872,
+          "recall": 0.943,
+          "f1": 0.9549367088607595,
+          "support": 1000
+        },
+        "bird": {
+          "precision": 0.7642069550466497,
+          "recall": 0.901,
+          "f1": 0.8269848554382745,
+          "support": 1000
+        },
+        "cat": {
+          "precision": 0.8084656084656084,
+          "recall": 0.764,
+          "f1": 0.7856041131105398,
+          "support": 1000
+        },
+        "deer": {
+          "precision": 0.8160211267605634,
+          "recall": 0.927,
+          "f1": 0.8679775280898876,
+          "support": 1000
+        },
+        "dog": {
+          "precision": 0.910377358490566,
+          "recall": 0.772,
+          "f1": 0.8354978354978355,
+          "support": 1000
+        },
+        "frog": {
+          "precision": 0.7859450726978998,
+          "recall": 0.973,
+          "f1": 0.8695263628239499,
+          "support": 1000
+        },
+        "horse": {
+          "precision": 0.9819004524886877,
+          "recall": 0.868,
+          "f1": 0.921443736730361,
+          "support": 1000
+        },
+        "ship": {
+          "precision": 0.8997134670487106,
+          "recall": 0.942,
+          "f1": 0.920371275036639,
+          "support": 1000
+        },
+        "truck": {
+          "precision": 0.9563008130081301,
+          "recall": 0.941,
+          "f1": 0.9485887096774194,
+          "support": 1000
+        }
+      },
+      "confusion_matrix": [
+        [
+          734,
+          5,
+          77,
+          31,
+          40,
+          2,
+          31,
+          4,
+          70,
+          6
+        ],
+        [
+          2,
+          943,
+          4,
+          0,
+          1,
+          0,
+          15,
+          0,
+          10,
+          25
+        ],
+        [
+          7,
+          0,
+          901,
+          18,
+          26,
+          12,
+          33,
+          1,
+          1,
+          1
+        ],
+        [
+          2,
+          2,
+          59,
+          764,
+          41,
+          45,
+          78,
+          2,
+          4,
+          3
+        ],
+        [
+          0,
+          0,
+          24,
+          16,
+          927,
+          4,
+          27,
+          2,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          55,
+          82,
+          37,
+          772,
+          43,
+          7,
+          2,
+          0
+        ],
+        [
+          2,
+          0,
+          9,
+          7,
+          8,
+          1,
+          973,
+          0,
+          0,
+          0
+        ],
+        [
+          5,
+          0,
+          24,
+          21,
+          50,
+          11,
+          15,
+          868,
+          3,
+          3
+        ],
+        [
+          8,
+          6,
+          21,
+          2,
+          4,
+          0,
+          12,
+          0,
+          942,
+          5
+        ],
+        [
+          2,
+          19,
+          5,
+          4,
+          2,
+          1,
+          11,
+          0,
+          15,
+          941
+        ]
+      ]
+    },
+    "calibration": {
+      "brier_score": 0.19469328224658966,
+      "ece": 0.07071055257320405,
+      "bin_confidences": [
+        0.0,
+        0.0,
+        0.0,
+        0.24479573965072632,
+        0.30458757281303406,
+        0.3683030903339386,
+        0.43435922265052795,
+        0.5024709701538086,
+        0.5666100382804871,
+        0.634891927242279,
+        0.7020578980445862,
+        0.7667235136032104,
+        0.8360104560852051,
+        0.9035417437553406,
+        0.9946639537811279
+      ],
+      "bin_accuracies": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.36363636363636365,
+        0.30434782608695654,
+        0.3387096774193548,
+        0.4240506329113924,
+        0.4226190476190476,
+        0.423728813559322,
+        0.4946236559139785,
+        0.4928909952606635,
+        0.5601503759398496,
+        0.6572769953051644,
+        0.9526341227646206
+      ],
+      "bin_counts": [
+        0,
+        0,
+        0,
+        2,
+        22,
+        46,
+        62,
+        158,
+        168,
+        177,
+        186,
+        211,
+        266,
+        426,
+        8276
+      ]
+    },
+    "uncertainty": {
+      "mean_entropy": 0.1619635671377182,
+      "std_entropy": 0.31820717453956604,
+      "min_entropy": 0.0003872540546581149,
+      "max_entropy": 1.9122308492660522,
+      "median_entropy": 0.012968610972166061,
+      "mean_max_probability": 0.9469507932662964
+    },
+    "error_detection": {
+      "error_count": 1235,
+      "total_samples": 10000,
+      "error_rate": 0.1235,
+      "max_softmax_probability": {
+        "auroc": 0.8981329865978738,
+        "auprc": 0.5220940274443877,
+        "highest_confidence_error_rate": 0.002,
+        "lowest_confidence_error_rate": 0.562
+      },
+      "predictive_entropy": {
+        "auroc": 0.8985762752574533,
+        "auprc": 0.5268409797451837,
+        "highest_confidence_error_rate": 0.002,
+        "lowest_confidence_error_rate": 0.556
+      }
+    },
+    "selective_prediction": {
+      "max_softmax_probability": {
+        "curve": [
+          {
+            "coverage": 1.0,
+            "retained_fraction": 1.0,
+            "samples_retained": 10000,
+            "threshold": 0.24181249737739563,
+            "error_rate": 0.1235,
+            "accuracy": 0.8765000000000001
+          },
+          {
+            "coverage": 0.9,
+            "retained_fraction": 0.9,
+            "samples_retained": 9000,
+            "threshold": 0.7905449867248535,
+            "error_rate": 0.07477777777777778,
+            "accuracy": 0.9252222222222222
+          },
+          {
+            "coverage": 0.8,
+            "retained_fraction": 0.8,
+            "samples_retained": 8000,
+            "threshold": 0.9588603377342224,
+            "error_rate": 0.040875,
+            "accuracy": 0.959125
+          },
+          {
+            "coverage": 0.7,
+            "retained_fraction": 0.7,
+            "samples_retained": 7000,
+            "threshold": 0.9916664958000183,
+            "error_rate": 0.021285714285714286,
+            "accuracy": 0.9787142857142858
+          },
+          {
+            "coverage": 0.5,
+            "retained_fraction": 0.5,
+            "samples_retained": 5000,
+            "threshold": 0.9986279010772705,
+            "error_rate": 0.0084,
+            "accuracy": 0.9916
+          }
+        ],
+        "aurc": 0.023225226761290484
+      },
+      "predictive_entropy": {
+        "curve": [
+          {
+            "coverage": 1.0,
+            "retained_fraction": 1.0,
+            "samples_retained": 10000,
+            "threshold": -1.9122308492660522,
+            "error_rate": 0.1235,
+            "accuracy": 0.8765000000000001
+          },
+          {
+            "coverage": 0.9,
+            "retained_fraction": 0.9,
+            "samples_retained": 9000,
+            "threshold": -0.6620983481407166,
+            "error_rate": 0.07544444444444444,
+            "accuracy": 0.9245555555555556
+          },
+          {
+            "coverage": 0.8,
+            "retained_fraction": 0.8,
+            "samples_retained": 8000,
+            "threshold": -0.21436503529548645,
+            "error_rate": 0.041,
+            "accuracy": 0.959
+          },
+          {
+            "coverage": 0.7,
+            "retained_fraction": 0.7,
+            "samples_retained": 7000,
+            "threshold": -0.05957814306020737,
+            "error_rate": 0.02142857142857143,
+            "accuracy": 0.9785714285714285
+          },
+          {
+            "coverage": 0.5,
+            "retained_fraction": 0.5,
+            "samples_retained": 5000,
+            "threshold": -0.01296292059123516,
+            "error_rate": 0.0084,
+            "accuracy": 0.9916
+          }
+        ],
+        "aurc": 0.02324280292575188
+      }
+    },
+    "summary": {
+      "condition": "Gaussian Noise S1",
+      "accuracy": 0.8765,
+      "macro_f1": 0.8763130671750927,
+      "brier_score": 0.19469328224658966,
+      "ece": 0.07071055257320405,
+      "mean_entropy": 0.1619635671377182,
+      "mean_max_probability": 0.9469507932662964,
+      "total_samples": 10000
+    }
+  },
+  "severity_2": {
+    "corruption": "gaussian_noise",
+    "severity": 2,
+    "condition": "Gaussian Noise S2",
+    "classification": {
+      "accuracy": 0.423,
+      "macro_f1": 0.4360793474212386,
+      "per_class": {
+        "plane": {
+          "precision": 0.8840970350404312,
+          "recall": 0.328,
+          "f1": 0.4784828592268417,
+          "support": 1000
+        },
+        "car": {
+          "precision": 0.9061946902654867,
+          "recall": 0.512,
+          "f1": 0.6543130990415336,
+          "support": 1000
+        },
+        "bird": {
+          "precision": 0.3252190847127556,
+          "recall": 0.668,
+          "f1": 0.43745907007203666,
+          "support": 1000
+        },
+        "cat": {
+          "precision": 0.5425867507886435,
+          "recall": 0.172,
+          "f1": 0.2611996962794229,
+          "support": 1000
+        },
+        "deer": {
+          "precision": 0.6050552922590837,
+          "recall": 0.383,
+          "f1": 0.46907532149418246,
+          "support": 1000
+        },
+        "dog": {
+          "precision": 0.8852459016393442,
+          "recall": 0.108,
+          "f1": 0.1925133689839572,
+          "support": 1000
+        },
+        "frog": {
+          "precision": 0.2037985488689714,
+          "recall": 0.955,
+          "f1": 0.3359127682026029,
+          "support": 1000
+        },
+        "horse": {
+          "precision": 0.9914529914529915,
+          "recall": 0.232,
+          "f1": 0.3760129659643436,
+          "support": 1000
+        },
+        "ship": {
+          "precision": 0.8330097087378641,
+          "recall": 0.429,
+          "f1": 0.5663366336633663,
+          "support": 1000
+        },
+        "truck": {
+          "precision": 0.8807157057654076,
+          "recall": 0.443,
+          "f1": 0.5894876912840985,
+          "support": 1000
+        }
+      },
+      "confusion_matrix": [
+        [
+          328,
+          8,
+          219,
+          18,
+          12,
+          1,
+          371,
+          1,
+          36,
+          6
+        ],
+        [
+          3,
+          512,
+          29,
+          1,
+          0,
+          0,
+          406,
+          0,
+          14,
+          35
+        ],
+        [
+          6,
+          2,
+          668,
+          10,
+          14,
+          3,
+          295,
+          0,
+          0,
+          2
+        ],
+        [
+          4,
+          5,
+          193,
+          172,
+          56,
+          4,
+          556,
+          1,
+          8,
+          1
+        ],
+        [
+          1,
+          1,
+          182,
+          6,
+          383,
+          0,
+          426,
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          2,
+          247,
+          77,
+          43,
+          108,
+          516,
+          0,
+          4,
+          2
+        ],
+        [
+          0,
+          0,
+          31,
+          3,
+          11,
+          0,
+          955,
+          0,
+          0,
+          0
+        ],
+        [
+          5,
+          2,
+          250,
+          18,
+          104,
+          4,
+          376,
+          232,
+          4,
+          5
+        ],
+        [
+          17,
+          10,
+          148,
+          8,
+          7,
+          1,
+          371,
+          0,
+          429,
+          9
+        ],
+        [
+          6,
+          23,
+          87,
+          4,
+          3,
+          1,
+          414,
+          0,
+          19,
+          443
+        ]
+      ]
+    },
+    "calibration": {
+      "brier_score": 0.9617534875869751,
+      "ece": 0.4281089503526688,
+      "bin_confidences": [
+        0.0,
+        0.0,
+        0.0,
+        0.246687114238739,
+        0.3107558488845825,
+        0.37387266755104065,
+        0.4371024966239929,
+        0.5017046928405762,
+        0.5650139451026917,
+        0.6333157420158386,
+        0.6995704174041748,
+        0.7671933770179749,
+        0.8346848487854004,
+        0.9031052589416504,
+        0.9855031371116638
+      ],
+      "bin_accuracies": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1276595744680851,
+        0.2565789473684211,
+        0.24372759856630824,
+        0.2648305084745763,
+        0.27896995708154504,
+        0.2968127490039841,
+        0.29844961240310075,
+        0.2795138888888889,
+        0.29685157421289354,
+        0.32625482625482627,
+        0.5421481341163099
+      ],
+      "bin_counts": [
+        0,
+        0,
+        0,
+        8,
+        47,
+        152,
+        279,
+        472,
+        466,
+        502,
+        516,
+        576,
+        667,
+        1036,
+        5279
+      ]
+    },
+    "uncertainty": {
+      "mean_entropy": 0.4420144557952881,
+      "std_entropy": 0.44868844747543335,
+      "min_entropy": 0.0006061460007913411,
+      "max_entropy": 1.9509917497634888,
+      "median_entropy": 0.27299076318740845,
+      "mean_max_probability": 0.851108968257904
+    },
+    "error_detection": {
+      "error_count": 5770,
+      "total_samples": 10000,
+      "error_rate": 0.577,
+      "max_softmax_probability": {
+        "auroc": 0.6883579573156993,
+        "auprc": 0.7115188831238044,
+        "highest_confidence_error_rate": 0.163,
+        "lowest_confidence_error_rate": 0.754
+      },
+      "predictive_entropy": {
+        "auroc": 0.690874724977568,
+        "auprc": 0.7164684963816785,
+        "highest_confidence_error_rate": 0.162,
+        "lowest_confidence_error_rate": 0.767
+      }
+    },
+    "selective_prediction": {
+      "max_softmax_probability": {
+        "curve": [
+          {
+            "coverage": 1.0,
+            "retained_fraction": 1.0,
+            "samples_retained": 10000,
+            "threshold": 0.22308136522769928,
+            "error_rate": 0.577,
+            "accuracy": 0.42300000000000004
+          },
+          {
+            "coverage": 0.9,
+            "retained_fraction": 0.9,
+            "samples_retained": 9000,
+            "threshold": 0.5392455458641052,
+            "error_rate": 0.5573333333333333,
+            "accuracy": 0.44266666666666665
+          },
+          {
+            "coverage": 0.8,
+            "retained_fraction": 0.8,
+            "samples_retained": 8000,
+            "threshold": 0.6763758063316345,
+            "error_rate": 0.5385,
+            "accuracy": 0.4615
+          },
+          {
+            "coverage": 0.7,
+            "retained_fraction": 0.7,
+            "samples_retained": 7000,
+            "threshold": 0.7978344559669495,
+            "error_rate": 0.514,
+            "accuracy": 0.486
+          },
+          {
+            "coverage": 0.5,
+            "retained_fraction": 0.5,
+            "samples_retained": 5000,
+            "threshold": 0.9461182355880737,
+            "error_rate": 0.447,
+            "accuracy": 0.5529999999999999
+          }
+        ],
+        "aurc": 0.40544105474194037
+      },
+      "predictive_entropy": {
+        "curve": [
+          {
+            "coverage": 1.0,
+            "retained_fraction": 1.0,
+            "samples_retained": 10000,
+            "threshold": -1.9509917497634888,
+            "error_rate": 0.577,
+            "accuracy": 0.42300000000000004
+          },
+          {
+            "coverage": 0.9,
+            "retained_fraction": 0.9,
+            "samples_retained": 9000,
+            "threshold": -1.130094289779663,
+            "error_rate": 0.5558888888888889,
+            "accuracy": 0.4441111111111111
+          },
+          {
+            "coverage": 0.8,
+            "retained_fraction": 0.8,
+            "samples_retained": 8000,
+            "threshold": -0.8827223777770996,
+            "error_rate": 0.5355,
+            "accuracy": 0.4645
+          },
+          {
+            "coverage": 0.7,
+            "retained_fraction": 0.7,
+            "samples_retained": 7000,
+            "threshold": -0.6819143295288086,
+            "error_rate": 0.5144285714285715,
+            "accuracy": 0.48557142857142854
+          },
+          {
+            "coverage": 0.5,
+            "retained_fraction": 0.5,
+            "samples_retained": 5000,
+            "threshold": -0.2729652225971222,
+            "error_rate": 0.4458,
+            "accuracy": 0.5542
+          }
+        ],
+        "aurc": 0.40452039867539935
+      }
+    },
+    "summary": {
+      "condition": "Gaussian Noise S2",
+      "accuracy": 0.423,
+      "macro_f1": 0.4360793474212386,
+      "brier_score": 0.9617534875869751,
+      "ece": 0.4281089503526688,
+      "mean_entropy": 0.4420144557952881,
+      "mean_max_probability": 0.851108968257904,
+      "total_samples": 10000
+    }
+  },
+  "severity_3": {
+    "corruption": "gaussian_noise",
+    "severity": 3,
+    "condition": "Gaussian Noise S3",
+    "classification": {
+      "accuracy": 0.1699,
+      "macro_f1": 0.1133795523880331,
+      "per_class": {
+        "plane": {
+          "precision": 0.6496350364963503,
+          "recall": 0.089,
+          "f1": 0.1565523306948109,
+          "support": 1000
+        },
+        "car": {
+          "precision": 0.6988636363636364,
+          "recall": 0.123,
+          "f1": 0.20918367346938777,
+          "support": 1000
+        },
+        "bird": {
+          "precision": 0.14875,
+          "recall": 0.476,
+          "f1": 0.22666666666666666,
+          "support": 1000
+        },
+        "cat": {
+          "precision": 0.2052980132450331,
+          "recall": 0.031,
+          "f1": 0.05386620330147698,
+          "support": 1000
+        },
+        "deer": {
+          "precision": 0.5087719298245614,
+          "recall": 0.029,
+          "f1": 0.05487228003784295,
+          "support": 1000
+        },
+        "dog": {
+          "precision": 1.0,
+          "recall": 0.002,
+          "f1": 0.003992015968063872,
+          "support": 1000
+        },
+        "frog": {
+          "precision": 0.13838847035702587,
+          "recall": 0.845,
+          "f1": 0.23782718829158458,
+          "support": 1000
+        },
+        "horse": {
+          "precision": 1.0,
+          "recall": 0.003,
+          "f1": 0.005982053838484547,
+          "support": 1000
+        },
+        "ship": {
+          "precision": 0.5789473684210527,
+          "recall": 0.033,
+          "f1": 0.06244087038789026,
+          "support": 1000
+        },
+        "truck": {
+          "precision": 0.6126126126126126,
+          "recall": 0.068,
+          "f1": 0.1224122412241224,
+          "support": 1000
+        }
+      },
+      "confusion_matrix": [
+        [
+          89,
+          6,
+          364,
+          8,
+          2,
+          0,
+          519,
+          0,
+          9,
+          3
+        ],
+        [
+          1,
+          123,
+          170,
+          3,
+          0,
+          0,
+          686,
+          0,
+          2,
+          15
+        ],
+        [
+          8,
+          3,
+          476,
+          25,
+          8,
+          0,
+          476,
+          0,
+          1,
+          3
+        ],
+        [
+          3,
+          7,
+          338,
+          31,
+          4,
+          0,
+          610,
+          0,
+          3,
+          4
+        ],
+        [
+          3,
+          2,
+          354,
+          18,
+          29,
+          0,
+          593,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          7,
+          378,
+          41,
+          2,
+          2,
+          568,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          133,
+          13,
+          6,
+          0,
+          845,
+          0,
+          2,
+          1
+        ],
+        [
+          6,
+          7,
+          437,
+          7,
+          5,
+          0,
+          533,
+          3,
+          1,
+          1
+        ],
+        [
+          20,
+          7,
+          319,
+          3,
+          1,
+          0,
+          602,
+          0,
+          33,
+          15
+        ],
+        [
+          6,
+          14,
+          231,
+          2,
+          0,
+          0,
+          674,
+          0,
+          5,
+          68
+        ]
+      ]
+    },
+    "calibration": {
+      "brier_score": 1.3569852113723755,
+      "ece": 0.6146852040022611,
+      "bin_confidences": [
+        0.0,
+        0.0,
+        0.0,
+        0.25024285912513733,
+        0.30544862151145935,
+        0.36975032091140747,
+        0.4363590478897095,
+        0.5012397170066833,
+        0.5658596158027649,
+        0.6335965394973755,
+        0.7001579403877258,
+        0.7682509422302246,
+        0.8351871967315674,
+        0.901323676109314,
+        0.9753831028938293
+      ],
+      "bin_accuracies": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.13333333333333333,
+        0.16585365853658537,
+        0.12602739726027398,
+        0.12571428571428572,
+        0.152317880794702,
+        0.1009421265141319,
+        0.14556962025316456,
+        0.14418604651162792,
+        0.14341846758349705,
+        0.16131441374159822,
+        0.2321882951653944
+      ],
+      "bin_counts": [
+        0,
+        0,
+        0,
+        6,
+        75,
+        205,
+        365,
+        700,
+        755,
+        743,
+        790,
+        860,
+        1018,
+        1339,
+        3144
+      ]
+    },
+    "uncertainty": {
+      "mean_entropy": 0.6224209070205688,
+      "std_entropy": 0.42966750264167786,
+      "min_entropy": 0.000952299393247813,
+      "max_entropy": 1.9544918537139893,
+      "median_entropy": 0.6025587320327759,
+      "mean_max_probability": 0.784585177898407
+    },
+    "error_detection": {
+      "error_count": 8301,
+      "total_samples": 10000,
+      "error_rate": 0.8301,
+      "max_softmax_probability": {
+        "auroc": 0.5930567163277449,
+        "auprc": 0.8605455353764419,
+        "highest_confidence_error_rate": 0.674,
+        "lowest_confidence_error_rate": 0.869
+      },
+      "predictive_entropy": {
+        "auroc": 0.5910640761138504,
+        "auprc": 0.8599034451058086,
+        "highest_confidence_error_rate": 0.671,
+        "lowest_confidence_error_rate": 0.855
+      }
+    },
+    "selective_prediction": {
+      "max_softmax_probability": {
+        "curve": [
+          {
+            "coverage": 1.0,
+            "retained_fraction": 1.0,
+            "samples_retained": 10000,
+            "threshold": 0.229811429977417,
+            "error_rate": 0.8301,
+            "accuracy": 0.16990000000000005
+          },
+          {
+            "coverage": 0.9,
+            "retained_fraction": 0.9,
+            "samples_retained": 9000,
+            "threshold": 0.4999403953552246,
+            "error_rate": 0.8257777777777778,
+            "accuracy": 0.17422222222222217
+          },
+          {
+            "coverage": 0.8,
+            "retained_fraction": 0.8,
+            "samples_retained": 8000,
+            "threshold": 0.5899126529693604,
+            "error_rate": 0.8225,
+            "accuracy": 0.1775
+          },
+          {
+            "coverage": 0.7,
+            "retained_fraction": 0.7,
+            "samples_retained": 7000,
+            "threshold": 0.6815022230148315,
+            "error_rate": 0.8121428571428572,
+            "accuracy": 0.18785714285714283
+          },
+          {
+            "coverage": 0.5,
+            "retained_fraction": 0.5,
+            "samples_retained": 5000,
+            "threshold": 0.8357833623886108,
+            "error_rate": 0.797,
+            "accuracy": 0.20299999999999996
+          }
+        ],
+        "aurc": 0.7656135141199415
+      },
+      "predictive_entropy": {
+        "curve": [
+          {
+            "coverage": 1.0,
+            "retained_fraction": 1.0,
+            "samples_retained": 10000,
+            "threshold": -1.9544918537139893,
+            "error_rate": 0.8301,
+            "accuracy": 0.16990000000000005
+          },
+          {
+            "coverage": 0.9,
+            "retained_fraction": 0.9,
+            "samples_retained": 9000,
+            "threshold": -1.225217342376709,
+            "error_rate": 0.8273333333333334,
+            "accuracy": 0.17266666666666663
+          },
+          {
+            "coverage": 0.8,
+            "retained_fraction": 0.8,
+            "samples_retained": 8000,
+            "threshold": -1.0132557153701782,
+            "error_rate": 0.82175,
+            "accuracy": 0.17825000000000002
+          },
+          {
+            "coverage": 0.7,
+            "retained_fraction": 0.7,
+            "samples_retained": 7000,
+            "threshold": -0.8662084937095642,
+            "error_rate": 0.816,
+            "accuracy": 0.18400000000000005
+          },
+          {
+            "coverage": 0.5,
+            "retained_fraction": 0.5,
+            "samples_retained": 5000,
+            "threshold": -0.6025145053863525,
+            "error_rate": 0.7972,
+            "accuracy": 0.20279999999999998
+          }
+        ],
+        "aurc": 0.765858825897787
+      }
+    },
+    "summary": {
+      "condition": "Gaussian Noise S3",
+      "accuracy": 0.1699,
+      "macro_f1": 0.1133795523880331,
+      "brier_score": 1.3569852113723755,
+      "ece": 0.6146852040022611,
+      "mean_entropy": 0.6224209070205688,
+      "mean_max_probability": 0.784585177898407,
+      "total_samples": 10000
+    }
+  }
+}

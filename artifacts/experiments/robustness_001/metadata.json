@@ -1,0 +1,14 @@
+{
+  "experiment_id": "robustness_001",
+  "created_at": "2026-11-02T22:19:07.419824+00:00",
+  "checkpoint_sha256": "9dbef7db33246168d88315dcb9b62d61a29839c738ff7dd4d3a851d25e8faa75",
+  "baseline_experiment_ref": "artifacts/experiments/baseline_001",
+  "environment": {
+    "python_version": "3.11.16",
+    "torch_version": "2.14.1+cu130",
+    "cuda_available": "True",
+    "cuda_device_name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "os": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+    "git_commit": "30b344ff3f09e4c10a39e6307c552910f1d9c4fa"
+  }
+}
