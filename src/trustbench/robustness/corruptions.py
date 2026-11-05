@@ -2,16 +2,16 @@
 
 import io
 import math
+from typing import Any
 
 import numpy as np
-import torch
-import torchvision.transforms.functional as TF
 from PIL import Image, ImageEnhance, ImageFilter
 from scipy.ndimage import convolve
-from torch.utils.data import Dataset
 
-from trustbench.datasets.cifar10 import CIFAR10_MEAN, CIFAR10_STD
 from trustbench.robustness.severity import get_severity_config
+
+CIFAR10_MEAN = (0.4914, 0.4822, 0.4465)
+CIFAR10_STD = (0.2023, 0.1994, 0.2010)
 
 
 def apply_gaussian_noise(
@@ -329,6 +329,12 @@ def corrupt_pil_image(
     Returns:
         Corrupted PIL Image.
     """
+    from trustbench.registry.corruptions import CORRUPTION_REGISTRY
+
+    custom = CORRUPTION_REGISTRY.get(corruption_type)
+    if custom is not None:
+        return custom.apply(image, severity, seed=sample_seed)
+
     cfg = get_severity_config(corruption_type, severity)
     param = cfg.param_value
 
@@ -360,7 +366,7 @@ def corrupt_pil_image(
     raise ValueError(f"Unsupported corruption type: {corruption_type}")
 
 
-class CorruptedDataset(Dataset):
+class CorruptedDataset:
     """Wraps an existing dataset to apply image corruptions deterministically before normalization.
 
     Maintains identical sample IDs and original targets.
@@ -368,7 +374,7 @@ class CorruptedDataset(Dataset):
 
     def __init__(
         self,
-        base_dataset: Dataset,
+        base_dataset: Any,
         corruption_type: str,
         severity: int,
         base_seed: int = 42,
@@ -385,7 +391,10 @@ class CorruptedDataset(Dataset):
     def __len__(self) -> int:
         return len(self.base_dataset)  # type: ignore
 
-    def __getitem__(self, idx: int) -> tuple[int, torch.Tensor, int]:
+    def __getitem__(self, idx: int) -> tuple[int, Any, int]:
+        import torch
+        import torchvision.transforms.functional as TF
+
         raw_item = self.base_dataset[idx]
         if isinstance(raw_item, tuple):
             img, target = raw_item[0], raw_item[1]

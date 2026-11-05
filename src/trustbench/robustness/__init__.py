@@ -17,7 +17,6 @@ from trustbench.robustness.corruptions import (
     apply_shot_noise,
     corrupt_pil_image,
 )
-from trustbench.robustness.evaluator import RobustnessEvaluator
 from trustbench.robustness.report import (
     format_robustness_markdown_table,
     format_selective_markdown_table,
@@ -56,3 +55,16 @@ __all__ = [
     "get_severity_config",
     "serialize_severities",
 ]
+
+
+def __getattr__(name: str):
+    """Lazily load PyTorch-dependent RobustnessEvaluator."""
+    if name == "RobustnessEvaluator":
+        from trustbench.robustness.evaluator import RobustnessEvaluator
+
+        return RobustnessEvaluator
+    if name == "compute_file_sha256":
+        from trustbench.reporting.hashing import compute_file_sha256
+
+        return compute_file_sha256
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

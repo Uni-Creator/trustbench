@@ -37,3 +37,20 @@ class EvaluationResult:
         if self.probabilities is not None:
             payload["probabilities"] = self.probabilities
         return payload
+
+    def save(
+        self,
+        output_dir: str | Any,
+        *,
+        experiment_name: str = "unnamed",
+        extra_metadata: dict[str, Any] | None = None,
+    ) -> Any:
+        """Persist evaluation result artifacts to output_dir."""
+        from trustbench.reporting.result_io import save_result
+
+        return save_result(
+            self,
+            output_dir=output_dir,
+            experiment_name=experiment_name,
+            extra_metadata=extra_metadata,
+        )

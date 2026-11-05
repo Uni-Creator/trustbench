@@ -487,6 +487,17 @@ def get_severity_config(corruption_type: str, severity: int) -> SeverityConfig:
     Returns:
         SeverityConfig instance.
     """
+    from trustbench.registry.corruptions import CORRUPTION_REGISTRY
+
+    custom = CORRUPTION_REGISTRY.get(corruption_type)
+    if custom is not None:
+        if severity not in custom.severities:
+            raise ValueError(
+                f"Invalid severity {severity} for custom corruption {corruption_type}. "
+                f"Available: {sorted(custom.severities.keys())}"
+            )
+        return custom.severities[severity]
+
     if corruption_type not in CORRUPTION_SEVERITIES:
         raise ValueError(
             f"Unknown corruption type: {corruption_type}. Available: {list(CORRUPTION_SEVERITIES.keys())}"

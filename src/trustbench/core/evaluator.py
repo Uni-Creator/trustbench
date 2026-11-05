@@ -12,6 +12,7 @@ from trustbench.evaluation.classification import compute_classification_metrics
 from trustbench.evaluation.error_detection import compute_error_detection_metrics
 from trustbench.evaluation.selective import compute_selective_prediction_metrics
 from trustbench.evaluation.uncertainty import compute_uncertainty_metrics
+from trustbench.registry.metrics import METRIC_REGISTRY
 
 DEFAULT_METRICS = ("classification", "calibration", "uncertainty")
 
@@ -96,10 +97,37 @@ def evaluate(
                 probabilities=inference.probabilities,
             )
 
+    # Custom registered metrics
+    for m_name in requested:
+        if m_name in ("classification", "calibration", "uncertainty", "error_detection", "selective_prediction"):
+            continue
+        custom_metric = METRIC_REGISTRY.get(m_name)
+        if custom_metric is not None:
+            try:
+                res = custom_metric(
+                    predictions=inference.predictions,
+                    labels=inference.labels,
+                    probabilities=inference.probabilities,
+                    logits=inference.logits,
+                    sample_ids=inference.sample_ids,
+                    class_names=class_names,
+                )
+                combined[m_name] = res
+            except Exception as exc:  # noqa: BLE001
+                combined[m_name] = {"error": str(exc), "status": "failed"}
+        else:
+            builtins = list(DEFAULT_METRICS) + ["error_detection", "selective_prediction"]
+            registered = list(METRIC_REGISTRY.list_metrics().keys())
+            raise ValueError(
+                f"Unknown metric {m_name!r}. "
+                f"Available built-in metrics: {builtins}. "
+                f"Registered custom metrics: {registered}."
+            )
+
     classification = combined.get("classification", {})
     calibration = combined.get("calibration", {})
     uncertainty = combined.get("uncertainty", {})
-    combined["summary"] = {
+    summary_data = {
         "accuracy": classification.get("accuracy"),
         "balanced_accuracy": classification.get("balanced_accuracy"),
         "macro_f1": classification.get("macro_f1"),
@@ -109,6 +137,14 @@ def evaluate(
         "mean_entropy": uncertainty.get("mean_entropy"),
         "total_samples": len(inference.labels),
     }
+
+    # Include scalar custom metrics into summary
+    for m_name in requested:
+        val = combined.get(m_name)
+        if isinstance(val, (int, float)):
+            summary_data[m_name] = float(val)
+
+    combined["summary"] = summary_data
 
     return EvaluationResult(
         metrics=combined,

@@ -85,6 +85,15 @@ class ExperimentRepository:
         self.session.refresh(exp)
         return exp
 
+    def delete(self, experiment_id: str) -> bool:
+        """Delete an experiment by id, cascading to metrics and artifacts."""
+        exp = self.get_by_id(experiment_id)
+        if not exp:
+            return False
+        self.session.delete(exp)
+        self.session.commit()
+        return True
+
     def add_metric(
         self,
         experiment_id: str,

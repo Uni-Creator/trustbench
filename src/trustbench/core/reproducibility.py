@@ -4,6 +4,7 @@ import os
 import platform
 import random
 import subprocess
+import sys
 from typing import Any
 
 import numpy as np
@@ -19,6 +20,9 @@ def set_seed(seed: int = 42, deterministic: bool = True) -> None:
     random.seed(seed)
     np.random.seed(seed)
     os.environ["PYTHONHASHSEED"] = str(seed)
+
+    if "torch" not in sys.modules:
+        return
 
     try:
         import torch
@@ -54,6 +58,9 @@ def get_environment_info() -> dict[str, Any]:
         "cuda_available": "False",
         "cuda_device_name": None,
     }
+    if "torch" not in sys.modules:
+        return info
+
     try:
         import torch
     except ImportError:
