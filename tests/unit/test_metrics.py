@@ -54,3 +54,19 @@ def test_uncertainty_metrics() -> None:
     summary = compute_uncertainty_metrics(probabilities)
     assert summary["mean_entropy"] > 0.0
     assert summary["min_entropy"] >= 0.0
+
+
+def test_metrics_numerical_edge_cases() -> None:
+    # Extreme logits/probabilities edge cases: very small / zero probabilities
+    labels = np.array([0, 1])
+    # Extreme confident probabilities: [1.0, 0.0] and [0.0, 1.0]
+    probabilities = np.array([[1.0 - 1e-12, 1e-12], [1e-12, 1.0 - 1e-12]])
+    metrics = compute_calibration_metrics(labels, probabilities, n_bins=5)
+    assert metrics["brier_score"] >= 0.0
+    assert not np.isnan(metrics["brier_score"])
+    assert not np.isnan(metrics["ece"])
+
+    # Zero variance in uncertainty
+    zero_entropy_probs = np.array([[1.0, 0.0], [1.0, 0.0]])
+    ent = compute_predictive_entropy(zero_entropy_probs)
+    assert np.allclose(ent, 0.0)

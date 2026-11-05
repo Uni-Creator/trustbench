@@ -6,7 +6,6 @@ from sqlalchemy.orm import sessionmaker
 
 from trustbench.experiments.comparison import ExperimentComparator
 from trustbench.experiments.manager import ExperimentManager
-from trustbench.experiments.registry import ExperimentRegistry
 from trustbench.storage.database import Base
 from trustbench.storage.repositories import ExperimentRepository
 

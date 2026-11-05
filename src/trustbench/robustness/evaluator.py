@@ -1,6 +1,5 @@
 """Robustness evaluation orchestrator across image corruptions and severity levels."""
 
-import hashlib
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -12,26 +11,19 @@ import torchvision
 from scipy.special import softmax
 from torch.utils.data import DataLoader
 
-from trustbench.data.cifar10 import CIFAR10_CLASSES
-from trustbench.evaluation.artifacts import NpEncoder, load_experiment_artifacts
-from trustbench.evaluation.inference import load_model_from_checkpoint, run_inference
-from trustbench.evaluation.reproducibility import get_environment_info, set_seed
-from trustbench.metrics.calibration import compute_calibration_metrics
-from trustbench.metrics.classification import compute_classification_metrics
-from trustbench.metrics.error_detection import compute_error_detection_metrics
-from trustbench.metrics.selective import compute_selective_prediction_metrics
-from trustbench.metrics.uncertainty import compute_uncertainty_metrics
+from trustbench.core.reproducibility import get_environment_info, set_seed
+from trustbench.datasets.cifar10 import CIFAR10_CLASSES
+from trustbench.evaluation.calibration import compute_calibration_metrics
+from trustbench.evaluation.classification import compute_classification_metrics
+from trustbench.evaluation.error_detection import compute_error_detection_metrics
+from trustbench.evaluation.selective import compute_selective_prediction_metrics
+from trustbench.evaluation.uncertainty import compute_uncertainty_metrics
+from trustbench.models.checkpoint import load_model_from_checkpoint
+from trustbench.models.pytorch import run_inference
+from trustbench.reporting.artifacts import NpEncoder, load_experiment_artifacts
+from trustbench.reporting.hashing import compute_file_sha256
 from trustbench.robustness.corruptions import CorruptedDataset
 from trustbench.robustness.severity import serialize_severities
-
-
-def compute_file_sha256(filepath: str | Path) -> str:
-    """Compute SHA-256 hash of a file."""
-    sha256_hash = hashlib.sha256()
-    with open(filepath, "rb") as f:
-        for byte_block in iter(lambda: f.read(65536), b""):
-            sha256_hash.update(byte_block)
-    return sha256_hash.hexdigest()
 
 
 class RobustnessEvaluator:
@@ -84,8 +76,8 @@ class RobustnessEvaluator:
         """Fit calibration temperature T on a separate validation/calibration split."""
         from torch.utils.data import DataLoader
 
-        from trustbench.data.cifar10 import get_cifar10_validation_split
-        from trustbench.metrics.uncertainty import fit_temperature
+        from trustbench.datasets.cifar10 import get_cifar10_validation_split
+        from trustbench.evaluation.uncertainty import fit_temperature
 
         _, val_set = get_cifar10_validation_split(
             data_dir=self.data_dir,

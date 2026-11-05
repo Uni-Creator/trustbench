@@ -49,7 +49,7 @@ def test_list_experiments_empty(client_and_session):
 
 
 def test_index_and_get_experiment(client_and_session, tmp_path):
-    client, session_factory = client_and_session
+    client, _session_factory = client_and_session
 
     # Prepare temporary experiment artifacts
     exp_dir = tmp_path / "baseline_sample"

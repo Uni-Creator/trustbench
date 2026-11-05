@@ -1,3 +1,4 @@
+from .base import ModelAdapter as ModelAdapter
 from .densenet import *
 from .dla import *
 from .dla_simple import *

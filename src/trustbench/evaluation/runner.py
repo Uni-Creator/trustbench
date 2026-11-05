@@ -1,19 +1,21 @@
-"""Evaluation pipeline runner coordinating inference, metrics, and artifact saving."""
+"""Compatibility runner: checkpoint + CIFAR-10 evaluation with artifact saving."""
 
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import torch
-from scipy.special import softmax
 
-from trustbench.data.cifar10 import CIFAR10_CLASSES, get_cifar10_loaders
-from trustbench.evaluation.artifacts import save_experiment_artifacts
-from trustbench.evaluation.inference import load_model_from_checkpoint, run_inference
-from trustbench.evaluation.reproducibility import get_environment_info, set_seed
-from trustbench.metrics.calibration import compute_calibration_metrics
-from trustbench.metrics.classification import compute_classification_metrics
-from trustbench.metrics.uncertainty import compute_uncertainty_metrics
+from trustbench.core.evaluator import evaluate
+from trustbench.core.reproducibility import get_environment_info, set_seed
+from trustbench.datasets.cifar10 import (
+    CIFAR10_CLASSES,
+    CIFAR10DatasetAdapter,
+    get_cifar10_datasets,
+)
+from trustbench.models.checkpoint import load_model_from_checkpoint
+from trustbench.models.pytorch import PyTorchModelAdapter
+from trustbench.reporting.artifacts import save_experiment_artifacts
 
 
 def run_evaluation(
@@ -32,7 +34,7 @@ def run_evaluation(
         model_name: Model architecture name.
         data_dir: Path to dataset directory.
         output_dir: Directory where artifacts are saved.
-        batch_size: Batch size for test dataloader.
+        batch_size: Batch size for test evaluation.
         seed: Random seed.
         device: Device to run evaluation on.
 
@@ -43,62 +45,27 @@ def run_evaluation(
     checkpoint_path = Path(checkpoint_path)
     output_dir = Path(output_dir)
 
-    # 1. Load model and checkpoint metadata
     model, raw_checkpoint = load_model_from_checkpoint(
         checkpoint_path=checkpoint_path,
         model_name=model_name,
         device=device,
     )
-
-    # 2. Prepare test data
-    _, testloader = get_cifar10_loaders(
-        data_dir=data_dir,
-        batch_size_test=batch_size,
-        num_workers=2,
-        download=True,
+    adapter = PyTorchModelAdapter(
+        model,
+        num_classes=len(CIFAR10_CLASSES),
+        device=device,
     )
 
-    # 3. Run inference
-    inference_results = run_inference(model, testloader, device=device)
-    logits = inference_results["logits"]
-    predictions = inference_results["predictions"]
-    labels = inference_results["labels"]
+    _, testset = get_cifar10_datasets(data_dir=data_dir, download=True)
+    dataset = CIFAR10DatasetAdapter(testset)
 
-    # Compute probabilities via softmax
-    probabilities = softmax(logits, axis=1)
-    inference_results["probabilities"] = probabilities
-
-    # 4. Compute metrics
-    classification_metrics = compute_classification_metrics(
-        labels=labels,
-        predictions=predictions,
+    result = evaluate(
+        adapter,
+        dataset,
+        batch_size=batch_size,
         class_names=CIFAR10_CLASSES,
     )
 
-    calibration_metrics = compute_calibration_metrics(
-        labels=labels,
-        probabilities=probabilities,
-    )
-
-    uncertainty_metrics = compute_uncertainty_metrics(
-        probabilities=probabilities,
-    )
-
-    combined_metrics = {
-        "classification": classification_metrics,
-        "calibration": calibration_metrics,
-        "uncertainty": uncertainty_metrics,
-        "summary": {
-            "accuracy": classification_metrics["accuracy"],
-            "macro_f1": classification_metrics["macro_f1"],
-            "brier_score": calibration_metrics["brier_score"],
-            "ece": calibration_metrics["ece"],
-            "mean_entropy": uncertainty_metrics["mean_entropy"],
-            "total_samples": len(labels),
-        },
-    }
-
-    # 5. Metadata and Config
     config = {
         "checkpoint_path": str(checkpoint_path),
         "model_name": model_name,
@@ -116,18 +83,17 @@ def run_evaluation(
         "environment": get_environment_info(),
     }
 
-    # 6. Save artifacts
     save_experiment_artifacts(
         output_dir=output_dir,
         metadata=metadata,
-        metrics=combined_metrics,
+        metrics=result.metrics,
         config=config,
-        predictions=inference_results,
+        predictions=result.to_predictions_dict(),
     )
 
     return {
         "output_dir": str(output_dir),
-        "metrics": combined_metrics,
+        "metrics": result.metrics,
         "metadata": metadata,
         "config": config,
     }

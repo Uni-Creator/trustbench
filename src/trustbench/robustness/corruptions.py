@@ -8,7 +8,7 @@ import torchvision.transforms.functional as TF
 from PIL import Image, ImageFilter
 from torch.utils.data import Dataset
 
-from trustbench.data.cifar10 import CIFAR10_MEAN, CIFAR10_STD
+from trustbench.datasets.cifar10 import CIFAR10_MEAN, CIFAR10_STD
 from trustbench.robustness.severity import get_severity_config
 
 
@@ -140,11 +140,15 @@ class CorruptedDataset(Dataset):
         corruption_type: str,
         severity: int,
         base_seed: int = 42,
+        mean: tuple[float, float, float] = CIFAR10_MEAN,
+        std: tuple[float, float, float] = CIFAR10_STD,
     ):
         self.base_dataset = base_dataset
         self.corruption_type = corruption_type
         self.severity = severity
         self.base_seed = base_seed
+        self.mean = mean
+        self.std = std
 
     def __len__(self) -> int:
         return len(self.base_dataset)  # type: ignore
@@ -179,7 +183,7 @@ class CorruptedDataset(Dataset):
 
         # 2. Transform to tensor and normalize
         tensor = TF.to_tensor(corrupted_img)
-        norm_tensor = TF.normalize(tensor, CIFAR10_MEAN, CIFAR10_STD)
+        norm_tensor = TF.normalize(tensor, self.mean, self.std)
 
         # Return (sample_id, tensor, target)
         return idx, norm_tensor, target

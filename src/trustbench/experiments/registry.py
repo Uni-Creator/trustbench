@@ -1,26 +1,16 @@
 """Experiment registry for discovering, registering, and indexing evaluation runs."""
 
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
 
 from sqlalchemy.orm import Session
 
+from trustbench.reporting.hashing import (
+    compute_file_sha256_or_none as compute_file_sha256,
+)
 from trustbench.storage.database import get_session_factory
 from trustbench.storage.repositories import ExperimentRepository
-
-
-def compute_file_sha256(filepath: str | Path) -> str | None:
-    """Compute SHA-256 hash of a file if it exists."""
-    path = Path(filepath)
-    if not path.is_file():
-        return None
-    sha256_hash = hashlib.sha256()
-    with open(path, "rb") as f:
-        for byte_block in iter(lambda: f.read(65536), b""):
-            sha256_hash.update(byte_block)
-    return sha256_hash.hexdigest()
 
 
 class ExperimentRegistry:
