@@ -1,30 +1,53 @@
 [project]
 name = "trustbench"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "TrustBench: Evaluation framework for ML model reliability."
 readme = "README.md"
 authors = [
     { name = "Uni-Creator", email = "abhayr24564@gmail.com" }
 ]
 requires-python = ">=3.11"
+# Base dependencies: always installed
 dependencies = [
-    "fastapi>=0.161.1",
     "numpy>=2.4.6",
-    "pillow>=13.0.0",
-    "plotly>=7.1.0",
-    "pydantic-settings>=2.16.1",
-    "ruff>=0.17.2",
-    "scikit-learn>=1.9.1",
     "scipy>=1.16.0",
-    "sqlalchemy>=2.1.6",
-    "streamlit>=1.66.1",
+    "scikit-learn>=1.9.1",
+    "pydantic>=2.14.1",
+    "pydantic-settings>=2.16.1",
+    "pyyaml>=6.0",
+    "click>=8.1.0",
+    "jinja2>=3.1.6",
+]
+
+[project.optional-dependencies]
+# PyTorch inference
+torch = [
     "torch>=2.14.1",
     "torchvision>=0.29.1",
+    "pillow>=13.0.0",
+]
+# Storage / API backend
+storage = [
+    "sqlalchemy>=2.1.6",
+    "fastapi>=0.161.1",
     "uvicorn[standard]>=0.54.0",
+]
+# Reporting / visualisation
+reporting = [
+    "plotly>=7.1.0",
+    "jinja2>=3.1.6",
+]
+# Dashboard
+dashboard = [
+    "streamlit>=1.66.1",
+]
+# Install everything
+all = [
+    "trustbench[torch,storage,reporting,dashboard]",
 ]
 
 [project.scripts]
-trustbench = "trustbench:main"
+trustbench = "trustbench.cli.main:app"
 
 [build-system]
 requires = ["uv_build>=0.12.15,<0.13.0"]

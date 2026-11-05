@@ -1,5 +1,6 @@
 """TrustBench: Evaluation framework for machine learning model reliability."""
 
+from trustbench.benchmark import TrustBench
 from trustbench.core.evaluator import evaluate
 from trustbench.core.exceptions import (
     ShapeError,
@@ -14,6 +15,7 @@ __all__ = [
     "EvaluationResult",
     "ModelAdapter",
     "ShapeError",
+    "TrustBench",
     "TrustBenchError",
     "UnsupportedCapabilityError",
     "evaluate",

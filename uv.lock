@@ -2573,24 +2573,49 @@ wheels = [
 
 [[package]]
 name = "trustbench"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
-    { name = "fastapi" },
+    { name = "click" },
+    { name = "jinja2" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "pillow" },
-    { name = "plotly" },
+    { name = "pydantic" },
     { name = "pydantic-settings" },
-    { name = "ruff" },
+    { name = "pyyaml" },
     { name = "scikit-learn" },
     { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+]
+
+[package.optional-dependencies]
+all = [
+    { name = "fastapi" },
+    { name = "jinja2" },
+    { name = "pillow" },
+    { name = "plotly" },
     { name = "sqlalchemy" },
     { name = "streamlit" },
     { name = "torch" },
     { name = "torchvision" },
     { name = "uvicorn", extra = ["standard"] },
+]
+dashboard = [
+    { name = "streamlit" },
+]
+reporting = [
+    { name = "jinja2" },
+    { name = "plotly" },
+]
+storage = [
+    { name = "fastapi" },
+    { name = "sqlalchemy" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+torch = [
+    { name = "pillow" },
+    { name = "torch" },
+    { name = "torchvision" },
 ]
 
 [package.dev-dependencies]
@@ -2603,20 +2628,26 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fastapi", specifier = ">=0.161.1" },
+    { name = "click", specifier = ">=8.1.0" },
+    { name = "fastapi", marker = "extra == 'storage'", specifier = ">=0.161.1" },
+    { name = "jinja2", specifier = ">=3.1.6" },
+    { name = "jinja2", marker = "extra == 'reporting'", specifier = ">=3.1.6" },
     { name = "numpy", specifier = ">=2.4.6" },
-    { name = "pillow", specifier = ">=13.0.0" },
-    { name = "plotly", specifier = ">=7.1.0" },
+    { name = "pillow", marker = "extra == 'torch'", specifier = ">=13.0.0" },
+    { name = "plotly", marker = "extra == 'reporting'", specifier = ">=7.1.0" },
+    { name = "pydantic", specifier = ">=2.14.1" },
     { name = "pydantic-settings", specifier = ">=2.16.1" },
-    { name = "ruff", specifier = ">=0.17.2" },
+    { name = "pyyaml", specifier = ">=6.0" },
     { name = "scikit-learn", specifier = ">=1.9.1" },
     { name = "scipy", specifier = ">=1.16.0" },
-    { name = "sqlalchemy", specifier = ">=2.1.6" },
-    { name = "streamlit", specifier = ">=1.66.1" },
-    { name = "torch", specifier = ">=2.14.1" },
-    { name = "torchvision", specifier = ">=0.29.1" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.54.0" },
+    { name = "sqlalchemy", marker = "extra == 'storage'", specifier = ">=2.1.6" },
+    { name = "streamlit", marker = "extra == 'dashboard'", specifier = ">=1.66.1" },
+    { name = "torch", marker = "extra == 'torch'", specifier = ">=2.14.1" },
+    { name = "torchvision", marker = "extra == 'torch'", specifier = ">=0.29.1" },
+    { name = "trustbench", extras = ["torch", "storage", "reporting", "dashboard"], marker = "extra == 'all'" },
+    { name = "uvicorn", extras = ["standard"], marker = "extra == 'storage'", specifier = ">=0.54.0" },
 ]
+provides-extras = ["torch", "storage", "reporting", "dashboard", "all"]
 
 [package.metadata.requires-dev]
 dev = [
