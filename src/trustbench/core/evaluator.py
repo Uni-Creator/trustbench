@@ -101,9 +101,11 @@ def evaluate(
     uncertainty = combined.get("uncertainty", {})
     combined["summary"] = {
         "accuracy": classification.get("accuracy"),
+        "balanced_accuracy": classification.get("balanced_accuracy"),
         "macro_f1": classification.get("macro_f1"),
         "brier_score": calibration.get("brier_score"),
         "ece": calibration.get("ece"),
+        "adaptive_ece": calibration.get("adaptive_ece"),
         "mean_entropy": uncertainty.get("mean_entropy"),
         "total_samples": len(inference.labels),
     }

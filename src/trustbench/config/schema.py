@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 CONFIG_VERSION = "1"
 
@@ -76,6 +76,26 @@ class RobustnessConfig(BaseModel):
         default_factory=lambda: [1, 2, 3, 4, 5],
         description="Corruption severity levels (1–5).",
     )
+
+    @field_validator("severity_levels")
+    @classmethod
+    def validate_severities(cls, v: list[int]) -> list[int]:
+        for s in v:
+            if s not in (1, 2, 3, 4, 5):
+                raise ValueError(f"Severity level {s} must be between 1 and 5.")
+        return v
+
+    @field_validator("corruption_types")
+    @classmethod
+    def validate_corruptions(cls, v: list[str]) -> list[str]:
+        from trustbench.robustness.severity import ALL_CORRUPTION_TYPES
+
+        for c in v:
+            if c not in ALL_CORRUPTION_TYPES:
+                raise ValueError(
+                    f"Unknown corruption type: {c!r}. Available: {ALL_CORRUPTION_TYPES}"
+                )
+        return v
 
 
 class ReportingConfig(BaseModel):

@@ -4,23 +4,89 @@ from typing import Any
 
 import numpy as np
 from scipy.special import softmax
-from sklearn.metrics import auc, precision_recall_curve, roc_auc_score
+from sklearn.metrics import auc, precision_recall_curve, roc_auc_score, roc_curve
 
 from trustbench.evaluation.uncertainty import compute_energy_scores
+
+
+def compute_fpr_at_tpr(
+    y_true_binary: np.ndarray,
+    uncertainty_scores: np.ndarray,
+    target_tpr: float = 0.95,
+) -> float:
+    """Compute False Positive Rate (FPR) at a specified True Positive Rate (TPR), e.g. 95%.
+
+    Measures the probability that a correct prediction is mistakenly flagged as an error
+    when the detection system catches at least `target_tpr` (95%) of all actual errors.
+    Lower is better.
+
+    Args:
+        y_true_binary: Binary array where 1 = error/incorrect, 0 = correct.
+        uncertainty_scores: Uncertainty scores where higher values indicate higher error likelihood.
+        target_tpr: Target True Positive Rate threshold (default: 0.95).
+
+    Returns:
+        FPR in [0.0, 1.0].
+    """
+    y_true = np.asarray(y_true_binary, dtype=int)
+    scores = np.asarray(uncertainty_scores, dtype=float)
+
+    n_errors = int(np.sum(y_true == 1))
+    n_correct = int(np.sum(y_true == 0))
+
+    if n_errors == 0 or n_correct == 0 or len(y_true) == 0:
+        return 0.0
+
+    fpr, tpr, _ = roc_curve(y_true, scores)
+    valid_fpr = fpr[tpr >= target_tpr]
+    if len(valid_fpr) == 0:
+        return 1.0
+    return float(np.min(valid_fpr))
+
+
+def compute_detection_error(
+    y_true_binary: np.ndarray,
+    uncertainty_scores: np.ndarray,
+) -> float:
+    """Compute the minimum detection error rate over all possible decision thresholds.
+
+    Mathematical definition:
+      P_err = min_tau 0.5 * ( (1 - TPR(tau)) + FPR(tau) )
+
+    Args:
+        y_true_binary: Binary array where 1 = error, 0 = correct.
+        uncertainty_scores: Higher values indicate higher probability of error.
+
+    Returns:
+        Minimum detection error in [0.0, 0.5].
+    """
+    y_true = np.asarray(y_true_binary, dtype=int)
+    scores = np.asarray(uncertainty_scores, dtype=float)
+
+    n_errors = int(np.sum(y_true == 1))
+    n_correct = int(np.sum(y_true == 0))
+
+    if n_errors == 0 or n_correct == 0 or len(y_true) == 0:
+        return 0.5
+
+    fpr, tpr, _ = roc_curve(y_true, scores)
+    error_rates = 0.5 * (1.0 - tpr + fpr)
+    return float(np.min(error_rates))
 
 
 def compute_binary_detection_curve(
     y_true_binary: np.ndarray,
     uncertainty_scores: np.ndarray,
 ) -> dict[str, float]:
-    """Calculate AUROC and AUPRC for binary error detection.
+    """Calculate AUROC, AUPRC, FPR@95% TPR, and minimum detection error for binary error detection.
 
     Args:
         y_true_binary: 1 for error/incorrect prediction, 0 for correct.
         uncertainty_scores: Higher values indicate higher probability of error.
 
     Returns:
-        Dict with 'auroc', 'auprc', and 'prevalence'.
+        Dict with 'auroc', 'auprc', 'prevalence', 'fpr_at_95_tpr',
+        'detection_error', and 'detection_accuracy'.
     """
     y_true_binary = np.asarray(y_true_binary, dtype=int)
     uncertainty_scores = np.asarray(uncertainty_scores, dtype=float)
@@ -34,6 +100,9 @@ def compute_binary_detection_curve(
             "auroc": 0.5,
             "auprc": prevalence,
             "prevalence": prevalence,
+            "fpr_at_95_tpr": 0.0,
+            "detection_error": 0.5,
+            "detection_accuracy": 0.5,
         }
 
     try:
@@ -47,10 +116,16 @@ def compute_binary_detection_curve(
     except ValueError:
         auprc = float(n_errors / n_samples)
 
+    fpr95 = compute_fpr_at_tpr(y_true_binary, uncertainty_scores, target_tpr=0.95)
+    det_err = compute_detection_error(y_true_binary, uncertainty_scores)
+
     return {
         "auroc": auroc,
         "auprc": auprc,
         "prevalence": float(n_errors / n_samples),
+        "fpr_at_95_tpr": fpr95,
+        "detection_error": det_err,
+        "detection_accuracy": float(1.0 - det_err),
     }
 
 
@@ -114,7 +189,7 @@ def compute_error_detection_metrics(
         predictions: 1D array of predicted class indices (N,).
         probabilities: 2D array of class probabilities (N, C).
         logits: Optional 2D array of unscaled output logits (N, C).
-        temperature: Optional fitted temperature parameter (e.g. from validation set).
+        temperature: Optional fitted temperature parameter.
         entropies: Optional 1D array of predictive entropy (N,).
         slice_fraction: Fraction for top and bottom confidence slices (default 0.1 = 10%).
 
@@ -150,12 +225,18 @@ def compute_error_detection_metrics(
         "max_softmax_probability": {
             "auroc": msp_detection["auroc"],
             "auprc": msp_detection["auprc"],
+            "fpr_at_95_tpr": msp_detection["fpr_at_95_tpr"],
+            "detection_error": msp_detection["detection_error"],
+            "detection_accuracy": msp_detection["detection_accuracy"],
             "highest_confidence_error_rate": msp_slices["top_confidence_error_rate"],
             "lowest_confidence_error_rate": msp_slices["bottom_confidence_error_rate"],
         },
         "predictive_entropy": {
             "auroc": entropy_detection["auroc"],
             "auprc": entropy_detection["auprc"],
+            "fpr_at_95_tpr": entropy_detection["fpr_at_95_tpr"],
+            "detection_error": entropy_detection["detection_error"],
+            "detection_accuracy": entropy_detection["detection_accuracy"],
             "highest_confidence_error_rate": entropy_slices["top_confidence_error_rate"],
             "lowest_confidence_error_rate": entropy_slices["bottom_confidence_error_rate"],
         },
@@ -174,25 +255,25 @@ def compute_error_detection_metrics(
             "temperature": float(temperature),
             "auroc": temp_detection["auroc"],
             "auprc": temp_detection["auprc"],
+            "fpr_at_95_tpr": temp_detection["fpr_at_95_tpr"],
+            "detection_error": temp_detection["detection_error"],
+            "detection_accuracy": temp_detection["detection_accuracy"],
             "highest_confidence_error_rate": temp_slices["top_confidence_error_rate"],
             "lowest_confidence_error_rate": temp_slices["bottom_confidence_error_rate"],
         }
 
-    # 4. Energy-Based Score: E(x) = -T * logsumexp(logits / T).
-    # Higher energy (less negative) means lower model confidence / higher uncertainty.
+    # 4. Energy-Based Score
     if logits is not None:
-        # Uncertainty = energy score directly: -E(x) = logsumexp(logits)
-        # Note: logsumexp is high for familiar/confident data, low for unfamiliar.
-        # So uncertainty score is -logsumexp(logits) = E(x).
         energy_scores = compute_energy_scores(logits, temperature=1.0)
-        # energy is -logsumexp, so higher energy = higher uncertainty
         energy_detection = compute_binary_detection_curve(errors, energy_scores)
-        # For confidence slice, confidence = -energy = +logsumexp
         energy_slices = compute_slice_error_rates(errors, -energy_scores, top_k_pct=slice_fraction)
 
         result["energy_score"] = {
             "auroc": energy_detection["auroc"],
             "auprc": energy_detection["auprc"],
+            "fpr_at_95_tpr": energy_detection["fpr_at_95_tpr"],
+            "detection_error": energy_detection["detection_error"],
+            "detection_accuracy": energy_detection["detection_accuracy"],
             "highest_confidence_error_rate": energy_slices["top_confidence_error_rate"],
             "lowest_confidence_error_rate": energy_slices["bottom_confidence_error_rate"],
         }

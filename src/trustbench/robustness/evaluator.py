@@ -22,6 +22,7 @@ from trustbench.models.checkpoint import load_model_from_checkpoint
 from trustbench.models.pytorch import run_inference
 from trustbench.reporting.artifacts import NpEncoder, load_experiment_artifacts
 from trustbench.reporting.hashing import compute_file_sha256
+from trustbench.robustness.aggregation import compute_robustness_aggregation
 from trustbench.robustness.corruptions import CorruptedDataset
 from trustbench.robustness.severity import serialize_severities
 
@@ -286,10 +287,17 @@ class RobustnessEvaluator:
         with open(self.output_dir / "metadata.json", "w", encoding="utf-8") as f:
             json.dump(metadata_payload, f, indent=2, cls=NpEncoder)
 
+        # Compute comprehensive robustness aggregation
+        aggregation = compute_robustness_aggregation(
+            conditions=all_summaries,
+            clean_baseline=baseline_summary,
+        )
+
         # Save summary.json
         summary_payload = {
             "experiment_id": self.output_dir.name,
             "conditions": all_summaries,
+            "aggregation": aggregation,
         }
         with open(self.output_dir / "summary.json", "w", encoding="utf-8") as f:
             json.dump(summary_payload, f, indent=2, cls=NpEncoder)
@@ -298,4 +306,5 @@ class RobustnessEvaluator:
             "output_dir": str(self.output_dir),
             "summary": all_summaries,
             "corruption_data": per_corruption_data,
+            "aggregation": aggregation,
         }
