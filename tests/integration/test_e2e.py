@@ -14,9 +14,8 @@ from trustbench.datasets.torch_dataset import TorchDatasetAdapter
 from trustbench.reporting.artifacts import load_experiment_artifacts
 from trustbench.reporting.result_io import save_result
 
-# ---------------------------------------------------------------------------
 # Helper: synthetic Dataset (inlined so test file is self-contained)
-# ---------------------------------------------------------------------------
+
 
 
 class _LinearDataset(torch.utils.data.Dataset):
@@ -43,9 +42,9 @@ def synthetic_dataset() -> _LinearDataset:
     return _LinearDataset(n=50, n_features=4, n_classes=3)
 
 
-# ---------------------------------------------------------------------------
+
 # Test: TorchDatasetAdapter
-# ---------------------------------------------------------------------------
+
 
 
 class TestTorchDatasetAdapter:
@@ -89,9 +88,9 @@ class TestTorchDatasetAdapter:
         np.testing.assert_array_equal(labels, expected)
 
 
-# ---------------------------------------------------------------------------
+
 # Test: TrustBench with nn.Module
-# ---------------------------------------------------------------------------
+
 
 
 class TestTrustBenchWithModule:
@@ -158,9 +157,9 @@ class TestTrustBenchWithModule:
             TrustBench("not_a_model", synthetic_dataset)
 
 
-# ---------------------------------------------------------------------------
+
 # Test: save_result + load_experiment_artifacts
-# ---------------------------------------------------------------------------
+
 
 
 class TestSaveResult:
@@ -228,9 +227,9 @@ class TestSaveResult:
         assert (out / "metrics.json").exists()
 
 
-# ---------------------------------------------------------------------------
+
 # Test: Config system
-# ---------------------------------------------------------------------------
+
 
 
 class TestConfigSystem:
@@ -293,9 +292,9 @@ class TestConfigSystem:
         assert cfg.config_version == "1"
 
 
-# ---------------------------------------------------------------------------
+
 # Test: HTML report
-# ---------------------------------------------------------------------------
+
 
 
 class TestHtmlReport:
@@ -336,9 +335,9 @@ class TestHtmlReport:
             assert f"{acc:.4f}" in content
 
 
-# ---------------------------------------------------------------------------
+
 # Fixture (re-exposed from conftest but also here as a local fallback)
-# ---------------------------------------------------------------------------
+
 
 
 @pytest.fixture()

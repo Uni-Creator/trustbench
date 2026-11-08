@@ -11,3 +11,7 @@ class UnsupportedCapabilityError(TrustBenchError):
 
 class ShapeError(TrustBenchError):
     """Raised when model outputs do not match the expected shape."""
+
+
+class SecurityError(TrustBenchError):
+    """Raised when an operation violates security boundaries (e.g. path traversal)."""

@@ -30,9 +30,9 @@ if TYPE_CHECKING:
 REPORT_SCHEMA_VERSION = "1.0"
 
 
-# ---------------------------------------------------------------------------
+
 # Schema builder
-# ---------------------------------------------------------------------------
+
 
 
 def build_report_dict(
@@ -140,9 +140,9 @@ def _strip_array_fields(d: dict[str, Any]) -> dict[str, Any]:
     return {k: v for k, v in d.items() if k not in skip}
 
 
-# ---------------------------------------------------------------------------
+
 # File writer
-# ---------------------------------------------------------------------------
+
 
 
 def generate_json_report(

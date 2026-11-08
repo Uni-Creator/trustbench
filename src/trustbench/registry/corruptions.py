@@ -4,7 +4,10 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    Image = Any  # type: ignore[assignment,misc]
 
 from trustbench.robustness.severity import SeverityConfig
 

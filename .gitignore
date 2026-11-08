@@ -6,3 +6,6 @@ dataset
 checkpoint
 artifacts
 .pytest_cache
+*.json
+.mypy_cache
+dist

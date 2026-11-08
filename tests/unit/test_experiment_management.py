@@ -39,9 +39,8 @@ from trustbench.storage.filesystem import (
     _atomic_write_npz,
 )
 
-# ---------------------------------------------------------------------------
 # Fixtures & Helpers
-# ---------------------------------------------------------------------------
+
 
 
 @pytest.fixture
@@ -68,9 +67,9 @@ def dummy_result() -> EvaluationResult:
     )
 
 
-# ---------------------------------------------------------------------------
+
 # 1. Persistence across restarts
-# ---------------------------------------------------------------------------
+
 
 
 def test_filesystem_store_persistence_across_restarts(
@@ -94,9 +93,9 @@ def test_filesystem_store_persistence_across_restarts(
     assert recovered.config["batch_size"] == 32
 
 
-# ---------------------------------------------------------------------------
+
 # 2. Duplicate ID handling
-# ---------------------------------------------------------------------------
+
 
 
 def test_duplicate_experiment_id_handling(temp_fs_store: FilesystemExperimentStore):
@@ -113,9 +112,9 @@ def test_duplicate_experiment_id_handling(temp_fs_store: FilesystemExperimentSto
     assert overwritten.name == "second_run"
 
 
-# ---------------------------------------------------------------------------
+
 # 3. Interrupted writes & atomic safety
-# ---------------------------------------------------------------------------
+
 
 
 def test_atomic_write_and_interrupted_write_safety(tmp_path: Path):
@@ -139,9 +138,9 @@ def test_atomic_write_and_interrupted_write_safety(tmp_path: Path):
     assert (loaded["a"] == np.array([1, 2, 3])).all()
 
 
-# ---------------------------------------------------------------------------
+
 # 4. Corrupted artifacts & checksum verification
-# ---------------------------------------------------------------------------
+
 
 
 def test_corrupted_artifacts_detected(
@@ -165,9 +164,9 @@ def test_corrupted_artifacts_detected(
     assert checks_after["metadata.json"] is True
 
 
-# ---------------------------------------------------------------------------
+
 # 5. Experiment retrieval and filtering
-# ---------------------------------------------------------------------------
+
 
 
 def test_experiment_retrieval_and_filtering(temp_fs_store: FilesystemExperimentStore):
@@ -194,9 +193,9 @@ def test_experiment_retrieval_and_filtering(temp_fs_store: FilesystemExperimentS
     assert len(sha_a_runs) == 2
 
 
-# ---------------------------------------------------------------------------
+
 # 6. Compatibility validation
-# ---------------------------------------------------------------------------
+
 
 
 def test_compatibility_validation():
@@ -260,9 +259,9 @@ def test_compatibility_validation():
     assert "accuracy" in res["shared_metrics"]
 
 
-# ---------------------------------------------------------------------------
+
 # 7. Hash verification (checkpoints, dataset fingerprint, artifacts)
-# ---------------------------------------------------------------------------
+
 
 
 def test_hash_verification(tmp_path: Path):
@@ -288,9 +287,9 @@ def test_hash_verification(tmp_path: Path):
     assert fp1 != fp3  # Different labels produce different fingerprint
 
 
-# ---------------------------------------------------------------------------
+
 # 8. Database-free evaluation & import isolation
-# ---------------------------------------------------------------------------
+
 
 
 def test_database_free_evaluation(tmp_path: Path):
@@ -323,9 +322,9 @@ print("SUCCESS")
     assert "SUCCESS" in proc.stdout
 
 
-# ---------------------------------------------------------------------------
+
 # 9. Experiment lifecycle failure handling
-# ---------------------------------------------------------------------------
+
 
 
 def test_experiment_lifecycle_failure_transition(temp_fs_store: FilesystemExperimentStore):
@@ -347,9 +346,9 @@ def test_experiment_lifecycle_failure_transition(temp_fs_store: FilesystemExperi
     assert failed_rec.completed_at is not None
 
 
-# ---------------------------------------------------------------------------
+
 # 10. Portable export and import roundtrip
-# ---------------------------------------------------------------------------
+
 
 
 def test_export_and_import_roundtrip(tmp_path: Path, dummy_result: EvaluationResult):
@@ -385,9 +384,9 @@ def test_export_and_import_roundtrip(tmp_path: Path, dummy_result: EvaluationRes
         store_b.import_experiment(tampered_archive, overwrite=True)
 
 
-# ---------------------------------------------------------------------------
+
 # 11. Experiment deletion
-# ---------------------------------------------------------------------------
+
 
 
 def test_experiment_deletion(temp_fs_store: FilesystemExperimentStore, dummy_result: EvaluationResult):
@@ -404,9 +403,9 @@ def test_experiment_deletion(temp_fs_store: FilesystemExperimentStore, dummy_res
     assert not exp_dir.exists()
 
 
-# ---------------------------------------------------------------------------
+
 # 12. Lineage and metadata completeness
-# ---------------------------------------------------------------------------
+
 
 
 def test_lineage_and_metadata_completeness():
@@ -431,9 +430,9 @@ def test_lineage_and_metadata_completeness():
     assert record["hardware"]["platform"] is not None
 
 
-# ---------------------------------------------------------------------------
+
 # 13. Comparison with deltas
-# ---------------------------------------------------------------------------
+
 
 
 def test_experiment_comparator_deltas(temp_fs_store: FilesystemExperimentStore):

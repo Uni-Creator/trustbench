@@ -36,9 +36,8 @@ from trustbench.registry.plugins import (
     PluginVersionMismatchError,
 )
 
-# ---------------------------------------------------------------------------
 # Custom Metric Registration
-# ---------------------------------------------------------------------------
+
 
 
 def test_custom_metric_registration_and_evaluation():
@@ -113,9 +112,9 @@ def test_custom_metric_requirements_skipping():
         unregister_metric("prob_requiring_metric")
 
 
-# ---------------------------------------------------------------------------
+
 # Custom Model Adapter
-# ---------------------------------------------------------------------------
+
 
 
 def test_generic_model_adapter_and_validation():
@@ -145,9 +144,9 @@ def test_model_adapter_registry():
     assert register_model_adapter is not None
 
 
-# ---------------------------------------------------------------------------
+
 # Custom Dataset Adapter
-# ---------------------------------------------------------------------------
+
 
 
 def test_generic_dataset_adapter_and_validation():
@@ -183,9 +182,9 @@ def test_dataset_adapter_registry():
     assert register_dataset_adapter is not None
 
 
-# ---------------------------------------------------------------------------
+
 # Custom Corruption Functions
-# ---------------------------------------------------------------------------
+
 
 
 def test_custom_corruption_registration():
@@ -218,9 +217,9 @@ def test_custom_corruption_registration():
     assert "custom_channel_drop" not in CORRUPTION_REGISTRY.list_corruptions()
 
 
-# ---------------------------------------------------------------------------
+
 # Plugin Discovery & Safety
-# ---------------------------------------------------------------------------
+
 
 
 def test_plugin_loading_and_setup_execution():
@@ -285,9 +284,9 @@ def test_plugin_discovery_mock():
     PLUGIN_MANAGER.clear()
 
 
-# ---------------------------------------------------------------------------
+
 # Core Remains Usable Without Plugins
-# ---------------------------------------------------------------------------
+
 
 
 def test_core_usable_without_any_plugins():

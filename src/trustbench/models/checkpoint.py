@@ -1,5 +1,6 @@
 """Checkpoint loading for PyTorch CIFAR architectures."""
 
+import logging
 from collections import OrderedDict
 from pathlib import Path
 from typing import Any
@@ -8,6 +9,8 @@ import torch
 from torch import nn
 
 from trustbench import models
+
+logger = logging.getLogger(__name__)
 
 
 def resolve_model_architecture(model_name: str) -> nn.Module:
@@ -40,6 +43,7 @@ def load_model_from_checkpoint(
     checkpoint_path: str | Path,
     model_name: str = "ResNet18",
     device: str | torch.device | None = None,
+    weights_only: bool = True,
 ) -> tuple[nn.Module, dict[str, Any]]:
     """Load model architecture and weights from checkpoint file independently of training script.
 
@@ -47,6 +51,7 @@ def load_model_from_checkpoint(
         checkpoint_path: Path to .pth checkpoint.
         model_name: Model architecture name (default: ResNet18).
         device: Target device (cpu, cuda). Defaults to cuda if available.
+        weights_only: Whether to restrict unpickling to tensors and primitive types (safer).
 
     Returns:
         Tuple of (loaded nn.Module in eval mode, raw checkpoint dict).
@@ -60,7 +65,19 @@ def load_model_from_checkpoint(
     if not checkpoint_path.is_file():
         raise FileNotFoundError(f"Checkpoint not found at: {checkpoint_path}")
 
-    checkpoint = torch.load(checkpoint_path, map_location=device)
+    try:
+        checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=weights_only)
+    except Exception as exc:
+        if weights_only:
+            logger.warning(
+                "Loading checkpoint %s with weights_only=True failed (%s). "
+                "Retrying with weights_only=False. Ensure checkpoint is trusted.",
+                checkpoint_path,
+                exc,
+            )
+            checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+        else:
+            raise
 
     if isinstance(checkpoint, dict) and "net" in checkpoint:
         state_dict = checkpoint["net"]

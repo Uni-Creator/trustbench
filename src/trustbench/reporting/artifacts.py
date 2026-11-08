@@ -1,10 +1,32 @@
 """Experiment artifact management and serialization."""
 
 import json
+import os
+import time
 from pathlib import Path
 from typing import Any
 
 import numpy as np
+
+
+def _atomic_write_file(target: Path, write_fn: Any) -> None:
+    """Write to a temporary file in the same directory and atomically rename."""
+    target = Path(target)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    suffix = target.suffix
+    tmp_path = target.with_name(f".tmp_{target.stem}_{os.getpid()}_{time.time_ns()}{suffix}")
+    try:
+        write_fn(tmp_path)
+        if not tmp_path.exists() and Path(f"{tmp_path}.npz").exists():
+            tmp_path = Path(f"{tmp_path}.npz")
+        tmp_path.replace(target)
+    except Exception:
+        if tmp_path.exists():
+            try:
+                tmp_path.unlink()
+            except OSError:
+                pass
+        raise
 
 
 class NpEncoder(json.JSONEncoder):
@@ -50,16 +72,13 @@ def save_experiment_artifacts(
     out_path.mkdir(parents=True, exist_ok=True)
 
     # 1. Save metadata.json
-    with open(out_path / "metadata.json", "w", encoding="utf-8") as f:
-        json.dump(metadata, f, indent=2, cls=NpEncoder)
+    def _write_json(file_path: Path, data: Any) -> None:
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, cls=NpEncoder)
 
-    # 2. Save metrics.json
-    with open(out_path / "metrics.json", "w", encoding="utf-8") as f:
-        json.dump(metrics, f, indent=2, cls=NpEncoder)
-
-    # 3. Save config.json
-    with open(out_path / "config.json", "w", encoding="utf-8") as f:
-        json.dump(config, f, indent=2, cls=NpEncoder)
+    _atomic_write_file(out_path / "metadata.json", lambda p: _write_json(p, metadata))
+    _atomic_write_file(out_path / "metrics.json", lambda p: _write_json(p, metrics))
+    _atomic_write_file(out_path / "config.json", lambda p: _write_json(p, config))
 
     # 4. Save predictions.npz
     npz_data = {
@@ -71,7 +90,10 @@ def save_experiment_artifacts(
     if "probabilities" in predictions:
         npz_data["probabilities"] = np.asarray(predictions["probabilities"])
 
-    np.savez_compressed(out_path / "predictions.npz", **npz_data)
+    _atomic_write_file(
+        out_path / "predictions.npz",
+        lambda p: np.savez_compressed(p, **npz_data),  # type: ignore[arg-type]
+    )
 
     return out_path
 

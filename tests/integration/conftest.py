@@ -7,9 +7,8 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset
 
-# ---------------------------------------------------------------------------
 # Tiny synthetic nn.Module
-# ---------------------------------------------------------------------------
+
 
 
 @pytest.fixture()
@@ -19,9 +18,9 @@ def tiny_model() -> nn.Module:
     return nn.Linear(4, 3)
 
 
-# ---------------------------------------------------------------------------
+
 # Synthetic torch Dataset
-# ---------------------------------------------------------------------------
+
 
 
 class _SyntheticDataset(Dataset):
@@ -44,9 +43,9 @@ def synthetic_torch_dataset() -> _SyntheticDataset:
     return _SyntheticDataset(n=50, n_features=4, n_classes=3)
 
 
-# ---------------------------------------------------------------------------
+
 # Config YAML content helper
-# ---------------------------------------------------------------------------
+
 
 
 @pytest.fixture()

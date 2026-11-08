@@ -1,0 +1,33 @@
+config_version: 1
+experiment_name: resnet18_cifar10_eval
+seed: 42
+
+model:
+  checkpoint_path: ../checkpoint/ckpt.pth
+  arch_name: ResNet18
+  num_classes: 10
+  device: cuda:0
+
+dataset:
+  data_dir: ../dataset
+  dataset_type: cifar10
+  batch_size: 128
+  num_workers: 2
+  split: test
+
+metrics:
+  groups:
+    - classification
+    - calibration
+    - uncertainty
+    - error_detection
+    - selective_prediction
+  temperature: null
+
+robustness:
+  enabled: false
+
+reporting:
+  output_dir: ../artifacts/experiments/resnet18_cifar10
+  save_html: true
+  save_json: true

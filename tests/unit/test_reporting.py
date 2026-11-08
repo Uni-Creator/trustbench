@@ -38,9 +38,8 @@ from trustbench.reporting.schema import (
     generate_json_report,
 )
 
-# ---------------------------------------------------------------------------
 # Fixtures
-# ---------------------------------------------------------------------------
+
 
 
 def _make_result(
@@ -176,9 +175,9 @@ def _make_empty_result() -> EvaluationResult:
     )
 
 
-# ---------------------------------------------------------------------------
+
 # 1. JSON report schema
-# ---------------------------------------------------------------------------
+
 
 
 class TestJsonReportSchema:
@@ -252,9 +251,9 @@ class TestJsonReportSchema:
         assert "predictions" in preds
 
 
-# ---------------------------------------------------------------------------
+
 # 2. HTML report generation
-# ---------------------------------------------------------------------------
+
 
 
 class TestHtmlReport:
@@ -330,9 +329,9 @@ class TestHtmlReport:
             assert "<svg" not in content
 
 
-# ---------------------------------------------------------------------------
+
 # 3. Plot data correctness
-# ---------------------------------------------------------------------------
+
 
 
 class TestPlotData:
@@ -423,9 +422,9 @@ class TestPlotData:
         assert all(data["improved"])
 
 
-# ---------------------------------------------------------------------------
+
 # 4. Optional dependency isolation
-# ---------------------------------------------------------------------------
+
 
 
 class TestDependencyIsolation:

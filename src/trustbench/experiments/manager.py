@@ -72,9 +72,9 @@ class ExperimentManager:
 
         return ExperimentRegistry(session=self.session)
 
-    # -----------------------------------------------------------------------
+    
     # Lifecycle Management
-    # -----------------------------------------------------------------------
+    
 
     def create_experiment(
         self,
@@ -168,12 +168,12 @@ class ExperimentManager:
             )
             return updated_rec
 
-        except Exception as exc:
+        except (Exception, KeyboardInterrupt) as exc:
             err_trace = traceback.format_exc()
             self.store.update_status(
                 rec.id,
                 status=ExperimentState.FAILED,
-                error=f"{exc}\n{err_trace}",
+                error=f"{type(exc).__name__}: {exc}\n{err_trace}",
                 completed=True,
             )
             if raise_on_error:
@@ -279,9 +279,9 @@ class ExperimentManager:
             metric_names=metrics,
         )
 
-    # -----------------------------------------------------------------------
+    
     # Existing Specialized Runners (Kept for 100% Backward Compatibility)
-    # -----------------------------------------------------------------------
+    
 
     def run_baseline_experiment(
         self,

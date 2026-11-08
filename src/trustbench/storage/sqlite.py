@@ -13,6 +13,7 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from trustbench.core.exceptions import SecurityError
 from trustbench.reporting.artifacts import save_experiment_artifacts
 from trustbench.reporting.hashing import compute_file_sha256
 from trustbench.storage.base import (
@@ -29,6 +30,21 @@ if TYPE_CHECKING:
     from trustbench.core.results import EvaluationResult
 
 
+
+
+def _safe_extract_tar(tar: tarfile.TarFile, dest_dir: Path) -> None:
+    """Safely extract tar archive, rejecting path traversal attempts."""
+    dest_dir = dest_dir.resolve()
+    for member in tar.getmembers():
+        target_path = (dest_dir / member.name).resolve()
+        if target_path != dest_dir and dest_dir not in target_path.parents:
+            raise SecurityError(
+                f"Malicious archive entry '{member.name}' attempts path traversal outside '{dest_dir}'."
+            )
+    try:
+        tar.extractall(path=dest_dir, filter="data")
+    except TypeError:
+        tar.extractall(path=dest_dir)
 
 
 class SQLiteExperimentStore:
@@ -396,7 +412,7 @@ class SQLiteExperimentStore:
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_path = Path(tmp_dir)
             with tarfile.open(src, "r:*") as tar:
-                tar.extractall(path=tmp_path, filter="data")
+                _safe_extract_tar(tar, tmp_path)
 
             meta_file = tmp_path / "metadata.json"
             cfg_file = tmp_path / "config.json"

@@ -193,6 +193,7 @@ class RobustnessEvaluator:
         self,
         corruption_types: list[str] | None = None,
         severities: list[int] | None = None,
+        save_predictions: bool = True,
     ) -> dict[str, Any]:
         """Execute evaluation across all corruptions and severities, saving artifacts."""
         if corruption_types is None:
@@ -257,9 +258,11 @@ class RobustnessEvaluator:
             with open(json_file, "w", encoding="utf-8") as f:
                 json.dump(c_type_results, f, indent=2, cls=NpEncoder)
 
-            # Save predictions NPZ: predictions/<c_type>.npz
-            npz_file = predictions_dir / f"{c_type}.npz"
-            np.savez_compressed(npz_file, **npz_arrays)
+            # Save predictions NPZ: predictions/<c_type>.npz (if enabled)
+            if save_predictions:
+                npz_file = predictions_dir / f"{c_type}.npz"
+                np.savez_compressed(npz_file, **npz_arrays)
+            del npz_arrays
 
         # Save config.json
         config_payload = {

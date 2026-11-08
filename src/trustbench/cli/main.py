@@ -8,9 +8,8 @@ from pathlib import Path
 
 import click
 
-# ---------------------------------------------------------------------------
 # Helpers
-# ---------------------------------------------------------------------------
+
 
 _DEFAULT_CONFIG = """\
 # TrustBench configuration  (config_version: 1)
@@ -62,9 +61,9 @@ def _echo_info(msg: str) -> None:
     click.echo(click.style("→ ", fg="cyan") + msg)
 
 
-# ---------------------------------------------------------------------------
+
 # CLI group
-# ---------------------------------------------------------------------------
+
 
 
 @click.group()
@@ -73,9 +72,9 @@ def app() -> None:
     """TrustBench — model reliability evaluation framework."""
 
 
-# ---------------------------------------------------------------------------
+
 # version
-# ---------------------------------------------------------------------------
+
 
 
 @app.command("version")
@@ -90,9 +89,9 @@ def version_cmd() -> None:
     click.echo(f"trustbench {ver}")
 
 
-# ---------------------------------------------------------------------------
+
 # init
-# ---------------------------------------------------------------------------
+
 
 
 @app.command("init")
@@ -115,9 +114,9 @@ def init(output: str, force: bool) -> None:
     _echo_info("Edit the file and run:  trustbench evaluate --config trustbench.yaml")
 
 
-# ---------------------------------------------------------------------------
+
 # validate
-# ---------------------------------------------------------------------------
+
 
 
 @app.command("validate")
@@ -138,35 +137,42 @@ def validate(config: str) -> None:
         sys.exit(1)
 
 
-# ---------------------------------------------------------------------------
+
 # evaluate
-# ---------------------------------------------------------------------------
+
 
 
 @app.command("evaluate")
-@click.option("--config", "-c", default="trustbench.yaml", show_default=True, help="Path to config YAML.")
+@click.argument("config_arg", required=False, default=None)
+@click.option("--config", "-c", default=None, help="Path to config YAML.")
 @click.option("--output-dir", "-o", default=None, help="Override output directory.")
 @click.option("--quiet", "-q", is_flag=True, help="Suppress progress output.")
 @click.option("--verbose", "-v", is_flag=True, help="Print full metrics JSON.")
-def evaluate_cmd(config: str, output_dir: str | None, quiet: bool, verbose: bool) -> None:
+def evaluate_cmd(
+    config_arg: str | None,
+    config: str | None,
+    output_dir: str | None,
+    quiet: bool,
+    verbose: bool,
+) -> None:
     """Run evaluation as defined in CONFIG."""
     from trustbench.benchmark import TrustBench
     from trustbench.config.loader import load_config
     from trustbench.reporting.html_report import generate_html_report
     from trustbench.reporting.result_io import save_result
 
+    config_path = config_arg or config or "trustbench.yaml"
+
     if not quiet:
-        _echo_info(f"Loading config: {config}")
+        _echo_info(f"Loading config: {config_path}")
 
     try:
-        cfg = load_config(config)
+        cfg = load_config(config_path)
     except (FileNotFoundError, ValueError) as exc:
         _echo_err(str(exc))
         sys.exit(1)
 
     if output_dir:
-        from pathlib import Path
-
         out = Path(output_dir)
     else:
         out = Path(cfg.resolve_path(cfg.reporting.output_dir))
@@ -176,7 +182,7 @@ def evaluate_cmd(config: str, output_dir: str | None, quiet: bool, verbose: bool
         _echo_info("Running evaluation…")
 
     try:
-        tb = TrustBench.from_config(config)
+        tb = TrustBench.from_config(config_path)
         result = tb.evaluate()
     except Exception as exc:  # noqa: BLE001
         _echo_err(f"Evaluation failed: {exc}")
@@ -211,9 +217,9 @@ def evaluate_cmd(config: str, output_dir: str | None, quiet: bool, verbose: bool
     _echo_ok("Done.")
 
 
-# ---------------------------------------------------------------------------
+
 # inspect
-# ---------------------------------------------------------------------------
+
 
 
 @app.command("inspect")
@@ -255,9 +261,9 @@ def inspect(run_dir: str) -> None:
     click.echo(f"\n  total samples: {n_samples}")
 
 
-# ---------------------------------------------------------------------------
+
 # compare
-# ---------------------------------------------------------------------------
+
 
 
 @app.command("compare")

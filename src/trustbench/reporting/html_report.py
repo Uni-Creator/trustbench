@@ -39,9 +39,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-# ---------------------------------------------------------------------------
+
 # Jinja2 template
-# ---------------------------------------------------------------------------
+
 
 _TEMPLATE_SRC = """\
 <!DOCTYPE html>
@@ -314,9 +314,9 @@ _TEMPLATE_SRC = """\
 """
 
 
-# ---------------------------------------------------------------------------
+
 # Formatting helpers
-# ---------------------------------------------------------------------------
+
 
 
 def _fmt(value: float | None, decimals: int = 4) -> str:
@@ -358,9 +358,9 @@ def _safe_svg(render_fn, *args, **kwargs) -> str | None:
         return None
 
 
-# ---------------------------------------------------------------------------
+
 # Section builders
-# ---------------------------------------------------------------------------
+
 
 
 def _build_per_class_rows(classification: dict[str, Any], class_names: list[str]) -> list[dict]:
@@ -498,9 +498,9 @@ def _build_metadata_rows(result: EvaluationResult, lineage: dict[str, Any] | Non
     return rows
 
 
-# ---------------------------------------------------------------------------
+
 # Public API
-# ---------------------------------------------------------------------------
+
 
 
 def generate_html_report(
@@ -566,7 +566,7 @@ def generate_html_report(
     def _want(name: str) -> bool:
         return enabled is None or name in enabled
 
-    # ---- Source data
+    #  Source data
     summary = result.summary or {}
     classification = result.metrics.get("classification", {})
     calibration = result.metrics.get("calibration", {})
@@ -576,7 +576,7 @@ def generate_html_report(
     robustness = result.metrics.get("robustness", {})
     class_names: list[str] = result.metadata.get("class_names") or []
 
-    # ---- Summary cards
+    #  Summary cards
     summary_cards: list[tuple[str, str]] = [
         ("Accuracy", _fmt(summary.get("accuracy"))),
         ("Macro F1", _fmt(summary.get("macro_f1"))),
@@ -586,17 +586,17 @@ def generate_html_report(
         ("Total Samples", str(int(summary.get("total_samples", 0)))),
     ]
 
-    # ---- Classification
+    #  Classification
     per_class_rows = _build_per_class_rows(classification, class_names)
     confusion_rows = _build_confusion_rows(classification, class_names)
 
-    # ---- Charts: confusion matrix
+    #  Charts: confusion matrix
     confusion_matrix_svg: str | None = None
     if _want("confusion_matrix") and classification.get("confusion_matrix") is not None:
         cm_data = confusion_matrix_data(classification["confusion_matrix"], class_names or None)
         confusion_matrix_svg = _safe_svg(render_confusion_matrix, cm_data)
 
-    # ---- Calibration
+    #  Calibration
     calibration_rows = _build_calibration_rows(calibration)
 
     # Chart: reliability diagram
@@ -611,7 +611,7 @@ def generate_html_report(
         )
         reliability_diagram_svg = _safe_svg(render_reliability_diagram, rd_data)
 
-    # ---- Uncertainty
+    #  Uncertainty
     uncertainty_rows = _build_uncertainty_rows(uncertainty)
 
     # Chart: confidence histogram (from probabilities array if available)
@@ -624,7 +624,7 @@ def generate_html_report(
         except Exception:
             logger.debug("Failed to render confidence histogram", exc_info=True)
 
-    # ---- Error detection
+    #  Error detection
     error_detection_rows = _build_error_detection_rows(error_detection)
 
     # Chart: AUROC curve (MSP-based)
@@ -638,7 +638,7 @@ def generate_html_report(
         except Exception:
             logger.debug("Failed to render AUROC curve", exc_info=True)
 
-    # ---- Selective prediction
+    #  Selective prediction
     selective_rows = _build_selective_rows(selective)
 
     # Chart: risk-coverage curve
@@ -650,7 +650,7 @@ def generate_html_report(
             rc_data = risk_coverage_data(curve)
             risk_coverage_svg = _safe_svg(render_risk_coverage_curve, rc_data)
 
-    # ---- Robustness
+    #  Robustness
     robustness_rows = _build_robustness_rows(robustness)
 
     # Charts: degradation + severity
@@ -670,13 +670,13 @@ def generate_html_report(
             sv_data = severity_comparison_data(severity_wise)
             severity_comparison_svg = _safe_svg(render_severity_comparison, sv_data)
 
-    # ---- Metadata table
+    #  Metadata table
     metadata_rows = _build_metadata_rows(result, lineage)
     if report_metadata:
         for k, v in report_metadata.items():
             metadata_rows.append((k, str(v)))
 
-    # ---- Config JSON
+    #  Config JSON
     config_json: str | None = None
     if config is not None:
         try:
@@ -684,7 +684,7 @@ def generate_html_report(
         except (AttributeError, ValueError):
             config_json = None
 
-    # ---- Render
+    #  Render
     env = Environment(autoescape=select_autoescape(["html"]))
     template = env.from_string(_TEMPLATE_SRC)
 

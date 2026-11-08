@@ -24,9 +24,9 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-# ---------------------------------------------------------------------------
+
 # Dependency error
-# ---------------------------------------------------------------------------
+
 
 
 class ReportingDependencyError(ImportError):
@@ -51,9 +51,9 @@ def _require_plotly():
         ) from exc
 
 
-# ---------------------------------------------------------------------------
+
 # Data builders (no plotly dependency)
-# ---------------------------------------------------------------------------
+
 
 
 def confusion_matrix_data(
@@ -264,9 +264,9 @@ def experiment_comparison_data(
     }
 
 
-# ---------------------------------------------------------------------------
+
 # SVG renderers (require plotly)
-# ---------------------------------------------------------------------------
+
 
 _PLOTLY_COMMON = {
     "width": 520,

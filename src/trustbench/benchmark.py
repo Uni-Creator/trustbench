@@ -28,7 +28,7 @@ def _wrap_model(model: Any, **kwargs: Any) -> ModelAdapter:
         ) from exc
 
     if isinstance(model, nn.Module):
-        num_classes: int | None = kwargs.get("num_classes")
+        num_classes = kwargs.get("num_classes")
         if num_classes is None:
             raise ValueError(
                 "Pass num_classes=<int> when providing a raw nn.Module to TrustBench."
@@ -36,8 +36,24 @@ def _wrap_model(model: Any, **kwargs: Any) -> ModelAdapter:
         device = kwargs.get("device")
         return PyTorchModelAdapter(model, num_classes=num_classes, device=device)
 
+    # Scikit-learn estimator
+    if hasattr(model, "predict") and hasattr(model, "fit"):
+        from trustbench.models.sklearn import SklearnModelAdapter
+
+        task = kwargs.get("task", "classification")
+        num_classes = kwargs.get("num_classes")
+        return SklearnModelAdapter(model, num_classes=num_classes, task=task)
+
+    # ONNX InferenceSession
+    if hasattr(model, "run") and hasattr(model, "get_inputs"):
+        from trustbench.models.onnx import ONNXModelAdapter
+
+        num_classes = kwargs.get("num_classes", 2)
+        task = kwargs.get("task", "classification")
+        return ONNXModelAdapter(model, num_classes=num_classes, task=task)
+
     raise TypeError(
-        f"model must be a ModelAdapter or nn.Module, got {type(model).__name__}."
+        f"model must be a ModelAdapter, nn.Module, scikit-learn estimator, or ONNX session, got {type(model).__name__}."
     )
 
 
@@ -121,9 +137,9 @@ class TrustBench:
         self._seed = seed
         self._output_dir = Path(output_dir) if output_dir is not None else None
 
-    # ------------------------------------------------------------------
+    
     # Class-method constructor from config
-    # ------------------------------------------------------------------
+    
 
     @classmethod
     def from_config(cls, config_path: str | Path) -> TrustBench:
@@ -147,7 +163,7 @@ class TrustBench:
         dcfg = cfg.dataset
         rcfg = cfg.reporting
 
-        # ----- Model -----
+        #  Model 
         if mcfg.checkpoint_path is None:
             raise ValueError(
                 "config.model.checkpoint_path is required for TrustBench.from_config()."
@@ -165,12 +181,18 @@ class TrustBench:
             nn_module, num_classes=mcfg.num_classes, device=mcfg.device
         )
 
-        # ----- Dataset -----
+        #  Dataset 
         dataset_adapter = cls._build_dataset_from_config(cfg)
 
         output_dir: Path | None = Path(
             cfg.resolve_path(rcfg.output_dir)
         )
+
+        class_names = None
+        if dcfg.dataset_type.lower() == "cifar10":
+            from trustbench.datasets.cifar10 import CIFAR10_CLASSES
+
+            class_names = list(CIFAR10_CLASSES)
 
         return cls(
             model_adapter,
@@ -179,6 +201,7 @@ class TrustBench:
             batch_size=dcfg.batch_size,
             seed=cfg.seed,
             output_dir=output_dir,
+            class_names=class_names,
         )
 
     @staticmethod
@@ -207,9 +230,9 @@ class TrustBench:
             "Supported types: 'cifar10'."
         )
 
-    # ------------------------------------------------------------------
+    
     # Evaluation
-    # ------------------------------------------------------------------
+    
 
     def evaluate(self) -> EvaluationResult:
         """Run the full evaluation pipeline and return an :class:`EvaluationResult`.
@@ -235,3 +258,7 @@ class TrustBench:
             save_result(result, self._output_dir)
 
         return result
+
+    def run(self) -> EvaluationResult:
+        """Alias for :meth:`evaluate`."""
+        return self.evaluate()

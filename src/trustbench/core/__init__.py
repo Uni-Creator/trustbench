@@ -2,6 +2,7 @@
 
 from trustbench.core.evaluator import evaluate
 from trustbench.core.exceptions import (
+    SecurityError,
     ShapeError,
     TrustBenchError,
     UnsupportedCapabilityError,
@@ -18,6 +19,7 @@ __all__ = [
     "DatasetAdapter",
     "EvaluationResult",
     "ModelAdapter",
+    "SecurityError",
     "ShapeError",
     "TrustBenchError",
     "UnsupportedCapabilityError",

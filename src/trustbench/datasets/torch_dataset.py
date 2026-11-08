@@ -45,9 +45,9 @@ class TorchDatasetAdapter(DatasetAdapter):
         self._n = n
         self._labels_cache: np.ndarray | None = None
 
-    # ------------------------------------------------------------------
+    
     # Protocol implementation
-    # ------------------------------------------------------------------
+    
 
     def __len__(self) -> int:
         return self._n

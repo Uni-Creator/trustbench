@@ -24,12 +24,23 @@ from trustbench.evaluation.error_detection import (
     compute_fpr_at_tpr,
     compute_slice_error_rates,
 )
+from trustbench.evaluation.fairness import compute_fairness_metrics
+from trustbench.evaluation.regression import RegressionResult, evaluate_regression
+from trustbench.evaluation.retrieval import RetrievalResult, evaluate_retrieval
+from trustbench.evaluation.segmentation import (
+    SegmentationResult,
+    evaluate_segmentation,
+)
 from trustbench.evaluation.selective import (
     compute_optimal_aurc,
     compute_risk_coverage,
     compute_selective_prediction_metrics,
     get_coverage_at_risk,
     get_risk_at_coverage,
+)
+from trustbench.evaluation.streaming import (
+    METRIC_RETENTION_REQUIREMENTS,
+    StreamingMetricTracker,
 )
 from trustbench.evaluation.uncertainty import (
     apply_temperature_scaling,
@@ -41,10 +52,18 @@ from trustbench.evaluation.uncertainty import (
     evaluate_mc_dropout,
     fit_temperature,
 )
+from trustbench.metrics.regression import compute_regression_metrics
+from trustbench.metrics.retrieval import compute_retrieval_metrics
+from trustbench.metrics.segmentation import compute_segmentation_metrics
 
 __all__ = [
+    "METRIC_RETENTION_REQUIREMENTS",
     "IndexedDataset",
+    "RegressionResult",
+    "RetrievalResult",
+    "SegmentationResult",
     "ShiftType",
+    "StreamingMetricTracker",
     "apply_temperature_scaling",
     "compute_adaptive_ece",
     "compute_balanced_accuracy",
@@ -55,14 +74,18 @@ __all__ = [
     "compute_energy_scores",
     "compute_ensemble_uncertainties",
     "compute_error_detection_metrics",
+    "compute_fairness_metrics",
     "compute_fpr_at_tpr",
     "compute_label_distribution_shift",
     "compute_nll",
     "compute_ood_detection_metrics",
     "compute_optimal_aurc",
     "compute_predictive_entropy",
+    "compute_regression_metrics",
     "compute_reliability_diagram_data",
+    "compute_retrieval_metrics",
     "compute_risk_coverage",
+    "compute_segmentation_metrics",
     "compute_selective_prediction_metrics",
     "compute_slice_error_rates",
     "compute_tv_distance",
@@ -70,6 +93,9 @@ __all__ = [
     "evaluate_deep_ensemble",
     "evaluate_distribution_shift",
     "evaluate_mc_dropout",
+    "evaluate_regression",
+    "evaluate_retrieval",
+    "evaluate_segmentation",
     "fit_temperature",
     "get_coverage_at_risk",
     "get_environment_info",

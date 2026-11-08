@@ -61,7 +61,9 @@ class PyTorchModelAdapter(ModelAdapter):
             tensor = inputs
         else:
             tensor = torch.as_tensor(inputs)
-        return tensor.to(self._device)
+        if tensor.device != self._device:
+            tensor = tensor.to(self._device, non_blocking=True)
+        return tensor
 
     def _validate_logits(self, outputs: torch.Tensor, batch_size: int) -> torch.Tensor:
         if outputs.ndim != 2:
@@ -89,13 +91,24 @@ class PyTorchModelAdapter(ModelAdapter):
         return logits.detach().cpu().float().numpy()
 
     def predict_proba(self, inputs: Any) -> np.ndarray:
-        logits = self.predict_logits(inputs)
-        logits_t = torch.from_numpy(logits)
-        return torch.softmax(logits_t, dim=1).numpy()
+        tensor = self._to_tensor(inputs)
+        batch_size = int(tensor.shape[0])
+        self._model.eval()
+        with torch.inference_mode():
+            outputs = self._model(tensor)
+        logits = self._validate_logits(outputs, batch_size)
+        probs = torch.softmax(logits, dim=1)
+        return probs.detach().cpu().float().numpy()
 
     def predict(self, inputs: Any) -> np.ndarray:
-        logits = self.predict_logits(inputs)
-        return np.argmax(logits, axis=1)
+        tensor = self._to_tensor(inputs)
+        batch_size = int(tensor.shape[0])
+        self._model.eval()
+        with torch.inference_mode():
+            outputs = self._model(tensor)
+        logits = self._validate_logits(outputs, batch_size)
+        preds = torch.argmax(logits, dim=1)
+        return preds.detach().cpu().numpy()
 
 
 class IndexedDataset(Dataset):
