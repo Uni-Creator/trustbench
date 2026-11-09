@@ -92,6 +92,12 @@ dev = [
     "mypy>=2.4.0",
     "pytest>=9.1.1",
     "ruff>=0.17.2",
+
+    # Dependencies required by the test suite
+    "fastapi>=0.100.0",
+    "sqlalchemy>=2.0.0",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
 ]
 
 [tool.ruff.lint]

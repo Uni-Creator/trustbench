@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Code Quality (Ruff)
@@ -18,12 +21,15 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
+          cache-dependency-glob: uv.lock
 
-      - name: Set up Python
-        run: uv python install 3.11
+      - name: Install Python and dependencies
+        run: |
+          uv python install 3.11
+          uv sync --locked --python 3.11 --group dev
 
-      - name: Run Ruff Linter
-        run: uv run ruff check src/ tests/
+      - name: Run Ruff
+        run: uv run --no-sync ruff check src/ tests/
 
   typecheck:
     name: Type Checking (Mypy)
@@ -36,21 +42,26 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
+          cache-dependency-glob: uv.lock
 
-      - name: Set up Python
-        run: uv python install 3.11
+      - name: Install Python and dependencies
+        run: |
+          uv python install 3.11
+          uv sync --locked --python 3.11 --group dev
 
       - name: Run Mypy
-        run: uv run mypy src/trustbench/core src/trustbench/reporting src/trustbench/metrics --ignore-missing-imports
+        run: |
+          uv run --no-sync mypy src/trustbench/core src/trustbench/reporting src/trustbench/metrics --ignore-missing-imports
 
   test:
     name: Test Suite (Python ${{ matrix.python-version }})
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
         python-version: ["3.11", "3.12"]
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -59,12 +70,15 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
+          cache-dependency-glob: uv.lock
 
-      - name: Set up Python ${{ matrix.python-version }}
-        run: uv python install ${{ matrix.python-version }}
+      - name: Install Python and dependencies
+        run: |
+          uv python install ${{ matrix.python-version }}
+          uv sync --locked --python ${{ matrix.python-version }} --group dev
 
       - name: Run Pytest
-        run: uv run pytest --tb=short -q
+        run: uv run --no-sync pytest --tb=short -q
 
   build-and-verify:
     name: Package Build & Install Verification
@@ -77,15 +91,18 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
+          cache-dependency-glob: uv.lock
 
-      - name: Set up Python
+      - name: Install Python
         run: uv python install 3.11
 
-      - name: Build Wheel & Source Distribution
+      - name: Build Wheel and Source Distribution
         run: uv build
 
       - name: Install Wheel in Isolated Environment
         run: |
-          uv venv /tmp/test-env
-          uv pip install --python /tmp/test-env dist/*.whl
-          /tmp/test-env/bin/trustbench version
+          uv venv --python 3.11 /tmp/test-env
+          uv pip install --python /tmp/test-env/bin/python dist/*.whl
+
+      - name: Verify Installed CLI
+        run: /tmp/test-env/bin/trustbench version

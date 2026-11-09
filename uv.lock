@@ -2837,10 +2837,14 @@ torch = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "fastapi" },
     { name = "httpx" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "ruff" },
+    { name = "sqlalchemy" },
+    { name = "torch" },
+    { name = "torchvision" },
 ]
 
 [package.metadata]
@@ -2870,10 +2874,14 @@ provides-extras = ["torch", "pytorch", "storage", "api", "reporting", "onnx", "t
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "fastapi", specifier = ">=0.100.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mypy", specifier = ">=2.4.0" },
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "ruff", specifier = ">=0.17.2" },
+    { name = "sqlalchemy", specifier = ">=2.0.0" },
+    { name = "torch", specifier = ">=2.0.0" },
+    { name = "torchvision", specifier = ">=0.15.0" },
 ]
 
 [[package]]
