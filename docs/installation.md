@@ -32,9 +32,9 @@ Install framework and feature bundles depending on your requirements:
 | **ONNX Runtime** | `pip install "trustbench[onnx]"` | ONNX session execution (`onnxruntime`) on CPU or CUDA |
 | **TensorFlow** | `pip install "trustbench[tensorflow]"` | Keras and TensorFlow model adapters |
 | **JAX** | `pip install "trustbench[jax]"` | JAX/Flax functional inference adapters |
-| **Storage & API** | `pip install "trustbench[storage]"` | SQLite/PostgreSQL persistence (`sqlalchemy`), FastAPI REST server |
+| **Storage** | `pip install "trustbench[storage]"` | SQLite/PostgreSQL persistence (`sqlalchemy`) |
+| **API** | `pip install "trustbench[api]"` | FastAPI REST server and uvicorn runner |
 | **Reporting** | `pip install "trustbench[reporting]"` | Interactive Plotly HTML reporting and diagnostic charts |
-| **Dashboard** | `pip install "trustbench[dashboard]"` | Streamlit interactive evaluation dashboard |
 | **Everything** | `pip install "trustbench[all]"` | Installs all optional frameworks and extras |
 
 ---

@@ -122,14 +122,3 @@ class DLA(nn.Module):
         out = self.linear(out)
         return out
 
-
-def test():
-    net = DLA()
-    print(net)
-    x = torch.randn(1, 3, 32, 32)
-    y = net(x)
-    print(y.size())
-
-
-if __name__ == '__main__':
-    test()

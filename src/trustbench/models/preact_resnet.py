@@ -4,7 +4,6 @@ Reference:
 [1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
     Identity Mappings in Deep Residual Networks. arXiv:1603.05027
 '''
-import torch
 import torch.nn.functional as F
 from torch import nn
 
@@ -107,12 +106,5 @@ def PreActResNet101():
     return PreActResNet(PreActBottleneck, [3,4,23,3])
 
 def PreActResNet152():
-    return PreActResNet(PreActBottleneck, [3,8,36,3])
+    return PreActResNet(PreActBottleneck, [3, 8, 36, 3])
 
-
-def test():
-    net = PreActResNet18()
-    y = net(torch.randn(1,3,32,32))
-    print(y.size())
-
-# test()

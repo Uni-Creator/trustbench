@@ -15,8 +15,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from utils import progress_bar
 
-from trustbench.data.cifar10 import CIFAR10_CLASSES, get_cifar10_loaders
-from trustbench.models import *
+from trustbench.datasets.cifar10 import CIFAR10_CLASSES, get_cifar10_loaders
+from trustbench.models.checkpoint import resolve_model_architecture
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
@@ -38,12 +38,7 @@ classes = CIFAR10_CLASSES
 
 # Model
 print(f'==> Building model ({args.model})..')
-if args.model.startswith('VGG'):
-    net = VGG(args.model)
-elif args.model in globals():
-    net = globals()[args.model]()
-else:
-    raise ValueError(f"Unknown model architecture: {args.model}")
+net = resolve_model_architecture(args.model)
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)

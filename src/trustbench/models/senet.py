@@ -2,7 +2,6 @@
 
 SENet is the winner of ImageNet-2017. The paper is not released yet.
 '''
-import torch
 import torch.nn.functional as F
 from torch import nn
 
@@ -110,12 +109,5 @@ class SENet(nn.Module):
 
 
 def SENet18():
-    return SENet(PreActBlock, [2,2,2,2])
+    return SENet(PreActBlock, [2, 2, 2, 2])
 
-
-def test():
-    net = SENet18()
-    y = net(torch.randn(1,3,32,32))
-    print(y.size())
-
-# test()
