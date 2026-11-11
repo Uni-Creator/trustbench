@@ -17,6 +17,7 @@
 TrustBench is a framework-independent machine learning evaluation library designed to measure how reliable models remain under distribution shifts, input corruptions, calibration failures, and algorithmic bias.
 
 Traditional model evaluation focuses almost exclusively on accuracy. TrustBench investigates whether models remain reliable in deployment:
+
 - **Calibration**: Does predicted confidence reflect the true probability of correctness?
 - **Robustness**: How gracefully does performance degrade under physical, digital, and environmental corruptions?
 - **Uncertainty & Error Detection**: Can predictive entropy and free energy identify incorrect predictions before downstream failures occur?

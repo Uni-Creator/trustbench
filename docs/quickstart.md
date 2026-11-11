@@ -75,3 +75,8 @@ result = evaluate_regression(reg, dataset)
 print(f"MAE: {result.metrics['mae']:.3f}")
 print(f"R²:  {result.metrics['r2']:.3f}")
 ```
+
+> [!NOTE]
+> **Prediction Intervals & Uncertainty (PICP / MPIW)**:
+> Standard point regressors like `Ridge` produce scalar predictions without variance estimates, so interval metrics (`picp_95`, `mpiw_95`) are omitted. When evaluating probabilistic models (such as Gaussian Processes, deep ensembles, or custom adapters exposing `predict_uncertainty(inputs)`), TrustBench automatically extracts predictive standard deviations $\sigma$ and computes 95% coverage (`picp_95`) and interval width (`mpiw_95`).
+

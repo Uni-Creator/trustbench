@@ -74,16 +74,22 @@ from trustbench.models.onnx import ONNXModelAdapter
 adapter = ONNXModelAdapter("model.onnx", num_classes=10)
 ```
 
-### 4. Keras / TensorFlow (`KerasModelAdapter`)
+### 4. Keras / TensorFlow (`KerasModelAdapter`) *(Experimental)*
 Wraps `tf.keras.Model` or `keras.Model` instances.
+
+> [!NOTE]
+> The Keras adapter is currently experimental. Ensure TensorFlow or Keras 3 is installed via `pip install "trustbench[tensorflow]"`.
 
 ```python
 from trustbench.models.keras import KerasModelAdapter
 adapter = KerasModelAdapter(keras_model, num_classes=10)
 ```
 
-### 5. JAX / Flax (`JAXModelAdapter`)
+### 5. JAX / Flax (`JAXModelAdapter`) *(Experimental)*
 Wraps functional models via `apply_fn(params, inputs)`.
+
+> [!NOTE]
+> The JAX adapter is currently experimental. Ensure JAX and Flax are installed via `pip install "trustbench[jax]"`.
 
 ```python
 from trustbench.models.jax import JAXModelAdapter

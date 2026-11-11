@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -31,4 +33,5 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          uv run --no-sync mkdocs gh-deploy --force
+          uv run --no-sync --group docs mike deploy --push --update-aliases 0.2 latest
+          uv run --no-sync --group docs mike set-default --push latest
