@@ -1,0 +1,1425 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Evaluation framework for ML model reliability, robustness, uncertainty, and fairness.">
+      
+      
+        <meta name="author" content="Uni-Creator">
+      
+      
+        <link rel="canonical" href="https://uni-creator.github.io/trustbench/0.2/internal/EXAMPLE_INTEGRATION_AUDIT/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>TrustBench Example Integration Audit - TrustBench</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#trustbench-example-integration-audit" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="TrustBench" class="md-header__button md-logo" aria-label="TrustBench" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TrustBench
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TrustBench Example Integration Audit
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Uni-Creator/trustbench" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Uni-Creator/trustbench
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="TrustBench" class="md-nav__button md-logo" aria-label="TrustBench" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    TrustBench
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Uni-Creator/trustbench" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Uni-Creator/trustbench
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../model-adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Adapters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataset-adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dataset Adapters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../robustness/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Robustness & Corruptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiment Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reporting & Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Community
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Community
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Executive Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-1-calibration-analysis-examples04_analyze_calibrationpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 1: Calibration Analysis (examples/04_analyze_calibration.py)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Finding 1: Calibration Analysis (examples/04_analyze_calibration.py)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-root-cause-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Root Cause Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-fixes-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Fixes &amp; Improvements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-2-uncertainty-error-detection-examples05_evaluate_uncertaintypy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 2: Uncertainty &amp; Error Detection (examples/05_evaluate_uncertainty.py)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Finding 2: Uncertainty &amp; Error Detection (examples/05_evaluate_uncertainty.py)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-root-cause-analysis_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Root Cause Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-fixes-improvements_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Fixes &amp; Improvements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-3-checkpoint-comparison-examples06_compare_checkpointspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 3: Checkpoint Comparison (examples/06_compare_checkpoints.py)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Finding 3: Checkpoint Comparison (examples/06_compare_checkpoints.py)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-root-cause-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Root Cause Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-fixes-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Fixes &amp; Improvements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-4-assertions-added-across-all-9-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 4: Assertions Added Across All 9 Examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-regression-test-suite-testsunittest_example_integration_auditpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Regression Test Suite (tests/unit/test_example_integration_audit.py)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification Results
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verification Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorial-script-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutorial Script Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations-methodological-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known Limitations &amp; Methodological Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="trustbench-example-integration-audit">TrustBench Example Integration Audit<a class="headerlink" href="#trustbench-example-integration-audit" title="Permanent link">&para;</a></h1>
+<p><strong>Date:</strong> 2026-11-09<br />
+<strong>Version:</strong> 0.2.0<br />
+<strong>Scope:</strong> Numerical correctness, API adherence, and regression verification across all 9 tutorial examples (<code>examples/01_*.py</code> through <code>examples/09_*.py</code>).</p>
+<hr />
+<h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">&para;</a></h2>
+<p>An exhaustive numerical and structural audit was conducted on TrustBench's 9 tutorial examples and their underlying evaluation modules. While all scripts were syntactically executable, the audit investigated three key numerical findings:</p>
+<ol>
+<li><strong>Calibration Analysis (<code>examples/04_analyze_calibration.py</code>)</strong>: Reached the temperature optimization boundary (<span class="arithmatex">\(T = 10.000\)</span>) and previously lacked train/validation separation.</li>
+<li><strong>Uncertainty &amp; Error Detection (<code>examples/05_evaluate_uncertainty.py</code>)</strong>: Observed an AUROC of 0.4835, raising questions regarding score direction and random signal behavior.</li>
+<li><strong>Checkpoint Comparison (<code>examples/06_compare_checkpoints.py</code>)</strong>: Printed raw dictionary keys rather than formatted metric deltas due to an argument and schema mismatch with <code>ExperimentComparator.compare()</code>.</li>
+</ol>
+<p>All root causes were diagnosed, fixed, and verified without breaking public API contracts or weakening tests. Structural and numerical assertions were added across all 9 example scripts, and 10 new regression tests were added to the test suite (<code>tests/unit/test_example_integration_audit.py</code>). All 204 tests pass and Ruff checks pass with zero errors.</p>
+<hr />
+<h2 id="finding-1-calibration-analysis-examples04_analyze_calibrationpy">Finding 1: Calibration Analysis (<code>examples/04_analyze_calibration.py</code>)<a class="headerlink" href="#finding-1-calibration-analysis-examples04_analyze_calibrationpy" title="Permanent link">&para;</a></h2>
+<h3 id="11-root-cause-analysis">1.1 Root Cause Analysis<a class="headerlink" href="#11-root-cause-analysis" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Temperature Scaling Objective:</strong><br />
+<code>fit_temperature(val_logits, val_labels)</code> in <code>src/trustbench/evaluation/uncertainty.py</code> minimizes negative log-likelihood (NLL) using <code>scipy.optimize.minimize(..., method="L-BFGS-B", bounds=[(0.01, 10.0)])</code>.</li>
+<li><strong>Upper Bound Reached (<span class="arithmatex">\(T = 10.000\)</span>):</strong><br />
+  In the original example, logits were simulated as <span class="arithmatex">\(z \sim \mathcal{N}(0, 3^2)\)</span> with uniform random labels. High-variance logits create extreme overconfidence (softmax probabilities approaching 1.0 even though the accuracy on random labels is only <span class="arithmatex">\(\approx 20\%\)</span>). To flatten these peaky distributions and minimize NLL toward a uniform distribution, the optimizer drives <span class="arithmatex">\(T \to \infty\)</span>. The upper bound of 10.0 is deliberately hit as a safety ceiling. This is mathematically correct behavior for overconfident logits and is not an implementation bug.</li>
+<li><strong>Methodological Issue in Example:</strong><br />
+  The original example used the exact same 200 samples to fit the temperature and compute post-calibration metrics, violating the fundamental principle of held-out calibration.</li>
+</ul>
+<h3 id="12-fixes-improvements">1.2 Fixes &amp; Improvements<a class="headerlink" href="#12-fixes-improvements" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Held-Out Calibration Split:</strong><br />
+   Split data into distinct calibration (150 samples) and evaluation (150 samples) subsets. Temperature is fitted strictly on the calibration set and evaluated on the evaluation set.</li>
+<li><strong>Moderate Variance Logits + Boundary Demonstration:</strong><br />
+   The primary demonstration uses realistic logits (<span class="arithmatex">\(\sigma = 1.5\)</span>), demonstrating expected calibration behavior. A secondary section explicitly illustrates the high-variance boundary behavior (<span class="arithmatex">\(\sigma = 3.0\)</span>), documenting why <span class="arithmatex">\(T = 10.0\)</span> is reached.</li>
+<li><strong>Assertions:</strong><br />
+   Added range assertions on ECE (<span class="arithmatex">\([0, 1]\)</span>), Adaptive ECE (<span class="arithmatex">\([0, 1]\)</span>), Brier score (<span class="arithmatex">\(\ge 0\)</span>), and temperature (<span class="arithmatex">\(&gt; 0\)</span>).</li>
+</ol>
+<hr />
+<h2 id="finding-2-uncertainty-error-detection-examples05_evaluate_uncertaintypy">Finding 2: Uncertainty &amp; Error Detection (<code>examples/05_evaluate_uncertainty.py</code>)<a class="headerlink" href="#finding-2-uncertainty-error-detection-examples05_evaluate_uncertaintypy" title="Permanent link">&para;</a></h2>
+<h3 id="11-root-cause-analysis_1">1.1 Root Cause Analysis<a class="headerlink" href="#11-root-cause-analysis_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>AUROC Value of 0.4835:</strong><br />
+  The example simulated both logits and labels independently and uniformly at random. In this setting, the model predictions are uncorrelated with true labels (pure noise), and the entropy of the random softmax output provides zero predictive mutual information regarding correctness. The theoretical expected AUROC is <span class="arithmatex">\(0.50 \pm \text{sampling noise}\)</span>. An empirical AUROC of 0.4835 over 300 samples is within normal random deviation (<span class="arithmatex">\(\sigma \approx 0.035\)</span>) and does not indicate an inverted convention.</li>
+<li><strong>Score Direction Verification:</strong><br />
+<code>compute_binary_detection_curve(y_true_binary, uncertainty_scores)</code> defines <span class="arithmatex">\(y = 1\)</span> as errors and <span class="arithmatex">\(y = 0\)</span> as correct. Higher uncertainty scores indicate higher likelihood of error. Predictive entropy <span class="arithmatex">\(H(p) \ge 0\)</span> increases as probabilities become uniform (high uncertainty), which correctly aligns with the positive class (<span class="arithmatex">\(y = 1\)</span>).</li>
+<li><strong>Selective Prediction &amp; Optimal AURC:</strong><br />
+<code>compute_optimal_aurc(n_samples, n_errors)</code> implements the theoretical minimum risk-coverage area under perfect uncertainty ranking:
+  $<span class="arithmatex">\(\text{AURC}^* = \frac{1}{N} \sum_{k=N-E+1}^N \left(1 - \frac{N-E}{k}\right)\)</span>$
+  Verified to be monotonically increasing in error count and bounded in <span class="arithmatex">\([0, 1]\)</span>.</li>
+</ul>
+<h3 id="12-fixes-improvements_1">1.2 Fixes &amp; Improvements<a class="headerlink" href="#12-fixes-improvements_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Documented Noise Behavior:</strong><br />
+   Clarified in docstrings and console output that an AUROC <span class="arithmatex">\(\approx 0.5\)</span> on random data is mathematically expected.</li>
+<li><strong>Deterministic Signal Validation:</strong><br />
+   Added a deterministic verification block containing 50 confident-correct samples (<span class="arithmatex">\(p_0 = 0.97, y = 0, \hat{y} = 0\)</span>) and 50 uncertain-wrong samples (<span class="arithmatex">\(p = 0.25, y = 0, \hat{y} = 1\)</span>). Verified that AUROC achieves <span class="arithmatex">\(1.0000\)</span> and FPR@95%TPR achieves <span class="arithmatex">\(0.0000\)</span>.</li>
+<li><strong>Assertions:</strong><br />
+   Added assertions for AUROC bounds, non-negativity of entropy and energy, and that <span class="arithmatex">\(\text{AURC} \ge \text{Optimal AURC}\)</span> (<span class="arithmatex">\(\text{Excess AURC} \ge 0\)</span>).</li>
+</ol>
+<hr />
+<h2 id="finding-3-checkpoint-comparison-examples06_compare_checkpointspy">Finding 3: Checkpoint Comparison (<code>examples/06_compare_checkpoints.py</code>)<a class="headerlink" href="#finding-3-checkpoint-comparison-examples06_compare_checkpointspy" title="Permanent link">&para;</a></h2>
+<h3 id="31-root-cause-analysis">3.1 Root Cause Analysis<a class="headerlink" href="#31-root-cause-analysis" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>API Calling Convention:</strong><br />
+<code>ExperimentComparator.compare()</code> signature is:
+  <code>compare(experiments: list[...], conditions: list[str] | None = None, ...)</code>
+  The example originally invoked <code>comparator.compare(exp_a, exp_b)</code>, passing <code>exp_b</code> as the <code>conditions</code> argument rather than passing a list <code>[exp_a, exp_b]</code>.</li>
+<li><strong>Output Schema Mismatch:</strong><br />
+<code>compare()</code> returns a structured dictionary:</li>
+<li><code>experiment_ids</code>: list of experiment identifiers</li>
+<li><code>experiment_names</code>: mapping of id to display name</li>
+<li><code>checkpoints</code>: mapping of id to checkpoint hash</li>
+<li><code>conditions</code>: list of evaluated conditions (e.g., <code>["Clean"]</code>)</li>
+<li><code>metrics</code>: list of metric names</li>
+<li><code>comparison_table</code>: nested dictionary <code>{condition: {metric: {exp_id: value}}}</code></li>
+<li><code>deltas</code>: nested dictionary <code>{condition: {metric: {absolute_difference, relative_percent_change, preferred}}}</code>
+  The example was iterating over the top-level keys (<code>diff.items()</code>), treating <code>experiment_names</code>, <code>checkpoints</code>, and <code>deltas</code> as metric groups, resulting in empty or nonsensical output.</li>
+<li><strong>Metric Grouping Convention:</strong><br />
+  Scalar summary metrics must be placed under <code>"summary"</code> within the experiment record's <code>metrics</code> dictionary to be evaluated under the <code>"Clean"</code> condition.</li>
+</ul>
+<h3 id="32-fixes-improvements">3.2 Fixes &amp; Improvements<a class="headerlink" href="#32-fixes-improvements" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Passed <code>[exp_a, exp_b]</code> as a list to <code>comparator.compare()</code>.</li>
+<li>Formatted experiment inputs with <code>metrics: {"summary": {...}}</code>.</li>
+<li>Rewrote the display logic to cleanly format:</li>
+<li>Per-condition absolute metric values across both models.</li>
+<li>Differentials (absolute difference, relative percentage change, preferred candidate).</li>
+<li>Added assertions verifying delta computations and candidate preference direction.</li>
+</ol>
+<hr />
+<h2 id="finding-4-assertions-added-across-all-9-examples">Finding 4: Assertions Added Across All 9 Examples<a class="headerlink" href="#finding-4-assertions-added-across-all-9-examples" title="Permanent link">&para;</a></h2>
+<p>Every tutorial script in <code>examples/</code> now contains runtime assertions ensuring numerical bounds and structural invariants:</p>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Added Assertions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>examples/01_evaluate_pytorch_model.py</code></td>
+<td><code>0.0 &lt;= accuracy &lt;= 1.0</code>, <code>0.0 &lt;= macro_f1 &lt;= 1.0</code>, <code>0.0 &lt;= ece &lt;= 1.0</code>, <code>brier_score &gt;= 0.0</code></td>
+</tr>
+<tr>
+<td><code>examples/02_evaluate_cifar10.py</code></td>
+<td><code>0.0 &lt;= accuracy &lt;= 1.0</code>, <code>0.0 &lt;= macro_f1 &lt;= 1.0</code></td>
+</tr>
+<tr>
+<td><code>examples/03_robustness_benchmark.py</code></td>
+<td><code>0.0 &lt;= acc1 &lt;= 100.0</code>, <code>0.0 &lt;= acc3 &lt;= 100.0</code></td>
+</tr>
+<tr>
+<td><code>examples/04_analyze_calibration.py</code></td>
+<td><code>0.0 &lt;= uncal_ece &lt;= 1.0</code>, <code>0.0 &lt;= adapt_ece &lt;= 1.0</code>, <code>brier &gt;= 0.0</code>, <code>optimal_temp &gt; 0</code>, <code>0.0 &lt;= cal_ece &lt;= 1.0</code>, <code>len(diagram_bins) == 5</code></td>
+</tr>
+<tr>
+<td><code>examples/05_evaluate_uncertainty.py</code></td>
+<td><code>entropy &gt;= 0.0</code>, <code>0.0 &lt;= max_prob &lt;= 1.0</code>, <code>0.0 &lt;= auroc &lt;= 1.0</code>, <code>signal_auroc &gt;= 0.9</code>, <code>aurc &gt;= optimal_aurc</code>, <code>excess_aurc &gt;= 0.0</code></td>
+</tr>
+<tr>
+<td><code>examples/06_compare_checkpoints.py</code></td>
+<td><code>"comparison_table" in result</code>, <code>len(result["deltas"]) &gt; 0</code>, <code>accuracy diff &gt; 0.0</code>, <code>ece diff &lt; 0.0</code></td>
+</tr>
+<tr>
+<td><code>examples/07_save_and_reproduce_experiment.py</code></td>
+<td><code>retrieved is not None</code>, artifact checksum integrity <code>assert is_valid</code>, artifact record count</td>
+</tr>
+<tr>
+<td><code>examples/08_create_custom_metric.py</code></td>
+<td><code>0.0 &lt;= accuracy &lt;= 1.0</code>, <code>0.0 &lt;= geometric_mean_accuracy &lt;= 1.0</code></td>
+</tr>
+<tr>
+<td><code>examples/09_create_custom_model_adapter.py</code></td>
+<td><code>isinstance(model, ModelAdapter)</code>, <code>0.0 &lt;= accuracy &lt;= 1.0</code>, <code>brier_score &gt;= 0.0</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="new-regression-test-suite-testsunittest_example_integration_auditpy">New Regression Test Suite (<code>tests/unit/test_example_integration_audit.py</code>)<a class="headerlink" href="#new-regression-test-suite-testsunittest_example_integration_auditpy" title="Permanent link">&para;</a></h2>
+<p>10 dedicated unit tests were implemented:</p>
+<ol>
+<li><code>test_hand_computed_calibration_metrics</code>: Hand-verified Brier score (<span class="arithmatex">\(0.6500\)</span>) and Adaptive ECE (<span class="arithmatex">\(0.2500\)</span>) on a 4-sample synthetic dataset.</li>
+<li><code>test_temperature_scaling_converges_for_well_calibrated_logits</code>: Verified <span class="arithmatex">\(T \approx 1.0\)</span> (<span class="arithmatex">\(0.7 &lt; T &lt; 1.4\)</span>) on logits generated by a true logistic model.</li>
+<li><code>test_temperature_scaling_boundary_behavior</code>: Verified safe optimization bounded at <span class="arithmatex">\(T \le 10.0\)</span> without NaNs or divergence on extreme overconfident logits.</li>
+<li><code>test_held_out_calibration_separation</code>: Validated calibration fitting on split A and evaluation on split B.</li>
+<li><code>test_perfect_error_detection_separation</code>: Validated <span class="arithmatex">\(\text{AUROC} = 1.0\)</span>, <span class="arithmatex">\(\text{FPR@95\%TPR} = 0.0\)</span>, and <span class="arithmatex">\(\text{Detection Error} = 0.0\)</span> for perfect signal.</li>
+<li><code>test_error_detection_against_sklearn</code>: Verified exact parity between <code>compute_binary_detection_curve</code> AUROC and <code>sklearn.metrics.roc_auc_score</code>.</li>
+<li><code>test_optimal_aurc_theoretical_properties</code>: Validated boundary cases (<span class="arithmatex">\(E=0 \to 0, E=N \to 1\)</span>), monotonicity, and hand calculation (<span class="arithmatex">\(N=4, E=2 \to 5/24 \approx 0.208333\)</span>).</li>
+<li><code>test_selective_prediction_excess_risk</code>: Verified <span class="arithmatex">\(\text{Excess AURC} \approx 0.0\)</span> and <span class="arithmatex">\(\text{AURC} = \text{Optimal AURC}\)</span> under optimal uncertainty ranking.</li>
+<li><code>test_checkpoint_comparison_schema_and_deltas</code>: Validated schema, relative percentage change, and metric optimization direction (<code>accuracy</code> <span class="arithmatex">\(\to\)</span> higher preferred; <code>ece</code> <span class="arithmatex">\(\to\)</span> lower preferred).</li>
+<li><code>test_checkpoint_comparison_empty_and_single</code>: Verified graceful handling of empty lists and single-experiment comparisons.</li>
+</ol>
+<hr />
+<h2 id="verification-results">Verification Results<a class="headerlink" href="#verification-results" title="Permanent link">&para;</a></h2>
+<h3 id="test-execution">Test Execution<a class="headerlink" href="#test-execution" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--tb<span class="o">=</span>short<span class="w"> </span>-q
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="m">204</span><span class="w"> </span>passed,<span class="w"> </span><span class="m">3</span><span class="w"> </span>warnings<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">8</span>.70s
+</span></code></pre></div>
+<h3 id="static-analysis">Static Analysis<a class="headerlink" href="#static-analysis" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>ruff<span class="w"> </span>check<span class="w"> </span>.
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>All<span class="w"> </span>checks<span class="w"> </span>passed!
+</span></code></pre></div>
+<h3 id="tutorial-script-execution">Tutorial Script Execution<a class="headerlink" href="#tutorial-script-execution" title="Permanent link">&para;</a></h3>
+<p>All 9 examples run to completion with status code 0:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/01_evaluate_pytorch_model.py
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/02_evaluate_cifar10.py
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/03_robustness_benchmark.py
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/04_analyze_calibration.py
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/05_evaluate_uncertainty.py
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/06_compare_checkpoints.py
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/07_save_and_reproduce_experiment.py
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/08_create_custom_metric.py
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/09_create_custom_model_adapter.py
+</span></code></pre></div></p>
+<hr />
+<h2 id="known-limitations-methodological-recommendations">Known Limitations &amp; Methodological Recommendations<a class="headerlink" href="#known-limitations-methodological-recommendations" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Synthetic vs. Real-World Calibration:</strong><br />
+   In synthetic experiments with random targets, temperature scaling will typically drive toward the maximum bound to minimize cross-entropy loss against high-entropy labels. When evaluating real models (e.g., ResNet on CIFAR-10), temperatures typically calibrate in the range <span class="arithmatex">\(T \in [1.1, 2.5]\)</span>.</li>
+<li><strong>Error Detection on Uninformative Representations:</strong><br />
+   AUROC measures the ranking capability of uncertainty scores relative to misclassifications. If a model's predictive entropy is uninformative regarding its failure modes, AUROC will be near <span class="arithmatex">\(0.50\)</span>. Users should evaluate multiple uncertainty metrics (MSP, Entropy, Energy, MC Dropout) to identify the best discriminator for their specific task.</li>
+<li><strong>Experiment Comparison Input Format:</strong><br />
+<code>ExperimentComparator.compare()</code> expects a <code>list</code> of experiment dictionaries or <code>ExperimentRecord</code> objects. Scalar metrics should be nested under <code>"summary"</code> for baseline comparison or under condition keys (e.g. corruption names) for multi-condition comparison.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

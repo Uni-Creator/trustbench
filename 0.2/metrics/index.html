@@ -1,0 +1,2303 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Evaluation framework for ML model reliability, robustness, uncertainty, and fairness.">
+      
+      
+        <meta name="author" content="Uni-Creator">
+      
+      
+        <link rel="canonical" href="https://uni-creator.github.io/trustbench/0.2/metrics/">
+      
+      
+        <link rel="prev" href="../cli/">
+      
+      
+        <link rel="next" href="../troubleshooting/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Metrics Catalog - TrustBench</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#metrics-reference-mathematical-definitions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="TrustBench" class="md-header__button md-logo" aria-label="TrustBench" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TrustBench
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Metrics Catalog
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Uni-Creator/trustbench" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Uni-Creator/trustbench
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="TrustBench" class="md-nav__button md-logo" aria-label="TrustBench" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    TrustBench
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Uni-Creator/trustbench" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Uni-Creator/trustbench
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model-adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Adapters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dataset-adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dataset Adapters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../robustness/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Robustness & Corruptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../experiments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiment Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reporting & Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics Catalog
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-classification-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Classification Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Classification Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-formulations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Formulations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-calibration-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Calibration Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Calibration Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-mathematical-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Mathematical Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-uncertainty-error-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Uncertainty &amp; Error Detection
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Uncertainty &amp; Error Detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-selective-prediction-risk-coverage-aurc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Selective Prediction &amp; Risk-Coverage (AURC)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Selective Prediction &amp; Risk-Coverage (AURC)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#coverage-range-curve-and-aurc-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coverage Range, Curve, and AURC Normalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-regression-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Regression Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Regression Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-conventions_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-information-retrieval-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Information Retrieval Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Information Retrieval Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-conventions_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-semantic-segmentation-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Semantic Segmentation Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Semantic Segmentation Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-conventions_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-algorithmic-fairness-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Algorithmic Fairness Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Algorithmic Fairness Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-zero-denominator-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Zero-Denominator Safety
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-interpretation-guide-diagnostic-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Interpretation Guide &amp; Diagnostic Playbook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Interpretation Guide &amp; Diagnostic Playbook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagnostic-rules-of-thumb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnostic Rules of Thumb
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metric-dynamics-which-metrics-move-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metric Dynamics: Which Metrics Move Together?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worked-examples-per-category" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked Examples per Category
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Worked Examples per Category">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-a-classification-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example A: Classification &amp; Calibration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-b-uncertainty-error-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example B: Uncertainty &amp; Error Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-c-selective-prediction-aurc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example C: Selective Prediction (AURC)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-d-algorithmic-fairness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example D: Algorithmic Fairness
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Community
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Community
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-classification-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Classification Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Classification Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-formulations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Formulations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-calibration-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Calibration Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Calibration Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-mathematical-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Mathematical Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-uncertainty-error-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Uncertainty &amp; Error Detection
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Uncertainty &amp; Error Detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-selective-prediction-risk-coverage-aurc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Selective Prediction &amp; Risk-Coverage (AURC)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Selective Prediction &amp; Risk-Coverage (AURC)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#coverage-range-curve-and-aurc-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coverage Range, Curve, and AURC Normalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-regression-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Regression Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Regression Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-conventions_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-information-retrieval-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Information Retrieval Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Information Retrieval Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-conventions_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-semantic-segmentation-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Semantic Segmentation Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Semantic Segmentation Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-conventions_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-algorithmic-fairness-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Algorithmic Fairness Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Algorithmic Fairness Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definitions-zero-denominator-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions &amp; Zero-Denominator Safety
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-reference-standard_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification &amp; Reference Standard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-interpretation-guide-diagnostic-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Interpretation Guide &amp; Diagnostic Playbook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Interpretation Guide &amp; Diagnostic Playbook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagnostic-rules-of-thumb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnostic Rules of Thumb
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metric-dynamics-which-metrics-move-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metric Dynamics: Which Metrics Move Together?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worked-examples-per-category" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked Examples per Category
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Worked Examples per Category">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-a-classification-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example A: Classification &amp; Calibration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-b-uncertainty-error-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example B: Uncertainty &amp; Error Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-c-selective-prediction-aurc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example C: Selective Prediction (AURC)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-d-algorithmic-fairness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example D: Algorithmic Fairness
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="metrics-reference-mathematical-definitions">Metrics Reference &amp; Mathematical Definitions<a class="headerlink" href="#metrics-reference-mathematical-definitions" title="Permanent link">&para;</a></h1>
+<p>TrustBench implements a comprehensive battery of evaluation metrics across classification, calibration, uncertainty estimation, selective prediction, regression, information retrieval, semantic segmentation, and algorithmic fairness.</p>
+<p>Each metric is implemented according to published academic literature, validated against gold-standard reference implementations (such as <code>scikit-learn</code>, <code>Fairlearn</code>, and independent reference solvers), and unit-tested for edge-case safety.</p>
+<hr />
+<h2 id="1-classification-metrics">1. Classification Metrics<a class="headerlink" href="#1-classification-metrics" title="Permanent link">&para;</a></h2>
+<p>Classification evaluation assesses discrete decision accuracy and error distribution across classes.</p>
+<h3 id="definitions-formulations">Definitions &amp; Formulations<a class="headerlink" href="#definitions-formulations" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>Accuracy</strong>:
+  $<span class="arithmatex">\(\text{Accuracy} = \frac{1}{N} \sum_{i=1}^N \mathbb{I}(\hat{y}_i = y_i)\)</span>$</p>
+</li>
+<li>
+<p><strong>Balanced Accuracy</strong>:
+  Unweighted macro-average of recall across all classes, protecting against evaluation distortions caused by class imbalance:
+  $<span class="arithmatex">\(\text{Balanced Accuracy} = \frac{1}{C} \sum_{c=1}^C \frac{\text{TP}_c}{\text{TP}_c + \text{FN}_c}\)</span>$</p>
+</li>
+<li>
+<p><strong>Macro Precision, Recall, and F1</strong>:
+  $<span class="arithmatex">\(\text{Macro Precision} = \frac{1}{C} \sum_{c=1}^C \frac{\text{TP}_c}{\text{TP}_c + \text{FP}_c}, \quad \text{Macro Recall} = \frac{1}{C} \sum_{c=1}^C \frac{\text{TP}_c}{\text{TP}_c + \text{FN}_c}\)</span>$
+  $<span class="arithmatex">\(\text{Macro F1} = \frac{1}{C} \sum_{c=1}^C \frac{2 \cdot \text{Precision}_c \cdot \text{Recall}_c}{\text{Precision}_c + \text{Recall}_c}\)</span>$
+  <em>(Classes with zero true positives and predictions default to <span class="arithmatex">\(0.0\)</span> to prevent division by zero).</em></p>
+</li>
+<li>
+<p><strong>Confusion Matrix</strong>:
+  <span class="arithmatex">\(C \times C\)</span> cross-tabulation where row <span class="arithmatex">\(i\)</span> represents true class <span class="arithmatex">\(i\)</span> and column <span class="arithmatex">\(j\)</span> represents predicted class <span class="arithmatex">\(j\)</span>.</p>
+</li>
+</ul>
+<h3 id="verification-reference-standard">Verification &amp; Reference Standard<a class="headerlink" href="#verification-reference-standard" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Reference</strong>: <code>sklearn.metrics.accuracy_score</code>, <code>balanced_accuracy_score</code>, <code>precision_recall_fscore_support(average="macro")</code>, and <code>confusion_matrix</code>.</li>
+<li><strong>Test Suite</strong>: Verified in <code>tests/unit/test_metric_reference_benchmarks.py::TestClassificationReferenceBenchmarks</code>.</li>
+</ul>
+<hr />
+<h2 id="2-calibration-metrics">2. Calibration Metrics<a class="headerlink" href="#2-calibration-metrics" title="Permanent link">&para;</a></h2>
+<p>Calibration quantifies the alignment between a model's predicted confidence probabilities and its true empirical correctness.</p>
+<h3 id="definitions-mathematical-conventions">Definitions &amp; Mathematical Conventions<a class="headerlink" href="#definitions-mathematical-conventions" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Expected Calibration Error (ECE)</strong>:
+  Measures the expected absolute difference between confidence and accuracy across <span class="arithmatex">\(M\)</span> equal-width bins:
+  $<span class="arithmatex">\(\text{ECE} = \sum_{m=1}^M \frac{|B_m|}{N} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|\)</span>$</li>
+<li><strong>Default Bin Count</strong>: <span class="arithmatex">\(M = 15\)</span> (<code>n_bins=15</code>).</li>
+<li><strong>Bin Partitioning</strong>: <span class="arithmatex">\(M\)</span> intervals over <span class="arithmatex">\([0.0, 1.0]\)</span> generated via <code>np.linspace(0.0, 1.0, M + 1)</code>.</li>
+<li>
+<p><strong>Boundary Inclusivity</strong>: Bins <span class="arithmatex">\(m \in \{0, \dots, M-2\}\)</span> are left-closed and right-open <span class="arithmatex">\([b_m, b_{m+1})\)</span>. The final bin (<span class="arithmatex">\(m = M-1\)</span>) is closed on both sides <span class="arithmatex">\([b_{M-1}, 1.0]\)</span> to include predictions with exact confidence <span class="arithmatex">\(1.0\)</span>.</p>
+</li>
+<li>
+<p><strong>Adaptive Expected Calibration Error (Adaptive ECE)</strong>:
+  Addresses empty-bin and confidence-clustering artifacts by partitioning samples into <span class="arithmatex">\(M\)</span> quantile bins of equal sample count:
+  $<span class="arithmatex">\(\text{AdaECE} = \sum_{m=1}^M \frac{|B_m|}{N} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|\)</span>$</p>
+</li>
+<li><strong>Default Bin Count</strong>: <span class="arithmatex">\(M = 15\)</span> (<code>n_bins=15</code>).</li>
+<li>
+<p><strong>Binning Scheme</strong>: Quantile split via <code>np.array_split</code> after sorting by confidence.</p>
+</li>
+<li>
+<p><strong>Maximum Calibration Error (MCE)</strong>:
+  Worst-case calibration gap observed across all non-empty bins:
+  $<span class="arithmatex">\(\text{MCE} = \max_{m: |B_m| &gt; 0} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|\)</span>$</p>
+</li>
+<li>
+<p><strong>Multi-Class Brier Score</strong>:
+  Mean squared error between the full predicted probability vector and one-hot ground truth:
+  $<span class="arithmatex">\(\text{BS} = \frac{1}{N} \sum_{i=1}^N \sum_{c=1}^C (p_{ic} - y_{ic})^2\)</span>$
+  <em>(Note on convention: In binary classification, this multi-class formulation yields <span class="arithmatex">\(2 \times\)</span> the single-column binary Brier score <span class="arithmatex">\(\frac{1}{N} \sum (p_1 - y_1)^2\)</span>, accounting for both positive and negative class residuals).</em></p>
+</li>
+<li>
+<p><strong>Negative Log-Likelihood (NLL / Log-Loss)</strong>:
+  Cross-entropy loss with numerical stabilization (<span class="arithmatex">\(\epsilon = 10^{-15}\)</span>):
+  $<span class="arithmatex">\(\text{NLL} = -\frac{1}{N} \sum_{i=1}^N \ln(p_{i, y_i})\)</span>$</p>
+</li>
+</ul>
+<h3 id="verification-reference-standard_1">Verification &amp; Reference Standard<a class="headerlink" href="#verification-reference-standard_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>References</strong>:</li>
+<li>Guo, C., Pleiss, G., Sun, Y., &amp; Weinberger, K. Q. (2017). <em>On calibration of modern neural networks</em>. ICML.</li>
+<li>Naeini, M. P., Cooper, G., &amp; Hauskrecht, M. (2015). <em>Obtaining well calibrated probabilities using Bayesian binning into quantiles</em>. AAAI.</li>
+<li>Ding, Y., Liu, J., Xiong, H., &amp; Huan, J. (2020). <em>Revisiting the evaluation of uncertainty estimation and its application to out-of-distribution detection</em>.</li>
+<li><code>sklearn.metrics.brier_score_loss</code>, <code>sklearn.metrics.log_loss</code>.</li>
+<li><strong>Test Suite</strong>: Verified in <code>tests/unit/test_metric_reference_benchmarks.py::TestCalibrationReferenceBenchmarks</code>.</li>
+</ul>
+<hr />
+<h2 id="3-uncertainty-error-detection">3. Uncertainty &amp; Error Detection<a class="headerlink" href="#3-uncertainty-error-detection" title="Permanent link">&para;</a></h2>
+<p>Uncertainty quantification tests whether a model's internal uncertainty signals can reliably identify incorrect predictions prior to downstream failure.</p>
+<h3 id="definitions-conventions">Definitions &amp; Conventions<a class="headerlink" href="#definitions-conventions" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Predictive Shannon Entropy</strong>:
+  Per-sample Shannon entropy:
+  $<span class="arithmatex">\(H(p) = -\sum_{c=1}^C p_c \ln(p_c)\)</span>$</li>
+<li><strong>Logarithm Base</strong>: Natural logarithm (<strong>nats</strong>), computed via <code>np.log</code> with a minimum probability floor <span class="arithmatex">\(\epsilon = 10^{-12}\)</span>.</li>
+<li><strong>Units</strong>: nats. To convert to information bits (shannons), multiply by <span class="arithmatex">\(\log_2(e) = \frac{1}{\ln(2)} \approx 1.4427\)</span>.</li>
+<li>
+<p><strong>Range</strong>: <span class="arithmatex">\([0, \ln(C)]\)</span>, where <span class="arithmatex">\(\ln(C)\)</span> indicates uniform uncertainty over <span class="arithmatex">\(C\)</span> classes.</p>
+</li>
+<li>
+<p><strong>Free Energy Score</strong>:
+  Temperature-scaled negative free energy:
+  $<span class="arithmatex">\(E(x; T) = -T \cdot \ln \sum_{c=1}^C \exp\left(\frac{f_c(x)}{T}\right)\)</span>$</p>
+</li>
+<li>
+<p>Positive free energy <span class="arithmatex">\(-E(x; T)\)</span> acts as an uncertainty score that scales with low confidence and out-of-distribution distance. Default temperature <span class="arithmatex">\(T = 1.0\)</span>.</p>
+</li>
+<li>
+<p><strong>Error Detection AUROC</strong>:
+  Area Under the Receiver Operating Characteristic curve where prediction failure (<span class="arithmatex">\(\hat{y}_i \neq y_i\)</span>) is the positive target class (<span class="arithmatex">\(1 = \text{error}, 0 = \text{correct}\)</span>) and uncertainty is the decision score.</p>
+</li>
+<li><span class="arithmatex">\(\text{AUROC} = 0.50\)</span> represents random guessing.</li>
+<li>
+<p><span class="arithmatex">\(\text{AUROC} = 1.0\)</span> represents an oracle uncertainty score that perfectly flags every mistake.</p>
+</li>
+<li>
+<p><strong>Error Detection AUPRC</strong>:
+  Area Under the Precision-Recall curve for error detection, sensitive to class imbalance when the base error rate is low.</p>
+</li>
+<li>
+<p><strong>FPR at 95% TPR</strong>:
+  The False Positive Rate (fraction of correct predictions incorrectly flagged as uncertain) when the rejection threshold is set to capture at least 95% of all actual model errors:
+  $<span class="arithmatex">\(\text{FPR}_{95} = \min \left\{ \text{FPR} \mid \text{TPR} \ge 0.95 \right\}\)</span>$</p>
+</li>
+</ul>
+<h3 id="verification-reference-standard_2">Verification &amp; Reference Standard<a class="headerlink" href="#verification-reference-standard_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>References</strong>:</li>
+<li>Hendrycks, D., &amp; Gimpel, K. (2017). <em>A baseline for detecting misclassified and out-of-distribution examples in neural networks</em>. ICLR.</li>
+<li>Liu, W., Wang, X., Owens, J., &amp; Li, Y. (2020). <em>Energy-based out-of-distribution detection</em>. NeurIPS.</li>
+<li><code>sklearn.metrics.roc_auc_score</code>, <code>sklearn.metrics.precision_recall_curve</code>, <code>sklearn.metrics.roc_curve</code>.</li>
+<li><strong>Test Suite</strong>: Verified in <code>tests/unit/test_metric_reference_benchmarks.py::TestErrorDetectionReferenceBenchmarks</code>.</li>
+</ul>
+<hr />
+<h2 id="4-selective-prediction-risk-coverage-aurc">4. Selective Prediction &amp; Risk-Coverage (AURC)<a class="headerlink" href="#4-selective-prediction-risk-coverage-aurc" title="Permanent link">&para;</a></h2>
+<p>Selective classification models have the option to abstain or defer low-confidence inferences to human experts or secondary systems.</p>
+<h3 id="coverage-range-curve-and-aurc-normalization">Coverage Range, Curve, and AURC Normalization<a class="headerlink" href="#coverage-range-curve-and-aurc-normalization" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>Empirical Coverage Spectrum for AURC</strong>:
+  The scalar metric <strong>AURC</strong> integrates across the <strong>full empirical coverage spectrum</strong> from <span class="arithmatex">\(k = 1\)</span> to <span class="arithmatex">\(N\)</span> (<span class="arithmatex">\(c \in [1/N, 1.0]\)</span>) following the standard formulation by Geifman &amp; El-Yaniv (2017):
+  $<span class="arithmatex">\(\text{AURC} = \frac{1}{N} \sum_{k=1}^N \mathcal{R}(S_k)\)</span>$
+  where <span class="arithmatex">\(S_k\)</span> is the subset of the <span class="arithmatex">\(k\)</span> most confident samples, and <span class="arithmatex">\(\mathcal{R}(S_k) = \frac{1}{k} \sum_{i \in S_k} \mathbb{I}(y_i \neq \hat{y}_i)\)</span> is the empirical selective risk at sample threshold <span class="arithmatex">\(k\)</span>.</p>
+</li>
+<li>
+<p><strong>Optimal AURC (<span class="arithmatex">\(\text{AURC}^*\)</span>)</strong>:
+  The theoretical lower bound achieved by an oracle that ranks all erroneous predictions after all correct predictions across the full dataset:
+  $<span class="arithmatex">\(\text{AURC}^* = \frac{1}{N} \sum_{k=N-E+1}^N \left( 1 - \frac{N-E}{k} \right)\)</span>$
+  where <span class="arithmatex">\(E = \sum_{i=1}^N \mathbb{I}(y_i \neq \hat{y}_i)\)</span> is the total error count, and <span class="arithmatex">\(N\)</span> is total sample count.</p>
+</li>
+<li>
+<p><strong>Excess AURC (E-AURC)</strong>:
+  The ranking penalty of the model's confidence scores beyond optimal ranking:
+  $<span class="arithmatex">\(\text{Excess AURC} = \max(0.0, \, \text{AURC} - \text{AURC}^*)\)</span>$
+  Excess AURC is lower-bounded by <span class="arithmatex">\(0.0\)</span> (perfect confidence ranking) and isolates confidence ranking quality from the model's baseline error rate.</p>
+</li>
+<li>
+<p><strong>Discrete Risk-Coverage Table / Curve</strong>:
+  For tabular summaries and reports, TrustBench evaluates discrete checkpoints across coverage fractions:</p>
+</li>
+<li><strong>Default Checkpoints</strong>: <code>coverages = (1.0, 0.9, 0.8, 0.7, 0.5)</code>.</li>
+<li><strong>Customization</strong>: Any custom sequence in <span class="arithmatex">\((0, 1]\)</span> can be provided (e.g. <code>np.linspace(0.1, 1.0, 20)</code>).</li>
+<li><em>Note</em>: While the discrete curve summary inspects these specific coverage fractions, the scalar AURC and Excess AURC metrics always integrate over the full spectrum <span class="arithmatex">\(c \in [1/N, 1.0]\)</span>.</li>
+</ul>
+<h3 id="verification-reference-standard_3">Verification &amp; Reference Standard<a class="headerlink" href="#verification-reference-standard_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Reference</strong>: Geifman, Y., &amp; El-Yaniv, R. (2017). <em>Selective classification for deep neural networks</em>. NeurIPS.</li>
+<li><strong>Test Suite</strong>: Verified in <code>tests/unit/test_metric_reference_benchmarks.py::TestSelectivePredictionReferenceBenchmarks</code>.</li>
+</ul>
+<hr />
+<h2 id="5-regression-metrics">5. Regression Metrics<a class="headerlink" href="#5-regression-metrics" title="Permanent link">&para;</a></h2>
+<p>Regression evaluation covers error magnitudes, goodness-of-fit, and predictive uncertainty intervals.</p>
+<h3 id="definitions-conventions_1">Definitions &amp; Conventions<a class="headerlink" href="#definitions-conventions_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Mean Absolute Error (MAE)</strong>: <span class="arithmatex">\(\frac{1}{N} \sum_{i=1}^N |y_i - \hat{y}_i|\)</span>.</li>
+<li><strong>Mean Squared Error (MSE)</strong>: <span class="arithmatex">\(\frac{1}{N} \sum_{i=1}^N (y_i - \hat{y}_i)^2\)</span>.</li>
+<li><strong>Root Mean Squared Error (RMSE)</strong>: <span class="arithmatex">\(\sqrt{\text{MSE}}\)</span>.</li>
+<li><strong><span class="arithmatex">\(R^2\)</span> Score</strong>: <span class="arithmatex">\(1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}\)</span>.</li>
+<li><strong>Median Absolute Error (MedAE)</strong>: <span class="arithmatex">\(\text{median}(|y_1 - \hat{y}_1|, \dots, |y_N - \hat{y}_N|)\)</span>.</li>
+<li><strong>Maximum Error</strong>: <span class="arithmatex">\(\max_i |y_i - \hat{y}_i|\)</span>.</li>
+<li><strong>Mean Absolute Percentage Error (MAPE)</strong>:
+  $<span class="arithmatex">\(\text{MAPE} = \frac{100}{N_{\text{nonzero}}} \sum_{i: |y_i| &gt; 10^{-8}} \frac{|y_i - \hat{y}_i|}{|y_i|}\)</span>$</li>
+<li><strong>Zero Denominator Handling</strong>: Samples where <span class="arithmatex">\(|y_i| \le 10^{-8}\)</span> are masked out to avoid division by zero. If all targets are within <span class="arithmatex">\(10^{-8}\)</span> of zero, MAPE safely returns <span class="arithmatex">\(0.0\)</span>.</li>
+<li>
+<p><strong>Units</strong>: Expressed as a percentage (<span class="arithmatex">\(0 - 100\%+\)</span>).</p>
+</li>
+<li>
+<p><strong>Prediction Interval Coverage Probability (PICP) &amp; Mean Prediction Interval Width (MPIW)</strong>:</p>
+</li>
+<li><strong>Requirement</strong>: Evaluated when the regression model produces sample-level predictive standard deviations <span class="arithmatex">\(\sigma_i\)</span> (e.g., via <code>predict_uncertainty</code>, Gaussian Processes, or ensembles). Standard point regressors like <code>Ridge</code> do not output standard deviations; in such cases, PICP and MPIW are safely omitted.</li>
+<li><strong>95% Confidence Interval</strong>: Formed as <span class="arithmatex">\([\hat{y}_i - 1.96 \sigma_i, \, \hat{y}_i + 1.96 \sigma_i]\)</span>.</li>
+<li><strong>PICP</strong>: Empirical coverage fraction <span class="arithmatex">\(\frac{1}{N} \sum_{i=1}^N \mathbb{I}(\hat{y}_i - 1.96\sigma_i \le y_i \le \hat{y}_i + 1.96\sigma_i)\)</span>.</li>
+<li><strong>MPIW</strong>: Average interval breadth <span class="arithmatex">\(\frac{1}{N} \sum_{i=1}^N (2 \times 1.96\sigma_i) \approx \frac{3.92}{N} \sum \sigma_i\)</span>.</li>
+</ul>
+<h3 id="verification-reference-standard_4">Verification &amp; Reference Standard<a class="headerlink" href="#verification-reference-standard_4" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Reference</strong>: <code>sklearn.metrics.mean_absolute_error</code>, <code>mean_squared_error</code>, <code>r2_score</code>, <code>median_absolute_error</code>, <code>max_error</code>.</li>
+<li><strong>Test Suite</strong>: Verified in <code>tests/unit/test_metric_reference_benchmarks.py::TestRegressionReferenceBenchmarks</code>.</li>
+</ul>
+<hr />
+<h2 id="6-information-retrieval-metrics">6. Information Retrieval Metrics<a class="headerlink" href="#6-information-retrieval-metrics" title="Permanent link">&para;</a></h2>
+<p>Information retrieval metrics evaluate the ranking quality of retrieved documents or items for a set of queries.</p>
+<h3 id="definitions-conventions_2">Definitions &amp; Conventions<a class="headerlink" href="#definitions-conventions_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>Mean Reciprocal Rank (MRR)</strong>:
+  $<span class="arithmatex">\(\text{MRR} = \frac{1}{|Q|} \sum_{q \in Q} \frac{1}{\text{rank}_q}\)</span>$
+  where <span class="arithmatex">\(\text{rank}_q\)</span> is the position of the first relevant document for query <span class="arithmatex">\(q\)</span> (or <span class="arithmatex">\(0\)</span> if no relevant document was retrieved).</p>
+</li>
+<li>
+<p><strong>Mean Average Precision (MAP)</strong>:
+  Mean of Average Precision scores over all queries:
+  $<span class="arithmatex">\(\text{AP} = \frac{1}{|R_q|} \sum_{k=1}^K P@k \cdot \mathbb{I}(\text{doc}_k \in R_q)\)</span>$</p>
+</li>
+<li>
+<p><strong>Recall@K &amp; Precision@K</strong>:
+  Fraction of relevant items retrieved within top <span class="arithmatex">\(K\)</span>, and fraction of top <span class="arithmatex">\(K\)</span> items that are relevant.</p>
+</li>
+<li>
+<p><strong>Normalized Discounted Cumulative Gain (nDCG@K)</strong>:</p>
+</li>
+<li><strong>Gain Scheme</strong>: TrustBench uses <strong>linear binary gain</strong> <span class="arithmatex">\(\text{rel}_i = \mathbb{I}(\text{doc}_i \in R_q)\)</span>.</li>
+<li><strong>Discount</strong>: Logarithmic discount <span class="arithmatex">\(\log_2(i + 1)\)</span> with 1-based rank <span class="arithmatex">\(i\)</span>:
+    $<span class="arithmatex">\(\text{DCG}@K = \sum_{i=1}^K \frac{\text{rel}_i}{\log_2(i + 1)}\)</span>$
+    $<span class="arithmatex">\(\text{IDCG}@K = \sum_{i=1}^{\min(K, |R_q|)} \frac{1}{\log_2(i + 1)}\)</span>$
+    $<span class="arithmatex">\(\text{nDCG}@K = \begin{cases} \frac{\text{DCG}@K}{\text{IDCG}@K} &amp; \text{if } \text{IDCG}@K &gt; 0 \\ 0.0 &amp; \text{otherwise} \end{cases}\)</span>$</li>
+</ul>
+<hr />
+<h2 id="7-semantic-segmentation-metrics">7. Semantic Segmentation Metrics<a class="headerlink" href="#7-semantic-segmentation-metrics" title="Permanent link">&para;</a></h2>
+<p>Segmentation evaluation measures pixel-level classification overlap and boundary accuracy.</p>
+<h3 id="definitions-conventions_3">Definitions &amp; Conventions<a class="headerlink" href="#definitions-conventions_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Mean Intersection-over-Union (mIoU)</strong>:
+  $<span class="arithmatex">\(\text{IoU}_c = \frac{\text{TP}_c}{\text{TP}_c + \text{FP}_c + \text{FN}_c}\)</span>$
+  $<span class="arithmatex">\(\text{mIoU} = \frac{1}{|C_{\text{present}}|} \sum_{c \in C_{\text{present}}} \text{IoU}_c\)</span>$</li>
+<li><strong>Absent Class Handling</strong>: Any class absent from both ground truth and prediction (<span class="arithmatex">\(\text{TP}_c + \text{FP}_c + \text{FN}_c = 0\)</span>) results in <span class="arithmatex">\(\text{NaN}\)</span> and is <strong>excluded</strong> from the macro-average. If all classes are absent, mIoU returns <span class="arithmatex">\(0.0\)</span>.</li>
+<li>
+<p><strong>Void / Boundary Filtering</strong>: An optional <code>ignore_index</code> parameter (e.g., <code>255</code> in Cityscapes/Pascal VOC) filters ignored pixels from evaluation prior to metric computation.</p>
+</li>
+<li>
+<p><strong>Dice Score (Macro F1)</strong>:
+  $<span class="arithmatex">\(\text{Dice}_c = \frac{2 \cdot \text{TP}_c}{2 \cdot \text{TP}_c + \text{FP}_c + \text{FN}_c}\)</span>$</p>
+</li>
+<li><strong>Aggregation</strong>: TrustBench reports the <strong>unweighted macro-average</strong> across present classes (where <span class="arithmatex">\(2\text{TP}_c + \text{FP}_c + \text{FN}_c &gt; 0\)</span>).</li>
+<li>
+<p><em>"Mean harmonic score"</em> denotes the macro-average of per-class harmonic means between pixel precision and recall.</p>
+</li>
+<li>
+<p><strong>Pixel Accuracy</strong>: Overall ratio of correctly classified pixels <span class="arithmatex">\(\frac{\sum \text{TP}_c}{N_{\text{valid\_pixels}}}\)</span>.</p>
+</li>
+<li>
+<p><strong>Frequency-Weighted IoU (FWIoU)</strong>:
+  $<span class="arithmatex">\(\text{FWIoU} = \sum_{c \in C_{\text{present}}} \frac{\sum_{i} \mathbb{I}(y_i = c)}{N_{\text{valid\_pixels}}} \cdot \text{IoU}_c\)</span>$</p>
+</li>
+</ul>
+<hr />
+<h2 id="8-algorithmic-fairness-metrics">8. Algorithmic Fairness Metrics<a class="headerlink" href="#8-algorithmic-fairness-metrics" title="Permanent link">&para;</a></h2>
+<p>Fairness metrics measure disparities in model predictions and error rates across sensitive demographic or operational attributes (e.g., age, gender, geographic region).</p>
+<h3 id="definitions-zero-denominator-safety">Definitions &amp; Zero-Denominator Safety<a class="headerlink" href="#definitions-zero-denominator-safety" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>Demographic Parity Difference (DPD)</strong>:
+  Maximum absolute difference in positive selection rate across all protected groups:
+  $<span class="arithmatex">\(\text{DPD} = \max_a P(\hat{Y}=1 \mid A=a) - \min_a P(\hat{Y}=1 \mid A=a)\)</span>$</p>
+</li>
+<li>
+<p><strong>Disparate Impact Ratio (DIR)</strong>:
+  Ratio between the minimum and maximum positive selection rates across groups:
+  $<span class="arithmatex">\(\text{DIR} = \frac{\min_a P(\hat{Y}=1 \mid A=a)}{\max_a P(\hat{Y}=1 \mid A=a)}\)</span>$</p>
+</li>
+<li>
+<p><strong>Zero-Denominator Handling</strong>: If the maximum selection rate across all groups is zero (<span class="arithmatex">\(\max_a \text{selection\_rate}_a \le 10^{-12}\)</span>), TrustBench safely returns <code>1.0</code> (reflecting zero disparity, avoiding division by zero).</p>
+</li>
+<li>
+<p><strong>Equalized Odds Difference (EOD)</strong>:
+  Maximum disparity in True Positive Rate (TPR) or False Positive Rate (FPR) across groups:
+  $<span class="arithmatex">\(\text{EOD} = \max \left( \max_{a, b} |\text{TPR}_a - \text{TPR}_b|, \, \max_{a, b} |\text{FPR}_a - \text{FPR}_b| \right)\)</span>$</p>
+</li>
+</ul>
+<h3 id="verification-reference-standard_5">Verification &amp; Reference Standard<a class="headerlink" href="#verification-reference-standard_5" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>References</strong>:</li>
+<li>Hardt, M., Price, E., &amp; Srebro, N. (2016). <em>Equality of opportunity in supervised learning</em>. NeurIPS.</li>
+<li>Feldman, M., Friedler, S. A., Moeller, J., Scheidegger, C., &amp; Venkatasubramanian, S. (2015). <em>Certifying and removing disparate impact</em>. KDD.</li>
+<li>Matches the formal specification used by <code>Fairlearn</code>.</li>
+<li><strong>Test Suite</strong>: Verified in <code>tests/unit/test_metric_reference_benchmarks.py::TestFairnessReferenceBenchmarks</code>.</li>
+</ul>
+<hr />
+<h2 id="9-interpretation-guide-diagnostic-playbook">9. Interpretation Guide &amp; Diagnostic Playbook<a class="headerlink" href="#9-interpretation-guide-diagnostic-playbook" title="Permanent link">&para;</a></h2>
+<p>Understanding what constitutes a "good" metric value and how metrics interact is critical for diagnosing model weaknesses.</p>
+<h3 id="diagnostic-rules-of-thumb">Diagnostic Rules of Thumb<a class="headerlink" href="#diagnostic-rules-of-thumb" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: center;">Ideal</th>
+<th style="text-align: center;">Acceptable / Good</th>
+<th style="text-align: center;">Needs Mitigation</th>
+<th style="text-align: left;">Diagnostic Significance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>ECE</strong></td>
+<td style="text-align: center;"><span class="arithmatex">\(0.00\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&lt; 0.05\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&gt; 0.15\)</span></td>
+<td style="text-align: left;">Low ECE means probability matches actual empirical accuracy. High ECE indicates over- or under-confidence.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Brier Score (Multi-Class)</strong></td>
+<td style="text-align: center;"><span class="arithmatex">\(0.00\)</span></td>
+<td style="text-align: center;">Task-dependent</td>
+<td style="text-align: center;">Elevated</td>
+<td style="text-align: left;">Combines accuracy and calibration in a strictly proper scoring rule.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Error Detection AUROC</strong></td>
+<td style="text-align: center;"><span class="arithmatex">\(1.00\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&gt; 0.75\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&lt; 0.60\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(&gt; 0.85\)</span> allows high-confidence filtering of model failures before reaching users.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FPR at 95% TPR</strong></td>
+<td style="text-align: center;"><span class="arithmatex">\(0.00\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&lt; 0.30\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&gt; 0.50\)</span></td>
+<td style="text-align: left;">Percentage of correct inferences unnecessarily rejected to catch 95% of mistakes.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Excess AURC</strong></td>
+<td style="text-align: center;"><span class="arithmatex">\(0.00\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&lt; 0.02\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&gt; 0.08\)</span></td>
+<td style="text-align: left;">Measures gap between model confidence ranking and optimal error ranking.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Demographic Parity Diff</strong></td>
+<td style="text-align: center;"><span class="arithmatex">\(0.00\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&lt; 0.10\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&gt; 0.20\)</span></td>
+<td style="text-align: left;">Difference in positive rate across groups. Regulatory compliance often targets <span class="arithmatex">\(&lt; 0.10\)</span>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Disparate Impact Ratio</strong></td>
+<td style="text-align: center;"><span class="arithmatex">\(1.00\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(0.80 - 1.25\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&lt; 0.80\)</span></td>
+<td style="text-align: left;">Complies with the EEOC "four-fifths rule" when <span class="arithmatex">\(\ge 0.80\)</span>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>nDCG@K</strong></td>
+<td style="text-align: center;"><span class="arithmatex">\(1.00\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&gt; 0.70\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&lt; 0.50\)</span></td>
+<td style="text-align: left;">Evaluates ranking discount; higher indicates relevant items placed near top.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>PICP (Nominal 95%)</strong></td>
+<td style="text-align: center;"><span class="arithmatex">\(0.95\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(\ge 0.95\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(&lt; 0.90\)</span></td>
+<td style="text-align: left;">Empirical coverage below nominal indicates overly narrow intervals (underestimated risk).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="metric-dynamics-which-metrics-move-together">Metric Dynamics: Which Metrics Move Together?<a class="headerlink" href="#metric-dynamics-which-metrics-move-together" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Temperature Scaling</strong>:</li>
+<li>Reduces <strong>ECE</strong> and <strong>NLL</strong> without modifying logits rank order.</li>
+<li>Leaves <strong>Accuracy</strong>, <strong>Error Detection AUROC</strong>, and <strong>AURC</strong> completely unchanged because monotonic probability rescaling preserves ranking.</li>
+<li><strong>Overconfident Neural Networks</strong>:</li>
+<li>Modern deep networks frequently exhibit <strong>high accuracy</strong> alongside <strong>poor (high) ECE</strong> and <strong>high NLL</strong> due to uncalibrated overconfidence on edge samples.</li>
+<li><strong>Fairness vs Accuracy Trade-off</strong>:</li>
+<li>Enforcing strict demographic parity (<span class="arithmatex">\(\text{DPD} \to 0\)</span>) in settings with differing base rates often slightly degrades overall accuracy or balanced accuracy.</li>
+</ol>
+<h3 id="worked-examples-per-category">Worked Examples per Category<a class="headerlink" href="#worked-examples-per-category" title="Permanent link">&para;</a></h3>
+<h4 id="example-a-classification-calibration">Example A: Classification &amp; Calibration<a class="headerlink" href="#example-a-classification-calibration" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">trustbench.evaluation.calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_calibration_metrics</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">trustbench.evaluation.classification</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_classification_metrics</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Ground truth and predicted class probabilities</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">y_prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="p">[</span><span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">],</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="p">[</span><span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">],</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">[</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.55</span><span class="p">],</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="p">[</span><span class="mf">0.70</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">],</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="p">[</span><span class="mf">0.30</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">],</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="p">[</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">],</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">],</span>  <span class="c1"># Misclassification</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="p">[</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">],</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">])</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_prob</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">clf_metrics</span> <span class="o">=</span> <span class="n">compute_classification_metrics</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">cal_metrics</span> <span class="o">=</span> <span class="n">compute_calibration_metrics</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Accuracy:    </span><span class="si">{</span><span class="n">clf_metrics</span><span class="p">[</span><span class="s1">'accuracy'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>     <span class="c1"># Expected: 0.88</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ECE (M=5):   </span><span class="si">{</span><span class="n">cal_metrics</span><span class="p">[</span><span class="s1">'ece'</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>           <span class="c1"># Calibration error</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Brier Score: </span><span class="si">{</span><span class="n">cal_metrics</span><span class="p">[</span><span class="s1">'brier_score'</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>   <span class="c1"># Mean squared error</span>
+</span></code></pre></div>
+<h4 id="example-b-uncertainty-error-detection">Example B: Uncertainty &amp; Error Detection<a class="headerlink" href="#example-b-uncertainty-error-detection" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">trustbench.evaluation.uncertainty</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_predictive_entropy</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">trustbench.evaluation.error_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_binary_detection_curve</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Compute entropy in nats from class probabilities</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.99</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">]])</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">entropy</span> <span class="o">=</span> <span class="n">compute_predictive_entropy</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span>  <span class="c1"># [0.056, 0.688, 0.325] nats</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1"># Evaluate whether entropy identifies prediction mistakes</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">errors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">curve</span> <span class="o">=</span> <span class="n">compute_binary_detection_curve</span><span class="p">(</span><span class="n">errors</span><span class="p">,</span> <span class="n">entropy</span><span class="p">)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error Detection AUROC: </span><span class="si">{</span><span class="n">curve</span><span class="p">[</span><span class="s1">'auroc'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>     <span class="c1"># Expected: 1.00 (perfect separation)</span>
+</span></code></pre></div>
+<h4 id="example-c-selective-prediction-aurc">Example C: Selective Prediction (AURC)<a class="headerlink" href="#example-c-selective-prediction-aurc" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">trustbench.evaluation.selective</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_risk_coverage</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># 2 errors</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">confidences</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">])</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">res</span> <span class="o">=</span> <span class="n">compute_risk_coverage</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">confidences</span><span class="p">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"AURC:        </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">'aurc'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Optimal AURC:</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">'optimal_aurc'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Excess AURC: </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">'excess_aurc'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>          <span class="c1"># 0.0 indicates perfect ranking</span>
+</span></code></pre></div>
+<h4 id="example-d-algorithmic-fairness">Example D: Algorithmic Fairness<a class="headerlink" href="#example-d-algorithmic-fairness" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">trustbench.evaluation.fairness</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_fairness_metrics</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">groups</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"A"</span><span class="p">,</span> <span class="s2">"A"</span><span class="p">,</span> <span class="s2">"A"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">])</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">fair</span> <span class="o">=</span> <span class="n">compute_fairness_metrics</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">groups</span><span class="p">)</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Demographic Parity Diff: </span><span class="si">{</span><span class="n">fair</span><span class="p">[</span><span class="s1">'demographic_parity_difference'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Disparate Impact Ratio:  </span><span class="si">{</span><span class="n">fair</span><span class="p">[</span><span class="s1">'disparate_impact_ratio'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Equalized Odds Diff:     </span><span class="si">{</span><span class="n">fair</span><span class="p">[</span><span class="s1">'equalized_odds_difference'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
