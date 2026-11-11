@@ -1,0 +1,79 @@
+site_name: TrustBench
+site_description: "Evaluation framework for ML model reliability, robustness, uncertainty, and fairness."
+site_author: "Uni-Creator"
+site_url: "https://uni-creator.github.io/trustbench/"
+repo_name: "Uni-Creator/trustbench"
+repo_url: "https://github.com/Uni-Creator/trustbench"
+edit_uri: "blob/main/docs/"
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - tables
+  - attr_list
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: installation.md
+      - Quickstart: quickstart.md
+  - User Guides:
+      - Configuration: configuration.md
+      - Model Adapters: model-adapters.md
+      - Dataset Adapters: dataset-adapters.md
+      - Robustness & Corruptions: robustness.md
+      - Experiment Management: experiments.md
+      - Reporting & Visualization: reporting.md
+      - Plugin Development: plugins.md
+  - Reference:
+      - Python API: api.md
+      - CLI Reference: cli.md
+      - Metrics Catalog: metrics.md
+  - Community:
+      - Troubleshooting: troubleshooting.md
+      - Contributing: contributing.md

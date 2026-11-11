@@ -6,9 +6,10 @@
 
 [![PyPI version](https://img.shields.io/badge/pypi-v0.2.0-blue.svg)](https://pypi.org/project/trustbench/)
 [![Python Versions](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](https://pypi.org/project/trustbench/)
-[![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
-[![CI Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](.github/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-194%20passed-success.svg)](tests/)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](https://github.com/Uni-Creator/trustbench/blob/main/LICENSE)
+[![CI Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Uni-Creator/trustbench/actions/workflows/ci.yml)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://uni-creator.github.io/trustbench/)
+[![Tests](https://img.shields.io/badge/tests-204%20passed-success.svg)](https://github.com/Uni-Creator/trustbench/tree/main/tests)
 
 </div>
 
@@ -84,7 +85,7 @@ pip install "trustbench[onnx]"
 pip install "trustbench[all]"
 ```
 
-See the [Installation Guide](docs/installation.md) for detailed platform requirements.
+See the [Installation Guide](https://github.com/Uni-Creator/trustbench/blob/main/docs/installation.md) for detailed platform requirements.
 
 ---
 
@@ -188,48 +189,48 @@ print(f"Pixel Accuracy: {result.metrics['pixel_accuracy']:.2%}")
 | **Segmentation** | Mean IoU (mIoU), Dice (F1), Pixel Accuracy, Frequency-Weighted IoU (FWIoU) |
 | **Fairness** | Demographic Parity Difference, Disparate Impact Ratio, Equalized Odds Difference |
 
-See [Metrics Documentation](docs/metrics.md) for mathematical derivations.
+See [Metrics Documentation](https://github.com/Uni-Creator/trustbench/blob/main/docs/metrics.md) for mathematical derivations.
 
 ---
 
 ## Tutorials & Examples
 
-Ready-to-run examples are available in the [`examples/`](examples/) directory:
+Ready-to-run examples are available in the [`examples/`](https://github.com/Uni-Creator/trustbench/tree/main/examples) directory:
 
-1. **[01_evaluate_pytorch_model.py](examples/01_evaluate_pytorch_model.py)**: Evaluate custom PyTorch `nn.Module`.
-2. **[02_evaluate_cifar10.py](examples/02_evaluate_cifar10.py)**: End-to-end CIFAR-10 ResNet evaluation via configuration.
-3. **[03_robustness_benchmark.py](examples/03_robustness_benchmark.py)**: Evaluate accuracy degradation across noise & corruptions.
-4. **[04_analyze_calibration.py](examples/04_analyze_calibration.py)**: Compute ECE and fit validation temperature scaling.
-5. **[05_evaluate_uncertainty.py](examples/05_evaluate_uncertainty.py)**: Predict error detection AUROC and risk-coverage curves.
-6. **[06_compare_checkpoints.py](examples/06_compare_checkpoints.py)**: Quantify statistical differentials between model checkpoints.
-7. **[07_save_and_reproduce_experiment.py](examples/07_save_and_reproduce_experiment.py)**: Atomic experiment persistence and checksum verification.
-8. **[08_create_custom_metric.py](examples/08_create_custom_metric.py)**: Register custom evaluation scoring functions.
-9. **[09_create_custom_model_adapter.py](examples/09_create_custom_model_adapter.py)**: Implement the runtime `ModelAdapter` protocol.
+1. **[01_evaluate_pytorch_model.py](https://github.com/Uni-Creator/trustbench/blob/main/examples/01_evaluate_pytorch_model.py)**: Evaluate custom PyTorch `nn.Module`.
+2. **[02_evaluate_cifar10.py](https://github.com/Uni-Creator/trustbench/blob/main/examples/02_evaluate_cifar10.py)**: End-to-end CIFAR-10 ResNet evaluation via configuration.
+3. **[03_robustness_benchmark.py](https://github.com/Uni-Creator/trustbench/blob/main/examples/03_robustness_benchmark.py)**: Evaluate accuracy degradation across noise & corruptions.
+4. **[04_analyze_calibration.py](https://github.com/Uni-Creator/trustbench/blob/main/examples/04_analyze_calibration.py)**: Compute ECE and fit validation temperature scaling.
+5. **[05_evaluate_uncertainty.py](https://github.com/Uni-Creator/trustbench/blob/main/examples/05_evaluate_uncertainty.py)**: Predict error detection AUROC and risk-coverage curves.
+6. **[06_compare_checkpoints.py](https://github.com/Uni-Creator/trustbench/blob/main/examples/06_compare_checkpoints.py)**: Quantify statistical differentials between model checkpoints.
+7. **[07_save_and_reproduce_experiment.py](https://github.com/Uni-Creator/trustbench/blob/main/examples/07_save_and_reproduce_experiment.py)**: Atomic experiment persistence and checksum verification.
+8. **[08_create_custom_metric.py](https://github.com/Uni-Creator/trustbench/blob/main/examples/08_create_custom_metric.py)**: Register custom evaluation scoring functions.
+9. **[09_create_custom_model_adapter.py](https://github.com/Uni-Creator/trustbench/blob/main/examples/09_create_custom_model_adapter.py)**: Implement the runtime `ModelAdapter` protocol.
 
 ---
 
 ## Documentation
 
-Full documentation is available in the [`docs/`](docs/) directory:
-- [Installation Guide](docs/installation.md)
-- [Quickstart Guide](docs/quickstart.md)
-- [Python API Reference](docs/api.md)
-- [CLI Reference](docs/cli.md)
-- [Configuration Guide](docs/configuration.md)
-- [Model Adapters](docs/model-adapters.md)
-- [Dataset Adapters](docs/dataset-adapters.md)
-- [Metrics Documentation](docs/metrics.md)
-- [Robustness Testing](docs/robustness.md)
-- [Experiment Tracking](docs/experiments.md)
-- [Reporting & Visualization](docs/reporting.md)
-- [Plugin Development](docs/plugins.md)
-- [Troubleshooting & FAQ](docs/troubleshooting.md)
+Full documentation is available on the [Documentation Website](https://uni-creator.github.io/trustbench/) or in the [`docs/`](https://github.com/Uni-Creator/trustbench/tree/main/docs) directory:
+- [Installation Guide](https://github.com/Uni-Creator/trustbench/blob/main/docs/installation.md)
+- [Quickstart Guide](https://github.com/Uni-Creator/trustbench/blob/main/docs/quickstart.md)
+- [Python API Reference](https://github.com/Uni-Creator/trustbench/blob/main/docs/api.md)
+- [CLI Reference](https://github.com/Uni-Creator/trustbench/blob/main/docs/cli.md)
+- [Configuration Guide](https://github.com/Uni-Creator/trustbench/blob/main/docs/configuration.md)
+- [Model Adapters](https://github.com/Uni-Creator/trustbench/blob/main/docs/model-adapters.md)
+- [Dataset Adapters](https://github.com/Uni-Creator/trustbench/blob/main/docs/dataset-adapters.md)
+- [Metrics Documentation](https://github.com/Uni-Creator/trustbench/blob/main/docs/metrics.md)
+- [Robustness Testing](https://github.com/Uni-Creator/trustbench/blob/main/docs/robustness.md)
+- [Experiment Tracking](https://github.com/Uni-Creator/trustbench/blob/main/docs/experiments.md)
+- [Reporting & Visualization](https://github.com/Uni-Creator/trustbench/blob/main/docs/reporting.md)
+- [Plugin Development](https://github.com/Uni-Creator/trustbench/blob/main/docs/plugins.md)
+- [Troubleshooting & FAQ](https://github.com/Uni-Creator/trustbench/blob/main/docs/troubleshooting.md)
 
 ---
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) and our [Code of Conduct](CODE_OF_CONDUCT.md).
+We welcome contributions! Please see [CONTRIBUTING.md](https://github.com/Uni-Creator/trustbench/blob/main/CONTRIBUTING.md) and our [Code of Conduct](https://github.com/Uni-Creator/trustbench/blob/main/CODE_OF_CONDUCT.md).
 
 ```bash
 # Run tests
@@ -246,4 +247,4 @@ mypy src/trustbench/core src/trustbench/reporting src/trustbench/metrics
 
 ## License
 
-TrustBench is open-source software licensed under the [Apache License, Version 2.0](LICENSE).
+TrustBench is open-source software licensed under the [Apache License, Version 2.0](https://github.com/Uni-Creator/trustbench/blob/main/LICENSE).

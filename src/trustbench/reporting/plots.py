@@ -279,8 +279,11 @@ _PLOTLY_COMMON = {
 
 
 def _fig_to_svg(fig) -> str:
-    """Convert a plotly Figure to an SVG string."""
-    return fig.to_image(format="svg").decode("utf-8")
+    """Convert a plotly Figure to an inline SVG string or interactive HTML div."""
+    try:
+        return fig.to_image(format="svg").decode("utf-8")
+    except Exception:  # noqa: BLE001
+        return fig.to_html(full_html=False, include_plotlyjs=False)
 
 
 def render_confusion_matrix(data: dict[str, Any]) -> str:

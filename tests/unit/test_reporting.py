@@ -327,6 +327,17 @@ class TestHtmlReport:
             content = path.read_text(encoding="utf-8")
             # Plotly SVG starts with <svg
             assert "<svg" not in content
+            assert "plotly-graph-div" not in content
+
+    def test_html_renders_charts_when_plotly_installed(self):
+        """When plotly is installed, charts should be rendered without placeholder error."""
+        result = _make_result()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = generate_html_report(result, tmp)
+            content = path.read_text(encoding="utf-8")
+            # Charts must be present and placeholder not shown for rendered sections
+            assert "plotly-graph-div" in content or "<svg" in content
+            assert "Install trustbench[reporting] for charts" not in content
 
 
 

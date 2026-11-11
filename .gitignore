@@ -9,3 +9,4 @@ artifacts
 *.json
 .mypy_cache
 dist
+site

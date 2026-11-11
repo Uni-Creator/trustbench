@@ -17,6 +17,8 @@ BASELINE_DIR = (
 
 
 def test_baseline_metrics_match_stored_predictions() -> None:
+    if not BASELINE_DIR.exists():
+        pytest.skip(f"Baseline artifacts directory not found: {BASELINE_DIR}")
     artifacts = load_experiment_artifacts(BASELINE_DIR)
     predictions = artifacts["predictions"]
     stored = artifacts["metrics"]

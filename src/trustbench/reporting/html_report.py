@@ -50,6 +50,7 @@ _TEMPLATE_SRC = """\
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TrustBench Report — {{ experiment_name }}</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f7fa; color: #1a202c; line-height: 1.6; }
@@ -77,8 +78,10 @@ _TEMPLATE_SRC = """\
   footer { text-align: center; color: #a0aec0; font-size: 0.8rem; padding: 2rem; }
   pre { background: #f7fafc; border-radius: 0.5rem; padding: 1rem; font-size: 0.8rem; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
   .charts { display: grid; grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); gap: 1rem; margin-top: 1rem; }
-  .chart-box { border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.5rem; display: flex; align-items: center; justify-content: center; min-height: 200px; }
+  .chart-box { border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.5rem; display: flex; align-items: center; justify-content: center; min-height: 400px; width: 100%; overflow: hidden; }
+  .chart-box > div { width: 100%; }
   .chart-placeholder { color: #a0aec0; font-size: 0.8rem; text-align: center; padding: 1rem; }
+  .js-plotly-plot { width: 100% !important; margin: 0 auto; }
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } .charts { grid-template-columns: 1fr; } }
 </style>
@@ -109,7 +112,7 @@ _TEMPLATE_SRC = """\
     <h2>Classification</h2>
     <div class="charts">
       {% if confusion_matrix_svg %}
-      <div class="chart-box">{{ confusion_matrix_svg }}</div>
+      <div class="chart-box">{{ confusion_matrix_svg|safe }}</div>
       {% else %}
       <div class="chart-box"><div class="chart-placeholder">Install trustbench[reporting] for charts</div></div>
       {% endif %}
@@ -155,7 +158,7 @@ _TEMPLATE_SRC = """\
     <h2>Calibration</h2>
     <div class="charts">
       {% if reliability_diagram_svg %}
-      <div class="chart-box">{{ reliability_diagram_svg }}</div>
+      <div class="chart-box">{{ reliability_diagram_svg|safe }}</div>
       {% else %}
       <div class="chart-box"><div class="chart-placeholder">Install trustbench[reporting] for charts</div></div>
       {% endif %}
@@ -177,7 +180,7 @@ _TEMPLATE_SRC = """\
     <h2>Uncertainty</h2>
     <div class="charts">
       {% if confidence_histogram_svg %}
-      <div class="chart-box">{{ confidence_histogram_svg }}</div>
+      <div class="chart-box">{{ confidence_histogram_svg|safe }}</div>
       {% else %}
       <div class="chart-box"><div class="chart-placeholder">Install trustbench[reporting] for charts</div></div>
       {% endif %}
@@ -199,7 +202,7 @@ _TEMPLATE_SRC = """\
     <h2>Error Detection</h2>
     <div class="charts">
       {% if auroc_curve_svg %}
-      <div class="chart-box">{{ auroc_curve_svg }}</div>
+      <div class="chart-box">{{ auroc_curve_svg|safe }}</div>
       {% else %}
       <div class="chart-box"><div class="chart-placeholder">Install trustbench[reporting] for charts</div></div>
       {% endif %}
@@ -227,7 +230,7 @@ _TEMPLATE_SRC = """\
     <h2>Selective Prediction</h2>
     <div class="charts">
       {% if risk_coverage_svg %}
-      <div class="chart-box">{{ risk_coverage_svg }}</div>
+      <div class="chart-box">{{ risk_coverage_svg|safe }}</div>
       {% else %}
       <div class="chart-box"><div class="chart-placeholder">Install trustbench[reporting] for charts</div></div>
       {% endif %}
@@ -255,12 +258,12 @@ _TEMPLATE_SRC = """\
     <h2>Robustness Analysis</h2>
     <div class="charts">
       {% if robustness_degradation_svg %}
-      <div class="chart-box">{{ robustness_degradation_svg }}</div>
+      <div class="chart-box">{{ robustness_degradation_svg|safe }}</div>
       {% else %}
       <div class="chart-box"><div class="chart-placeholder">Install trustbench[reporting] for charts</div></div>
       {% endif %}
       {% if severity_comparison_svg %}
-      <div class="chart-box">{{ severity_comparison_svg }}</div>
+      <div class="chart-box">{{ severity_comparison_svg|safe }}</div>
       {% else %}
       <div class="chart-box"><div class="chart-placeholder">Install trustbench[reporting] for charts</div></div>
       {% endif %}
