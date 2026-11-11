@@ -101,6 +101,7 @@ dev = [
 
     # Dependencies required by the test suite
     "fastapi>=0.100.0",
+    "plotly>=5.0.0",
     "sqlalchemy>=2.0.0",
     "torch>=2.0.0",
     "torchvision>=0.15.0",

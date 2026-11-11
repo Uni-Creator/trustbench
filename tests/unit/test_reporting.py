@@ -331,6 +331,12 @@ class TestHtmlReport:
 
     def test_html_renders_charts_when_plotly_installed(self):
         """When plotly is installed, charts should be rendered without placeholder error."""
+        try:
+            import plotly  # noqa: F401
+        except ImportError:
+            import pytest
+            pytest.skip("plotly is not installed")
+
         result = _make_result()
         with tempfile.TemporaryDirectory() as tmp:
             path = generate_html_report(result, tmp)
