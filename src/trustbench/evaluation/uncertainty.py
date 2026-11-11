@@ -44,10 +44,11 @@ def compute_energy_scores(
     logits: np.ndarray,
     temperature: float = 1.0,
 ) -> np.ndarray:
-    """Compute negative free energy score: E(x; T) = -T * logsumexp(logits / T).
+    """Compute free energy score: E(x; T) = -T * logsumexp(logits / T).
 
-    In energy-based OOD/uncertainty detection, lower energy represents higher model certainty,
-    meaning uncertainty is directly measured by positive free energy: -E(x) = T * logsumexp(logits / T).
+    Following Liu et al. (2020), lower free energy E(x) represents higher model certainty
+    (in-distribution), while higher (less negative) energy indicates uncertainty or out-of-distribution
+    character. Therefore, E(x; T) directly serves as the uncertainty score for error detection.
 
     Args:
         logits: 2D array of raw output logits of shape (N, C).

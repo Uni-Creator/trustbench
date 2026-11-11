@@ -42,6 +42,7 @@ Calibration quantifies the alignment between a model's predicted confidence prob
 - **Expected Calibration Error (ECE)**:
   Measures the expected absolute difference between confidence and accuracy across $M$ equal-width bins:
   $$\text{ECE} = \sum_{m=1}^M \frac{|B_m|}{N} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|$$
+  - **Confidence Estimator**: By default, ECE evaluates the **maximum predicted class probability** (Maximum Softmax Probability, $\text{conf}(x_i) = \max_c p_{ic}$).
   - **Default Bin Count**: $M = 15$ (`n_bins=15`).
   - **Bin Partitioning**: $M$ intervals over $[0.0, 1.0]$ generated via `np.linspace(0.0, 1.0, M + 1)`.
   - **Boundary Inclusivity**: Bins $m \in \{0, \dots, M-2\}$ are left-closed and right-open $[b_m, b_{m+1})$. The final bin ($m = M-1$) is closed on both sides $[b_{M-1}, 1.0]$ to include predictions with exact confidence $1.0$.
@@ -89,9 +90,11 @@ Uncertainty quantification tests whether a model's internal uncertainty signals 
   - **Range**: $[0, \ln(C)]$, where $\ln(C)$ indicates uniform uncertainty over $C$ classes.
 
 - **Free Energy Score**:
-  Temperature-scaled negative free energy:
+  Helmholtz free energy (Liu et al., 2020):
   $$E(x; T) = -T \cdot \ln \sum_{c=1}^C \exp\left(\frac{f_c(x)}{T}\right)$$
-  - Positive free energy $-E(x; T)$ acts as an uncertainty score that scales with low confidence and out-of-distribution distance. Default temperature $T = 1.0$.
+  - High-confidence in-distribution predictions yield large logit activations, resulting in strongly negative (lower) free energy $E(x; T)$.
+  - Low-confidence or out-of-distribution predictions yield smaller logit magnitudes, resulting in higher (less negative) free energy.
+  - Therefore, the energy score $E(x; T)$ directly serves as the uncertainty score for error detection (higher values predict errors). Default temperature $T = 1.0$.
 
 - **Error Detection AUROC**:
   Area Under the Receiver Operating Characteristic curve where prediction failure ($\hat{y}_i \neq y_i$) is the positive target class ($1 = \text{error}, 0 = \text{correct}$) and uncertainty is the decision score.
@@ -124,6 +127,7 @@ Selective classification models have the option to abstain or defer low-confiden
   The scalar metric **AURC** integrates across the **full empirical coverage spectrum** from $k = 1$ to $N$ ($c \in [1/N, 1.0]$) following the standard formulation by Geifman & El-Yaniv (2017):
   $$\text{AURC} = \frac{1}{N} \sum_{k=1}^N \mathcal{R}(S_k)$$
   where $S_k$ is the subset of the $k$ most confident samples, and $\mathcal{R}(S_k) = \frac{1}{k} \sum_{i \in S_k} \mathbb{I}(y_i \neq \hat{y}_i)$ is the empirical selective risk at sample threshold $k$.
+  - **Confidence Ranking**: By default, samples are ranked descending by Maximum Softmax Probability (MSP, $\max_c p_{ic}$). Alternatively, ranking can be performed using negative predictive entropy $-H(p)$ or negative free energy $-E(x)$.
 
 - **Optimal AURC ($\text{AURC}^*$)**:
   The theoretical lower bound achieved by an oracle that ranks all erroneous predictions after all correct predictions across the full dataset:
@@ -183,12 +187,13 @@ Information retrieval metrics evaluate the ranking quality of retrieved document
 ### Definitions & Conventions
 
 - **Mean Reciprocal Rank (MRR)**:
-  $$\text{MRR} = \frac{1}{|Q|} \sum_{q \in Q} \frac{1}{\text{rank}_q}$$
-  where $\text{rank}_q$ is the position of the first relevant document for query $q$ (or $0$ if no relevant document was retrieved).
+  $$\text{MRR} = \frac{1}{|Q|} \sum_{q \in Q} \text{RR}_q$$
+  where $\text{RR}_q = \frac{1}{\text{rank}_q}$ if a relevant document was retrieved at 1-based rank $\text{rank}_q \ge 1$, or $0.0$ if no relevant document was retrieved in the ranking list.
 
 - **Mean Average Precision (MAP)**:
   Mean of Average Precision scores over all queries:
-  $$\text{AP} = \frac{1}{|R_q|} \sum_{k=1}^K P@k \cdot \mathbb{I}(\text{doc}_k \in R_q)$$
+  $$\text{AP}_q = \frac{1}{|R_q|} \sum_{k=1}^K P@k \cdot \mathbb{I}(\text{doc}_k \in R_q)$$
+  where $|R_q|$ is the total number of ground-truth relevant documents for query $q$ (normalizing across all relevant items in ground truth, returning $0.0$ if $|R_q| = 0$). $\text{MAP}$ is the average of $\text{AP}_q$ across all queries $q \in Q$.
 
 - **Recall@K & Precision@K**:
   Fraction of relevant items retrieved within top $K$, and fraction of top $K$ items that are relevant.
@@ -258,7 +263,10 @@ Fairness metrics measure disparities in model predictions and error rates across
 
 Understanding what constitutes a "good" metric value and how metrics interact is critical for diagnosing model weaknesses.
 
-### Diagnostic Rules of Thumb
+### Diagnostic Heuristics (Context-Dependent)
+
+> [!NOTE]
+> The thresholds below are indicative empirical heuristics rather than universal or normative standards. Appropriate targets for ECE, AUROC, and Excess AURC depend heavily on dataset size, number of classes, base error rate, and application-specific risk tolerance.
 
 | Metric | Ideal | Acceptable / Good | Needs Mitigation | Diagnostic Significance |
 | :--- | :---: | :---: | :---: | :--- |
@@ -267,16 +275,18 @@ Understanding what constitutes a "good" metric value and how metrics interact is
 | **Error Detection AUROC** | $1.00$ | $> 0.75$ | $< 0.60$ | $> 0.85$ allows high-confidence filtering of model failures before reaching users. |
 | **FPR at 95% TPR** | $0.00$ | $< 0.30$ | $> 0.50$ | Percentage of correct inferences unnecessarily rejected to catch 95% of mistakes. |
 | **Excess AURC** | $0.00$ | $< 0.02$ | $> 0.08$ | Measures gap between model confidence ranking and optimal error ranking. |
-| **Demographic Parity Diff** | $0.00$ | $< 0.10$ | $> 0.20$ | Difference in positive rate across groups. Regulatory compliance often targets $< 0.10$. |
-| **Disparate Impact Ratio** | $1.00$ | $0.80 - 1.25$ | $< 0.80$ | Complies with the EEOC "four-fifths rule" when $\ge 0.80$. |
+| **Demographic Parity Diff** | $0.00$ | $< 0.10$ | $> 0.20$ | Measures positive selection disparity across groups; lower indicates more equal throughput. |
+| **Disparate Impact Ratio** | $1.00$ | $\ge 0.80$ | $< 0.80$ | Evaluates ratio of minimum to maximum selection rates; $\ge 0.80$ satisfies the EEOC four-fifths guideline. |
 | **nDCG@K** | $1.00$ | $> 0.70$ | $< 0.50$ | Evaluates ranking discount; higher indicates relevant items placed near top. |
 | **PICP (Nominal 95%)** | $0.95$ | $\ge 0.95$ | $< 0.90$ | Empirical coverage below nominal indicates overly narrow intervals (underestimated risk). |
 
 ### Metric Dynamics: Which Metrics Move Together?
 
 1. **Temperature Scaling**:
-   - Reduces **ECE** and **NLL** without modifying logits rank order.
-   - Leaves **Accuracy**, **Error Detection AUROC**, and **AURC** completely unchanged because monotonic probability rescaling preserves ranking.
+   - Primarily targets calibration: reduces **ECE** and **NLL** while preserving class predictions.
+   - **Accuracy** is strictly invariant because the argmax of logits $\text{argmax}_c(z_{ic} / T) = \text{argmax}_c(z_{ic})$ is preserved for any $T > 0$.
+   - In binary classification, the sample ranking of confidence is strictly preserved (monotonic sigmoid transformation), leaving **Error Detection AUROC** and **AURC** unchanged.
+   - In multi-class classification, because max-softmax confidences $\max_c \text{softmax}(z_i / T)$ depend on the distribution across all classes for each sample, scaling by $T$ can induce minor re-orderings across samples, which may lead to slight shifts in AUROC and AURC.
 2. **Overconfident Neural Networks**:
    - Modern deep networks frequently exhibit **high accuracy** alongside **poor (high) ECE** and **high NLL** due to uncalibrated overconfidence on edge samples.
 3. **Fairness vs Accuracy Trade-off**:
@@ -343,17 +353,26 @@ print(f"Optimal AURC:{res['optimal_aurc']:.4f}")
 print(f"Excess AURC: {res['excess_aurc']:.4f}")          # 0.0 indicates perfect ranking
 ```
 
-#### Example D: Algorithmic Fairness
+#### Example D: Algorithmic Fairness & Disparity Trade-offs
 ```python
 import numpy as np
 from trustbench.evaluation.fairness import compute_fairness_metrics
 
+# 8 individuals across groups A and B
 y_true = np.array([1, 0, 1, 1, 0, 1, 0, 0])
 y_pred = np.array([1, 0, 1, 0, 0, 1, 1, 0])
 groups = np.array(["A", "A", "A", "A", "B", "B", "B", "B"])
 
 fair = compute_fairness_metrics(y_true, y_pred, groups)
-print(f"Demographic Parity Diff: {fair['demographic_parity_difference']:.2f}")
-print(f"Disparate Impact Ratio:  {fair['disparate_impact_ratio']:.2f}")
-print(f"Equalized Odds Diff:     {fair['equalized_odds_difference']:.2f}")
+print(f"Demographic Parity Diff: {fair['demographic_parity_difference']:.2f}")  # Expected: 0.00
+print(f"Disparate Impact Ratio:  {fair['disparate_impact_ratio']:.2f}")           # Expected: 1.00
+print(f"Equalized Odds Diff:     {fair['equalized_odds_difference']:.2f}")       # Expected: 0.33
 ```
+
+**Diagnostic Takeaway**:
+In this scenario, both Group A and Group B achieve identical positive selection rates ($2/4 = 0.50$), yielding $\text{DPD} = 0.00$ and $\text{DIR} = 1.00$ (apparent demographic parity). However, internal error rates reveal sharp disparities:
+- **Group A**: $\text{TPR} = 2/3 \approx 0.67$, $\text{FPR} = 0/1 = 0.00$
+- **Group B**: $\text{TPR} = 1/1 = 1.00$, $\text{FPR} = 1/3 \approx 0.33$
+
+Because Group B experiences elevated false positives while Group A experiences elevated false negatives, the **Equalized Odds Difference** is $\approx 0.33$. This illustrates why evaluating error-rate parity (Equalized Odds) alongside selection parity (Demographic Parity) is vital: equal throughput across groups does not guarantee equal error distribution.
+

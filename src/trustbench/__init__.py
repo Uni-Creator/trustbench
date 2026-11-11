@@ -12,6 +12,7 @@ from trustbench.core.exceptions import (
 )
 from trustbench.core.protocols import DatasetAdapter, ModelAdapter
 from trustbench.core.results import EvaluationResult
+from trustbench.datasets.memory import InMemoryDatasetAdapter
 from trustbench.evaluation.distribution_shift import (
     ShiftType,
     compute_label_distribution_shift,
@@ -48,6 +49,7 @@ __all__ = [
     "EvaluationResult",
     "GenericDatasetAdapter",
     "GenericModelAdapter",
+    "InMemoryDatasetAdapter",
     "JAXModelAdapter",
     "KerasModelAdapter",
     "ModelAdapter",

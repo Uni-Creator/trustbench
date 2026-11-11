@@ -72,7 +72,7 @@ flowchart TD
 TrustBench features a lightweight core with optional framework groups:
 
 ```bash
-# Core installation (NumPy, SciPy, Scikit-learn, Click, Pydantic)
+# Core installation (NumPy, SciPy, Scikit-learn, Pydantic, PyYAML, Click, Jinja2, Pillow)
 pip install trustbench
 
 # For PyTorch model evaluation
@@ -81,7 +81,13 @@ pip install "trustbench[pytorch]"
 # For ONNX Runtime inference
 pip install "trustbench[onnx]"
 
-# Full installation (all frameworks, storage, and visualization)
+# For interactive Plotly HTML reports
+pip install "trustbench[reporting]"
+
+# For SQLite / SQLAlchemy experiment persistence
+pip install "trustbench[storage]"
+
+# Full installation (all tested frameworks, storage, and visualization)
 pip install "trustbench[all]"
 ```
 

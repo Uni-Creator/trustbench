@@ -6,13 +6,13 @@ TrustBench is designed with a lightweight, framework-independent core. You only 
 
 - **Python**: `>= 3.11`
 - **Package Manager**: `pip` or [`uv`](https://github.com/astral-sh/uv)
-- **OS**: Linux, macOS, or Windows
+- **OS**: Linux, macOS (tested in continuous integration); Windows (supported, not tested in CI)
 
 ---
 
 ## 1. Core Installation
 
-To install TrustBench with base dependencies (NumPy, SciPy, Scikit-learn, Pydantic, PyYAML, Click, Jinja2):
+To install TrustBench with base dependencies (NumPy, SciPy, Scikit-learn, Pydantic, PyYAML, Click, Jinja2, Pillow):
 
 ```bash
 pip install trustbench
@@ -30,12 +30,12 @@ Install framework and feature bundles depending on your requirements:
 |---|---|---|
 | **PyTorch** | `pip install "trustbench[pytorch]"` | PyTorch model adapter, torchvision datasets, GPU device transfers |
 | **ONNX Runtime** | `pip install "trustbench[onnx]"` | ONNX session execution (`onnxruntime`) on CPU or CUDA |
-| **TensorFlow** | `pip install "trustbench[tensorflow]"` | Keras and TensorFlow model adapters |
-| **JAX** | `pip install "trustbench[jax]"` | JAX/Flax functional inference adapters |
-| **Storage** | `pip install "trustbench[storage]"` | SQLite/PostgreSQL persistence (`sqlalchemy`) |
-| **API** | `pip install "trustbench[api]"` | FastAPI REST server and uvicorn runner |
 | **Reporting** | `pip install "trustbench[reporting]"` | Interactive Plotly HTML reporting and diagnostic charts |
-| **Everything** | `pip install "trustbench[all]"` | Installs all optional frameworks and extras |
+| **Storage** | `pip install "trustbench[storage]"` | SQLite persistence via SQLAlchemy (tested); PostgreSQL (experimental) |
+| **API** *(Experimental)* | `pip install "trustbench[api]"` | FastAPI REST server and uvicorn runner |
+| **TensorFlow** *(Experimental)* | `pip install "trustbench[tensorflow]"` | Keras and TensorFlow model adapters |
+| **JAX** *(Experimental)* | `pip install "trustbench[jax]"` | JAX/Flax functional inference adapters |
+| **Everything** | `pip install "trustbench[all]"` | Installs all core and tested framework extras |
 
 ---
 
@@ -48,8 +48,9 @@ trustbench version
 ```
 Expected output:
 ```text
-trustbench 0.2.0
+trustbench x.y.z
 ```
+*(e.g., `trustbench 0.2.3`)*
 
 Verify Python imports:
 ```python
