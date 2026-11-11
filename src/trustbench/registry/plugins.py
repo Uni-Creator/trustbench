@@ -9,7 +9,7 @@ from typing import Any
 try:
     CURRENT_VERSION = importlib.metadata.version("trustbench")
 except importlib.metadata.PackageNotFoundError:
-    CURRENT_VERSION = "0.2.2"
+    CURRENT_VERSION = "0.2.3"
 
 logger = logging.getLogger(__name__)
 

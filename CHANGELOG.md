@@ -2,6 +2,18 @@
 
 All notable changes to TrustBench are documented in this file following the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standard. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2026-11-12
+
+### Added
+- Comprehensive metric reference benchmarks in `test_metric_reference_benchmarks.py` directly validating metrics against `scikit-learn`, `Fairlearn`, and published literature formulations (Guo et al. 2017, Ding et al. 2020, Geifman & El-Yaniv 2017).
+- Code coverage reporting with `pytest-cov`, generating XML and terminal coverage metrics.
+- CI testing across multi-OS matrix (`ubuntu-latest`, `macos-latest`) and isolated optional extra test jobs (`onnx`, `reporting`, `storage`, `api`, `torch`).
+
+### Fixed
+- Achieved 100% full-codebase type safety under Mypy (0 errors across all 106 source files), covering all framework adapters, evaluators, storage, and registries.
+- Replaced static badge images with live, dynamic CI and PyPI status badges.
+- Moved internal audit and process documents into `docs/internal/` for clean repository presentation.
+
 ## [0.2.2] - 2026-11-12
 
 ### Fixed

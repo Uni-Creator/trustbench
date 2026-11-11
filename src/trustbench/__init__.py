@@ -1,6 +1,6 @@
 """TrustBench: Evaluation framework for machine learning model reliability."""
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 from trustbench.benchmark import TrustBench
 from trustbench.core.evaluator import evaluate
