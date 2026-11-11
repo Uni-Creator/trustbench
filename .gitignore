@@ -10,3 +10,6 @@ artifacts
 .mypy_cache
 dist
 site
+.coverage
+.coverage.*
+coverage.xml

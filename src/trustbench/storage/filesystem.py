@@ -55,7 +55,7 @@ def _atomic_write_npz(path: Path, data: dict[str, np.ndarray]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = path.with_suffix(path.suffix + f".tmp.{uuid.uuid4().hex[:8]}")
     with open(tmp_path, "wb") as f:
-        np.savez_compressed(f, **data)
+        np.savez_compressed(f, **data)  # type: ignore[arg-type]
         f.flush()
         os.fsync(f.fileno())
     os.replace(tmp_path, path)
@@ -184,7 +184,7 @@ class FilesystemExperimentStore:
         checkpoint_sha = meta.get("checkpoint_sha256") or cfg.get("checkpoint_sha256")
         dataset_fp = meta.get("dataset_fingerprint") or cfg.get("dataset_fingerprint")
 
-        manifest = {
+        manifest: dict[str, Any] = {
             "id": exp_id,
             "name": name,
             "experiment_type": experiment_type,

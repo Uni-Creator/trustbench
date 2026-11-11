@@ -119,11 +119,10 @@ def __getattr__(name: str):
             save_experiment_artifacts,
         )
 
-        exports = {
+        return {
             "load_experiment_artifacts": load_experiment_artifacts,
             "save_experiment_artifacts": save_experiment_artifacts,
-        }
-        return exports[name]
+        }[name]
     if name in {
         "IndexedDataset",
         "load_model_from_checkpoint",
@@ -137,13 +136,12 @@ def __getattr__(name: str):
             run_inference,
         )
 
-        exports = {
+        return {
             "IndexedDataset": IndexedDataset,
             "load_model_from_checkpoint": load_model_from_checkpoint,
             "resolve_model_architecture": resolve_model_architecture,
             "run_inference": run_inference,
-        }
-        return exports[name]
+        }[name]
     if name in {"get_environment_info", "get_git_commit", "set_seed"}:
         from trustbench.core.reproducibility import (
             get_environment_info,

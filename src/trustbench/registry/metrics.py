@@ -133,10 +133,10 @@ class MetricRegistry:
                     raise MetricRegistrationError("Metric name must be a non-empty string.")
                 metric_name = name.strip()
             else:
-                metric_name = getattr(func, "__name__", None)
-                if not metric_name or not isinstance(metric_name, str) or not metric_name.strip():
+                raw_name = getattr(func, "__name__", None)
+                if not raw_name or not isinstance(raw_name, str) or not raw_name.strip():
                     raise MetricRegistrationError("Metric name must be a non-empty string.")
-                metric_name = metric_name.strip()
+                metric_name = raw_name.strip()
 
             if not callable(func):
                 raise MetricRegistrationError(f"Target metric {func!r} is not callable.")

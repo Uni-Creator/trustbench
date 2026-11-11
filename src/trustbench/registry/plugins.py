@@ -164,7 +164,7 @@ class PluginManager:
             if hasattr(eps, "select"):
                 matching_eps = eps.select(group=group)
             else:
-                matching_eps = eps.get(group, [])
+                matching_eps = eps.get(group, [])  # type: ignore[attr-defined,arg-type]
         except Exception as exc:  # noqa: BLE001
             logger.warning("Error querying entry points for group %r: %s", group, exc)
             return dict(self._plugins)

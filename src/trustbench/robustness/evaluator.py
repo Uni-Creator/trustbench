@@ -109,8 +109,8 @@ class RobustnessEvaluator:
             base_seed=self.seed,
         )
 
-        loader = DataLoader(
-            corrupted_ds,
+        loader: Any = DataLoader(
+            corrupted_ds,  # type: ignore[arg-type]
             batch_size=self.batch_size,
             shuffle=False,
             num_workers=self.num_workers,
@@ -261,7 +261,7 @@ class RobustnessEvaluator:
             # Save predictions NPZ: predictions/<c_type>.npz (if enabled)
             if save_predictions:
                 npz_file = predictions_dir / f"{c_type}.npz"
-                np.savez_compressed(npz_file, **npz_arrays)
+                np.savez_compressed(npz_file, **npz_arrays)  # type: ignore[arg-type]
             del npz_arrays
 
         # Save config.json

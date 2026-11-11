@@ -84,7 +84,7 @@ def get_cifar10_validation_split(
 
     # Deterministic split indices
     generator = torch.Generator().manual_seed(seed)
-    train_indices, val_indices = random_split(range(total_len), [train_len, val_size], generator=generator)
+    train_indices, val_indices = random_split(range(total_len), [train_len, val_size], generator=generator)  # type: ignore[arg-type,var-annotated]
 
     train_subset = Subset(train_base, train_indices.indices)
     val_subset = Subset(val_base, val_indices.indices)

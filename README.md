@@ -4,12 +4,11 @@
 
 **ML Reliability, Robustness, Uncertainty & Fairness Evaluation Framework**
 
-[![PyPI version](https://img.shields.io/badge/pypi-v0.2.2-blue.svg)](https://pypi.org/project/trustbench/)
-[![Python Versions](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](https://pypi.org/project/trustbench/)
-[![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](https://github.com/Uni-Creator/trustbench/blob/main/LICENSE)
-[![CI Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Uni-Creator/trustbench/actions/workflows/ci.yml)
-[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://uni-creator.github.io/trustbench/)
-[![Tests](https://img.shields.io/badge/tests-204%20passed-success.svg)](https://github.com/Uni-Creator/trustbench/tree/main/tests)
+[![PyPI version](https://img.shields.io/pypi/v/trustbench.svg)](https://pypi.org/project/trustbench/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/trustbench.svg)](https://pypi.org/project/trustbench/)
+[![License](https://img.shields.io/github/license/Uni-Creator/trustbench.svg)](https://github.com/Uni-Creator/trustbench/blob/main/LICENSE)
+[![CI Status](https://github.com/Uni-Creator/trustbench/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Uni-Creator/trustbench/actions/workflows/ci.yml)
+[![Documentation](https://github.com/Uni-Creator/trustbench/actions/workflows/docs.yml/badge.svg)](https://uni-creator.github.io/trustbench/)
 
 </div>
 
@@ -191,6 +190,23 @@ print(f"Pixel Accuracy: {result.metrics['pixel_accuracy']:.2%}")
 
 See [Metrics Documentation](https://github.com/Uni-Creator/trustbench/blob/main/docs/metrics.md) for mathematical derivations.
 
+### Metric Verification & Standards Compliance
+
+To guarantee mathematical correctness and numerical fidelity, TrustBench metrics are rigorously tested directly against established reference implementations and peer-reviewed literature benchmarks on identical inputs:
+
+| TrustBench Metric Domain | Reference Implementation / Peer-Reviewed Standard | Verification Test Suite |
+| :--- | :--- | :--- |
+| **Classification** (Acc, Balanced Acc, Macro-F1, Precision, Recall, Confusion Matrix) | `scikit-learn` (`sklearn.metrics`) | `tests/unit/test_metric_reference_benchmarks.py` |
+| **Regression** (MAE, MSE, RMSE, $R^2$, MedAE, Max Error) | `scikit-learn` (`sklearn.metrics`) | `tests/unit/test_metric_reference_benchmarks.py` |
+| **Calibration** (Brier Score, Negative Log-Likelihood) | `scikit-learn` (`brier_score_loss`, `log_loss`) | `tests/unit/test_metric_reference_benchmarks.py` |
+| **Calibration** (Equal-width ECE, Adaptive Quantile ECE) | Guo et al. (2017), Naeini et al. (2015), Ding et al. (2020) | `tests/unit/test_metric_reference_benchmarks.py` |
+| **Error Detection** (AUROC, AUPRC, FPR@95%TPR) | `scikit-learn` (`roc_auc_score`, `precision_recall_curve`, `auc`) | `tests/unit/test_metric_reference_benchmarks.py` |
+| **Fairness & Bias** (Demographic Parity, Equalized Odds, Disparate Impact) | Fairlearn Mathematical Specification | `tests/unit/test_metric_reference_benchmarks.py` |
+| **Selective Prediction** (Risk-Coverage, Optimal AURC, Excess AURC) | Geifman & El-Yaniv (2017) Analytical Bounds | `tests/unit/test_metric_reference_benchmarks.py` |
+
+> [!NOTE]
+> **Task Maturity**: Classification, Calibration, Robustness, Uncertainty, and Error Detection are core, production-verified pipelines with end-to-end integration tests. Specialized domain pipelines (Information Retrieval, Semantic Segmentation, and Algorithmic Fairness) and non-PyTorch adapters (Keras, JAX) are provided with protocol compliance tests and marked as experimental extensions.
+
 ---
 
 ## Tutorials & Examples
@@ -240,7 +256,7 @@ pytest
 ruff check .
 
 # Static type analysis
-mypy src/trustbench/core src/trustbench/reporting src/trustbench/metrics
+mypy src/trustbench --ignore-missing-imports
 ```
 
 ---

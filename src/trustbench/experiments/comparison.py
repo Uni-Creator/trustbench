@@ -148,13 +148,13 @@ class ExperimentComparator:
         Accepts experiment IDs (resolved via store or database session),
         or ExperimentRecord / dict objects directly.
         """
-        records: list[ExperimentRecord | dict[str, Any]] = []
+        records: list[Any] = []
 
         for item in experiments:
             if isinstance(item, (ExperimentRecord, dict)):
                 records.append(item)
             elif isinstance(item, str):
-                rec = None
+                rec: Any = None
                 if self.store is not None:
                     rec = self.store.get(item)
                 if rec is None and (self._session is not None or self.session_provided):

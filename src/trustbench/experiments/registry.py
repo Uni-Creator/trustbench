@@ -110,39 +110,39 @@ class ExperimentRegistry:
             repo.update_status(exp_model.id, status="completed", completed=True)
 
         # 3. Index Artifact Files
-        for f in exp_path.iterdir():
-            if f.is_file():
-                art_type = f.stem
-                csum = compute_file_sha256(f)
+        for file_item in exp_path.iterdir():
+            if file_item.is_file():
+                art_type = file_item.stem
+                csum = compute_file_sha256(file_item)
                 repo.add_artifact(
                     experiment_id=exp_model.id,
                     artifact_type=art_type,
-                    file_path=str(f.resolve()),
+                    file_path=str(file_item.resolve()),
                     checksum=csum,
                 )
 
         # Index corruption_results subfolder if present
         corruptions_dir = exp_path / "corruption_results"
         if corruptions_dir.is_dir():
-            for f in corruptions_dir.iterdir():
-                if f.is_file() and f.suffix == ".json":
+            for file_item in corruptions_dir.iterdir():
+                if file_item.is_file() and file_item.suffix == ".json":
                     repo.add_artifact(
                         experiment_id=exp_model.id,
-                        artifact_type=f"corruption_{f.stem}",
-                        file_path=str(f.resolve()),
-                        checksum=compute_file_sha256(f),
+                        artifact_type=f"corruption_{file_item.stem}",
+                        file_path=str(file_item.resolve()),
+                        checksum=compute_file_sha256(file_item),
                     )
 
         # Index predictions subfolder if present
         preds_dir = exp_path / "predictions"
         if preds_dir.is_dir():
-            for f in preds_dir.iterdir():
-                if f.is_file() and f.suffix == ".npz":
+            for file_item in preds_dir.iterdir():
+                if file_item.is_file() and file_item.suffix == ".npz":
                     repo.add_artifact(
                         experiment_id=exp_model.id,
-                        artifact_type=f"prediction_{f.stem}",
-                        file_path=str(f.resolve()),
-                        checksum=compute_file_sha256(f),
+                        artifact_type=f"prediction_{file_item.stem}",
+                        file_path=str(file_item.resolve()),
+                        checksum=compute_file_sha256(file_item),
                     )
 
         # 4. Extract and index scalar metrics

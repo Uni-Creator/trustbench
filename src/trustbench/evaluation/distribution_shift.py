@@ -83,8 +83,8 @@ def compute_label_distribution_shift(
     counts_s = np.bincount(labels_s[labels_s >= 0], minlength=n_c)[:n_c]
     counts_t = np.bincount(labels_t[labels_t >= 0], minlength=n_c)[:n_c]
 
-    priors_s = counts_s / max(1, np.sum(counts_s))
-    priors_t = counts_t / max(1, np.sum(counts_t))
+    priors_s = counts_s / max(1.0, float(np.sum(counts_s)))
+    priors_t = counts_t / max(1.0, float(np.sum(counts_t)))
 
     tv = compute_tv_distance(priors_s, priors_t)
     js = float(jensenshannon(priors_s, priors_t))
@@ -177,8 +177,8 @@ def evaluate_distribution_shift(
     n_classes = clean_probs.shape[1] if clean_probs.ndim == 2 else int(max(np.max(clean_preds), np.max(shifted_preds)) + 1)
     counts_c = np.bincount(clean_preds[clean_preds >= 0], minlength=n_classes)[:n_classes]
     counts_s = np.bincount(shifted_preds[shifted_preds >= 0], minlength=n_classes)[:n_classes]
-    marg_clean = counts_c / max(1, np.sum(counts_c))
-    marg_shifted = counts_s / max(1, np.sum(counts_s))
+    marg_clean = counts_c / max(1.0, float(np.sum(counts_c)))
+    marg_shifted = counts_s / max(1.0, float(np.sum(counts_s)))
     pred_tv = compute_tv_distance(marg_clean, marg_shifted)
 
     # 2. Confidence & Entropy Shifts
