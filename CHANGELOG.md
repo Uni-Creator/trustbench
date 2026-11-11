@@ -2,6 +2,17 @@
 
 All notable changes to TrustBench are documented in this file following the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standard. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-11-12
+
+### Fixed
+- Fixed Plotly chart rendering in HTML evaluation reports by adding pure-Python HTML fallback when Kaleido/Chrome are unavailable and marking chart templates as safe.
+- Improved evaluation report styling, layout responsiveness, and chart container dimensions.
+- Fixed documentation build and deployment workflow with MkDocs strict configuration.
+
+### Changed
+- Updated project documentation and repository links to absolute GitHub URLs.
+- Improved release and packaging configuration with Plotly in test dependencies and graceful skips when optional libraries are absent.
+
 ## [0.2.0] — 2026-11-09
 
 ### Added

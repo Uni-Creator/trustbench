@@ -1,6 +1,6 @@
 [project]
 name = "trustbench"
-version = "0.2.0"
+version = "0.2.2"
 description = "TrustBench: Evaluation framework for ML model reliability, robustness, and uncertainty."
 readme = "README.md"
 license = "Apache-2.0"

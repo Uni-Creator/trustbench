@@ -4,7 +4,7 @@
 
 **ML Reliability, Robustness, Uncertainty & Fairness Evaluation Framework**
 
-[![PyPI version](https://img.shields.io/badge/pypi-v0.2.0-blue.svg)](https://pypi.org/project/trustbench/)
+[![PyPI version](https://img.shields.io/badge/pypi-v0.2.2-blue.svg)](https://pypi.org/project/trustbench/)
 [![Python Versions](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](https://pypi.org/project/trustbench/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](https://github.com/Uni-Creator/trustbench/blob/main/LICENSE)
 [![CI Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Uni-Creator/trustbench/actions/workflows/ci.yml)
